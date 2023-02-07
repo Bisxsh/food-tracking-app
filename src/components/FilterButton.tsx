@@ -61,7 +61,7 @@ const FilterButton = (props: Props) => {
       >
         <MaterialCommunityIcons name="filter-variant" size={24} color="black" />
       </TouchableOpacity>
-      <Animated.View
+      <Animated.ScrollView
         style={[
           styles(props).modal,
           { opacity: fadeAnim, translateY: transitionAnim },
@@ -84,7 +84,10 @@ const FilterButton = (props: Props) => {
             </View>
           );
         })}
-      </Animated.View>
+        {props.options.length > 7 && (
+          <View style={{ height: SPACING.medium }} />
+        )}
+      </Animated.ScrollView>
     </View>
   );
 };
@@ -115,6 +118,8 @@ const styles = (props: Props) =>
       direction: "rtl",
       borderRadius: RADIUS.standard,
       ...DROP_SHADOW,
+      maxHeight: 350,
+      overflow: "scroll",
     },
 
     modalHeading: {
