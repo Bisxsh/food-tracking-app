@@ -10,10 +10,11 @@ export const COLOURS = {
 export const FONT_SIZES = {
   //TODO change if needed
   heading: 40,
-  subheading: 30,
-  body: 20,
-  small: 15,
-  tiny: 10,
+  subheading: 32,
+  body: 24,
+  medium: 20,
+  small: 16,
+  tiny: 8,
 };
 
 export const SPACING = {
@@ -23,4 +24,23 @@ export const SPACING = {
   medium: 16,
   small: 8,
   tiny: 4,
+};
+
+export const RADIUS = {
+  //TODO change if needed
+  circle: 999,
+  standard: 16,
+  small: 12,
+  tiny: 8,
+};
+
+export const DROP_SHADOW = {
+  // IOS
+  shadowColor: "#171717",
+  shadowOffset: { width: -2, height: 4 },
+  shadowOpacity: 1,
+  shadowRadius: 3,
+
+  // Android
+  elevation: 5,
 };

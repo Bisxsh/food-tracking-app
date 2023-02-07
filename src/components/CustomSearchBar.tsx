@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { COLOURS, SPACING } from "../util/GlobalStyles";
+import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
 
 type Props = {
   textHint: string;
@@ -45,6 +45,6 @@ const styles = (props: Props) =>
       padding: SPACING.small,
       paddingLeft: SPACING.medium,
       paddingRight: SPACING.medium,
-      borderRadius: 15,
+      borderRadius: RADIUS.standard,
     },
   });
