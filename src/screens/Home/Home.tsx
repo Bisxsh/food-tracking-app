@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-import CustomSearchBar from "../components/CustomSearchBar";
-import SortButton from "../components/SortButton";
+import Checkbox from "../../components/Checkbox";
+import CustomSearchBar from "../../components/CustomSearchBar";
+import SortButton from "../../components/SortButton";
+import HomeMenu from "./HomeMenu";
 
 export function Home(): JSX.Element {
   const isDarkMode = false;
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [selectedFilter, setSelectedFilter] = useState(0);
+  const [checked, setChecked] = useState(false);
 
   //TODO replace with obj
   const filters = [
@@ -27,20 +30,13 @@ export function Home(): JSX.Element {
         alignItems: "center",
       }}
     >
-      <View style={styles.menu}>
-        <Text>{ingredientsSearch}</Text>
-        <CustomSearchBar
-          textHint="Search stored ingredients"
-          text={ingredientsSearch}
-          setText={setIngredientsSearch}
-        />
-        <SortButton
-          options={filters}
-          selectedOption={selectedFilter}
-          setSelectedOption={setSelectedFilter}
-          width={216}
-        />
-      </View>
+      <HomeMenu
+        filters={filters}
+        ingredientsSearch={ingredientsSearch}
+        selectedFilter={selectedFilter}
+        setIngredientsSearch={setIngredientsSearch}
+        setSelectedFilter={setSelectedFilter}
+      />
     </View>
   );
 }

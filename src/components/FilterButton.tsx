@@ -14,16 +14,21 @@ import {
   RADIUS,
   SPACING,
 } from "../util/GlobalStyles";
+import CustomSearchBar from "./CustomSearchBar";
+import Checkbox from "./Checkbox";
 
 type Props = {
   options: any[];
-  selectedOption: number; // From useState
-  setSelectedOption: (option: number) => void;
   width?: number;
+  textHint?: string;
 };
 
-const SortButton = (props: Props) => {
+const FilterButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  //TODO synchronize with filters
+  const [filters, setFilters] = useState<boolean[]>([]);
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const transitionAnim = useRef(new Animated.Value(-10)).current;
 
@@ -41,18 +46,20 @@ const SortButton = (props: Props) => {
     }).start();
   }, [showModal]);
 
+  function changeActiveFilter(index: number) {
+    const newFilters = [...filters];
+    newFilters[index] = !filters[index];
+    console.log(newFilters);
+    setFilters(newFilters);
+  }
+
   return (
     <View style={{ position: "relative" }}>
       <TouchableOpacity
         style={styles(props).button}
         onPress={() => setShowModal(true)}
       >
-        <Octicons
-          name="arrow-switch"
-          size={24}
-          color="black"
-          style={{ transform: [{ rotate: "90deg" }] }}
-        />
+        <MaterialCommunityIcons name="filter-variant" size={24} color="black" />
       </TouchableOpacity>
       <Animated.View
         style={[
@@ -60,28 +67,21 @@ const SortButton = (props: Props) => {
           { opacity: fadeAnim, translateY: transitionAnim },
         ]}
       >
-        <Text style={styles(props).modalHeading}>Sort By</Text>
+        <CustomSearchBar
+          text={searchText}
+          setText={setSearchText}
+          textHint={props.textHint || "                    "}
+        />
+        <View style={{ height: SPACING.small }} />
         {props.options?.map((option, index) => {
           return (
-            <TouchableOpacity
-              key={`filter-${index}`}
-              style={{
-                ...styles(props).modalOption,
-                backgroundColor:
-                  props.selectedOption === index ? COLOURS.grey : COLOURS.white,
-              }}
-              onPress={() => {
-                props.setSelectedOption(index);
-                setShowModal(false);
-              }}
-            >
-              <MaterialCommunityIcons
-                name={index % 2 == 0 ? "arrow-up-thin" : "arrow-down-thin"}
-                size={24}
-                color="black"
+            <View key={`filter-${index}`} style={styles(props).modalOption}>
+              <Checkbox
+                initialVal={false}
+                onPress={() => changeActiveFilter(index)}
               />
               <Text>{option}</Text>
-            </TouchableOpacity>
+            </View>
           );
         })}
       </Animated.View>
@@ -89,7 +89,7 @@ const SortButton = (props: Props) => {
   );
 };
 
-export default SortButton;
+export default FilterButton;
 
 const styles = (props: Props) =>
   StyleSheet.create({

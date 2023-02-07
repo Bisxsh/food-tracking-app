@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Home } from "./src/screens/Home";
+import { Home } from "./src/screens/Home/Home";
 import { Recipe } from "./src/screens/Recipe";
 import { Profile } from "./src/screens/Profile";
 import { COLOURS } from "./src/util/GlobalStyles";
