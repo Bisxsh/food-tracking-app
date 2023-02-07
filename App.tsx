@@ -1,12 +1,13 @@
-import React from 'react';
+import React from "react";
 
-import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {MaterialCommunityIcons} from '@expo/vector-icons';
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import {Home} from './src/screens/Home';
-import {Recipe} from './src/screens/Recipe';
-import {Profile} from './src/screens/Profile';
+import { Home } from "./src/screens/Home";
+import { Recipe } from "./src/screens/Recipe";
+import { Profile } from "./src/screens/Profile";
+import { COLOURS } from "./src/util/GlobalStyles";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,11 +15,12 @@ function App(): JSX.Element {
   return (
     <NavigationContainer>
       <Tab.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        tabBarActiveTintColor: '#27C179',
-        headerShown: false,
-      }}>
+        initialRouteName="Home"
+        screenOptions={{
+          tabBarActiveTintColor: COLOURS.primary,
+          headerShown: false,
+        }}
+      >
         <Tab.Screen
           name="Home"
           component={Home}
@@ -45,7 +47,11 @@ function App(): JSX.Element {
           options={{
             tabBarShowLabel: false,
             tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="account" color={color} size={size} />
+              <MaterialCommunityIcons
+                name="account"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
@@ -53,6 +59,5 @@ function App(): JSX.Element {
     </NavigationContainer>
   );
 }
-
 
 export default App;
