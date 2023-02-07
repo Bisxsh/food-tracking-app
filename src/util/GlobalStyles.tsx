@@ -1,7 +1,9 @@
 export const COLOURS = {
   //TODO change if needed
   primary: "#27C179",
+  primaryDark: "#06B261",
   grey: "#EEEEEE",
+  darkGrey: "#C0C0C0",
   textHint: "#9E9E9E",
   white: "#FFFFFF",
   black: "#000000",
