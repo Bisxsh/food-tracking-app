@@ -14,6 +14,7 @@ import {
   RADIUS,
   SPACING,
 } from "../util/GlobalStyles";
+import Modal from "react-native-modal/dist/modal";
 
 type Props = {
   options: any[];
@@ -54,37 +55,53 @@ const SortButton = (props: Props) => {
           style={{ transform: [{ rotate: "90deg" }] }}
         />
       </TouchableOpacity>
-      <Animated.View
-        style={[
-          styles(props).modal,
-          { opacity: fadeAnim, translateY: transitionAnim },
-        ]}
+      <Modal
+        isVisible={showModal}
+        onBackdropPress={() => setShowModal(false)}
+        backdropOpacity={0.1}
+        animationIn="fadeInDown"
+        animationOut="fadeOutUp"
+        style={{
+          position: "absolute",
+          //TODO change to work with device for presentation
+          top: 50,
+          right: 60,
+        }}
       >
-        <Text style={styles(props).modalHeading}>Sort By</Text>
-        {props.options?.map((option, index) => {
-          return (
-            <TouchableOpacity
-              key={`filter-${index}`}
-              style={{
-                ...styles(props).modalOption,
-                backgroundColor:
-                  props.selectedOption === index ? COLOURS.grey : COLOURS.white,
-              }}
-              onPress={() => {
-                props.setSelectedOption(index);
-                setShowModal(false);
-              }}
-            >
-              <MaterialCommunityIcons
-                name={index % 2 == 0 ? "arrow-up-thin" : "arrow-down-thin"}
-                size={24}
-                color="black"
-              />
-              <Text>{option}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </Animated.View>
+        <Animated.View
+          style={[
+            styles(props).modal,
+            { opacity: fadeAnim, translateY: transitionAnim },
+          ]}
+        >
+          <Text style={styles(props).modalHeading}>Sort By</Text>
+          {props.options?.map((option, index) => {
+            return (
+              <TouchableOpacity
+                key={`filter-${index}`}
+                style={{
+                  ...styles(props).modalOption,
+                  backgroundColor:
+                    props.selectedOption === index
+                      ? COLOURS.grey
+                      : COLOURS.white,
+                }}
+                onPress={() => {
+                  props.setSelectedOption(index);
+                  setShowModal(false);
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={index % 2 == 0 ? "arrow-up-thin" : "arrow-down-thin"}
+                  size={24}
+                  color="black"
+                />
+                <Text>{option}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </Animated.View>
+      </Modal>
     </View>
   );
 };

@@ -6,7 +6,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Octicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
   COLOURS,
   DROP_SHADOW,
@@ -16,6 +16,7 @@ import {
 } from "../util/GlobalStyles";
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
+import Modal from "react-native-modal/dist/modal";
 
 type Props = {
   options: any[];
@@ -49,7 +50,6 @@ const FilterButton = (props: Props) => {
   function changeActiveFilter(index: number) {
     const newFilters = [...filters];
     newFilters[index] = !filters[index];
-    console.log(newFilters);
     setFilters(newFilters);
   }
 
@@ -61,33 +61,50 @@ const FilterButton = (props: Props) => {
       >
         <MaterialCommunityIcons name="filter-variant" size={24} color="black" />
       </TouchableOpacity>
-      <Animated.ScrollView
-        style={[
-          styles(props).modal,
-          { opacity: fadeAnim, translateY: transitionAnim },
-        ]}
-      >
-        <CustomSearchBar
-          text={searchText}
-          setText={setSearchText}
-          textHint={props.textHint || "                    "}
-        />
-        <View style={{ height: SPACING.small }} />
-        {props.options?.map((option, index) => {
-          return (
-            <View key={`filter-${index}`} style={styles(props).modalOption}>
-              <Checkbox
-                initialVal={false}
-                onPress={() => changeActiveFilter(index)}
-              />
-              <Text>{option}</Text>
-            </View>
-          );
-        })}
-        {props.options.length > 7 && (
-          <View style={{ height: SPACING.medium }} />
-        )}
-      </Animated.ScrollView>
+
+      <View style={{ backgroundColor: "purple", position: "relative" }}>
+        <Modal
+          isVisible={showModal}
+          onBackdropPress={() => setShowModal(false)}
+          backdropOpacity={0.1}
+          animationIn="fadeInDown"
+          animationOut="fadeOutUp"
+          style={{
+            position: "absolute",
+            //TODO change to work with device for presentation
+            top: 50,
+            right: 30,
+          }}
+        >
+          <Animated.ScrollView
+            style={[
+              styles(props).modal,
+              { opacity: fadeAnim, translateY: transitionAnim },
+            ]}
+          >
+            <CustomSearchBar
+              text={searchText}
+              setText={setSearchText}
+              textHint={props.textHint || "                    "}
+            />
+            <View style={{ height: SPACING.small }} />
+            {props.options?.map((option, index) => {
+              return (
+                <View key={`filter-${index}`} style={styles(props).modalOption}>
+                  <Checkbox
+                    initialVal={false}
+                    onPress={() => changeActiveFilter(index)}
+                  />
+                  <Text>{option}</Text>
+                </View>
+              );
+            })}
+            {props.options.length > 7 && (
+              <View style={{ height: SPACING.medium }} />
+            )}
+          </Animated.ScrollView>
+        </Modal>
+      </View>
     </View>
   );
 };
@@ -107,9 +124,6 @@ const styles = (props: Props) =>
     },
 
     modal: {
-      position: "absolute",
-      top: "85%",
-      right: "85%",
       paddingTop: SPACING.medium,
       paddingBottom: SPACING.medium,
       alignSelf: "stretch",
