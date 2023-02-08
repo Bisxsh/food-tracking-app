@@ -46,14 +46,9 @@ const ColourPicker = (props: Props) => {
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
         backdropOpacity={0}
-        animationIn="fadeInDown"
-        animationOut="fadeOutUp"
-        style={{
-          position: "absolute",
-          //TODO change to work with device for presentation
-          top: 50,
-          right: 30,
-        }}
+        animationIn="zoomInLeft"
+        animationOut="zoomOutLeft"
+        style={StyleSheet.absoluteFill}
       >
         <View style={styles.modalContainer}>{getGrid()}</View>
       </Modal>

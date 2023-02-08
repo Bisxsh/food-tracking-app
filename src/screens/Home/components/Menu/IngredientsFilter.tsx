@@ -36,15 +36,10 @@ const IngredientsFilter = (props: Props) => {
       <Modal
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={0}
-        animationIn="fadeInDown"
-        animationOut="fadeOutUp"
-        style={{
-          position: "absolute",
-          //TODO change to work with device for presentation
-          top: 50,
-          right: 30,
-        }}
+        backdropOpacity={0.5}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        style={StyleSheet.absoluteFill}
       >
         <View style={styles.modalContainer}>
           <ColourPicker colour={colour} setColour={setColour} />
