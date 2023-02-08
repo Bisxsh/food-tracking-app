@@ -6,7 +6,6 @@ type Props = {};
 
 const IndgredientView = (props: Props) => {
   const [filter, setFilter] = useContext(FiltersContext);
-  console.log(filter);
   return (
     <View>
       <Text>IndgredientView</Text>

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -8,6 +8,7 @@ import {
   RADIUS,
   SPACING,
 } from "../../../../util/GlobalStyles";
+import BarcodeScanner from "./BarcodeScanner";
 
 type Props = {
   showModal: boolean;
@@ -15,44 +16,61 @@ type Props = {
 };
 
 const AddMenu = (props: Props) => {
+  const [showBarcode, setShowBarcode] = useState(false);
   return (
-    <Modal
-      isVisible={props.showModal}
-      onBackdropPress={() => props.setShowModal(false)}
-      backdropOpacity={0}
-      animationIn="fadeInUp"
-      animationOut="fadeOutDown"
-      style={{
-        position: "absolute",
-        //TODO change to work with device for presentation
-        width: "90%",
-        bottom: 40,
-      }}
-    >
-      <View style={styles.container}>
-        <TouchableOpacity style={[styles.button, styles.primary]}>
-          <MaterialCommunityIcons name="barcode-scan" size={48} color="white" />
-          <Text style={{ color: COLOURS.white, textAlign: "center" }}>
-            Barcode
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button, styles.secondary]}>
-          <MaterialCommunityIcons
-            name="pencil-box-outline"
-            size={48}
-            color={COLOURS.primary}
-          />
-          <Text
-            style={{
-              color: COLOURS.primary,
-              textAlign: "center",
-            }}
-          >
-            Manual
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
+    <>
+      <Modal
+        isVisible={props.showModal}
+        onBackdropPress={() => props.setShowModal(false)}
+        backdropOpacity={0}
+        animationIn="fadeInUp"
+        animationOut="fadeOutDown"
+        style={{
+          position: "absolute",
+          //TODO change to work with device for presentation
+          width: "90%",
+          bottom: 40,
+        }}
+      >
+        <View style={styles.container}>
+          <TouchableOpacity style={[styles.button, styles.primary]}>
+            <MaterialCommunityIcons
+              name="barcode-scan"
+              size={48}
+              color="white"
+              onPress={() => {
+                setShowBarcode(true);
+                props.setShowModal(false);
+              }}
+            />
+            <Text style={{ color: COLOURS.white, textAlign: "center" }}>
+              Barcode
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.secondary]}>
+            <MaterialCommunityIcons
+              name="pencil-box-outline"
+              size={48}
+              color={COLOURS.primary}
+            />
+            <Text
+              style={{
+                color: COLOURS.primary,
+                textAlign: "center",
+              }}
+            >
+              Manual
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      {showBarcode && (
+        <BarcodeScanner
+          showBarcode={showBarcode}
+          setShowBarcode={setShowBarcode}
+        />
+      )}
+    </>
   );
 };
 
