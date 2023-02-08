@@ -20,6 +20,7 @@ const HomeMenu = (props: Props) => {
         textHint="Search stored ingredients"
         text={props.ingredientsSearch}
         setText={props.setIngredientsSearch}
+        width={250}
       />
       <SortButton
         options={props.filters}

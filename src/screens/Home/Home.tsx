@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { SPACING } from "../../util/GlobalStyles";
 import HomeMenu from "./components/HomeMenu";
 import { HomeFilters } from "./components/HomeSortingFilters";
 
@@ -17,6 +18,7 @@ export function Home(): JSX.Element {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        padding: SPACING.extraLarge,
       }}
     >
       <HomeMenu
@@ -26,14 +28,9 @@ export function Home(): JSX.Element {
         setIngredientsSearch={setIngredientsSearch}
         setSelectedFilter={setSelectedFilter}
       />
+      <View style={{ flex: 1 }} />
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  menu: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-});
+const styles = StyleSheet.create({});

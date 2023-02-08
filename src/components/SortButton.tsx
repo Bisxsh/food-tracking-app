@@ -43,7 +43,7 @@ const SortButton = (props: Props) => {
   }, [showModal]);
 
   return (
-    <View style={{ position: "relative" }}>
+    <View style={{ position: "relative", marginRight: SPACING.medium }}>
       <TouchableOpacity
         style={styles(props).button}
         onPress={() => setShowModal(true)}
