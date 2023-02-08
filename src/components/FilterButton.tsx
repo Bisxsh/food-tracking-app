@@ -17,8 +17,7 @@ import {
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
-import { getFilteredList } from "../util/SearchUtil";
-import { Logs } from "expo";
+import { FilterCategory } from "../classes/FilterCategory";
 
 type Props = {
   options: FilterCategory[];
@@ -31,11 +30,10 @@ const FilterButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState("");
   //TODO synchronize with filters
-  const [filters, setFilters] = useState<boolean[]>([]);
-  const [searchedOptions, setSearchedOptions] = useState(props.options);
+  const [filters, setFilters] = useState(props.options);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const transitionAnim = useRef(new Animated.Value(-10)).current;
+  const transitionAnim = useRef(new Animated.Value(-4)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -45,7 +43,7 @@ const FilterButton = (props: Props) => {
     }).start();
 
     Animated.timing(transitionAnim, {
-      toValue: showModal ? 0 : -10,
+      toValue: showModal ? 0 : -4,
       duration: 100,
       useNativeDriver: true,
     }).start();
@@ -53,13 +51,12 @@ const FilterButton = (props: Props) => {
 
   useEffect(() => {
     setSearchText("");
-    setSearchedOptions(props.options);
+    setFilters(props.options);
   }, [showModal, props.options]);
 
   useEffect(() => {
-    console.log("HERE");
-    if (searchText == "") setSearchedOptions(props.options);
-    setSearchedOptions(
+    if (searchText == "") setFilters(props.options);
+    setFilters(
       (prev) =>
         prev
           .map((o) => {
@@ -73,12 +70,12 @@ const FilterButton = (props: Props) => {
 
   function changeActiveFilter(index: number) {
     const newFilters = [...filters];
-    newFilters[index] = !filters[index];
+    newFilters[index] = { ...filters[index], active: !filters[index].active };
     setFilters(newFilters);
   }
 
   function getOptions() {
-    const list = searchedOptions?.map((option, index) => {
+    const list = filters?.map((option, index) => {
       return (
         <View key={`filter-${index}`} style={styles(props).modalOption}>
           <Checkbox
@@ -130,7 +127,7 @@ const FilterButton = (props: Props) => {
         <Modal
           isVisible={showModal}
           onBackdropPress={() => setShowModal(false)}
-          backdropOpacity={0.1}
+          backdropOpacity={0}
           animationIn="fadeInDown"
           animationOut="fadeOutUp"
           style={{
