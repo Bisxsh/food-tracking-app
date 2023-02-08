@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import { BarCodeScanner } from "expo-barcode-scanner";
 import { Dimensions } from "react-native";
 import { Camera, FlashMode } from "expo-camera";
 
@@ -13,29 +12,12 @@ type Props = {
 };
 
 const BarcodeScanner = (props: Props) => {
-  const [hasPermission, setHasPermission] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
-
-  useEffect(() => {
-    const getBarCodeScannerPermissions = async () => {
-      const { status } = await BarCodeScanner.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-    };
-
-    getBarCodeScannerPermissions();
-  }, []);
 
   const handleBarCodeScanned = (info: any) => {
     console.log(info);
     props.setShowBarcode(false);
   };
-
-  if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
 
   return (
     <View style={styles.container}>
