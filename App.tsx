@@ -9,14 +9,10 @@ import { Recipe } from "./src/screens/Recipe";
 import { Profile } from "./src/screens/Profile";
 import { COLOURS } from "./src/util/GlobalStyles";
 
-import * as DB from './src/backends/Database';
-import { Ingredient } from './src/backends/Ingredient';
-import { Nutrition } from './src/backends/Nutrition';
 
 const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
-  // Only for debugging
 
   return (
     <NavigationContainer>
