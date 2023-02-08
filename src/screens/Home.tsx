@@ -1,11 +1,7 @@
-import React, { useState } from 'react';
-import {Text, View, Button} from 'react-native';
+import React from 'react';
+import {SafeAreaView, ScrollView, StatusBar, Text, View} from 'react-native';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
-
-import * as DB from '../backends/Database'
-import { Ingredient } from '../backends/Ingredient';
-import { Nutrition } from '../backends/Nutrition';
+import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 export function Home(): JSX.Element {
   const isDarkMode = false;
@@ -13,7 +9,6 @@ export function Home(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
-  var ing: Ingredient;
 
   return (
     <View
@@ -24,39 +19,6 @@ export function Home(): JSX.Element {
         alignItems: "center"
       }}>
       <Text>This is Home page</Text>
-      <Button
-        title='Open file'
-        onPress={()=>{
-          DB.init()
-        }}
-      />
-      <Button 
-        title='Instantiate'
-        onPress={()=>{
-          if (ing == undefined){
-            ing = new Ingredient(1,"g",new Nutrition(),1)
-          }
-          console.log(ing)
-        }}
-      />
-      <Button
-        title='Create record'
-        onPress={()=>{
-          DB.create(ing)
-        }}
-      />
-      <Button
-        title='Read record'
-        onPress={async ()=>{
-          console.log(await DB.readIngredient(0))
-        }}
-      />
-      <Button 
-        title='Delete File'
-        onPress={()=>{
-          DB.deleteFile();
-        }}
-      />
     </View>
   );
 }
