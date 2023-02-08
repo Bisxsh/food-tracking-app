@@ -17,6 +17,7 @@ import {
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
+import { getFilteredList } from "../util/SearchUtil";
 
 type Props = {
   options: any[];
@@ -29,6 +30,7 @@ const FilterButton = (props: Props) => {
   const [searchText, setSearchText] = useState("");
   //TODO synchronize with filters
   const [filters, setFilters] = useState<boolean[]>([]);
+  const [searchedOptions, setSearchedOptions] = useState(props.options);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const transitionAnim = useRef(new Animated.Value(-10)).current;
@@ -46,6 +48,11 @@ const FilterButton = (props: Props) => {
       useNativeDriver: true,
     }).start();
   }, [showModal]);
+
+  useEffect(() => {
+    if (searchText == "") setSearchedOptions(props.options);
+    setSearchedOptions(getFilteredList(searchText, props.options));
+  }, [searchText]);
 
   function changeActiveFilter(index: number) {
     const newFilters = [...filters];
@@ -88,7 +95,7 @@ const FilterButton = (props: Props) => {
               textHint={props.textHint || "                    "}
             />
             <View style={{ height: SPACING.small }} />
-            {props.options?.map((option, index) => {
+            {searchedOptions?.map((option, index) => {
               return (
                 <View key={`filter-${index}`} style={styles(props).modalOption}>
                   <Checkbox
