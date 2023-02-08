@@ -20,9 +20,10 @@ import Modal from "react-native-modal/dist/modal";
 import { getFilteredList } from "../util/SearchUtil";
 
 type Props = {
-  options: any[];
+  options: FilterCategory[];
   width?: number;
   textHint?: string;
+  onAdd?: (str: string) => void; //Method to run in add section if search returns no results
 };
 
 const FilterButton = (props: Props) => {
@@ -51,7 +52,16 @@ const FilterButton = (props: Props) => {
 
   useEffect(() => {
     if (searchText == "") setSearchedOptions(props.options);
-    setSearchedOptions(getFilteredList(searchText, props.options));
+    setSearchedOptions(
+      (prev) =>
+        prev
+          .map((o) => {
+            if (o.name.toLowerCase().includes(searchText.toLowerCase()))
+              return o;
+            else return null;
+          })
+          .filter((o) => o != null) as FilterCategory[]
+    );
   }, [searchText]);
 
   function changeActiveFilter(index: number) {
@@ -60,11 +70,51 @@ const FilterButton = (props: Props) => {
     setFilters(newFilters);
   }
 
+  function getOptions() {
+    const list = searchedOptions?.map((option, index) => {
+      return (
+        <View key={`filter-${index}`} style={styles(props).modalOption}>
+          <Checkbox
+            initialVal={false}
+            onPress={() => changeActiveFilter(index)}
+          />
+          <View
+            style={{
+              width: 12,
+              aspectRatio: 1,
+              backgroundColor: option.colour,
+              borderRadius: RADIUS.circle,
+              marginRight: SPACING.small,
+            }}
+          />
+          <Text style={{ fontSize: FONT_SIZES.medium }}>{option.name}</Text>
+        </View>
+      );
+    });
+
+    list.push(
+      <TouchableOpacity
+        key="add"
+        style={styles(props).modalOption}
+        onPress={() => {
+          props.onAdd && props.onAdd(searchText);
+        }}
+      >
+        <MaterialCommunityIcons name="plus" size={24} color="black" />
+        <Text>{searchText || "Create a category"}</Text>
+      </TouchableOpacity>
+    );
+
+    return list;
+  }
+
   return (
     <View style={{ position: "relative" }}>
       <TouchableOpacity
         style={styles(props).button}
-        onPress={() => setShowModal(true)}
+        onPress={() => {
+          setShowModal(true);
+        }}
       >
         <MaterialCommunityIcons name="filter-variant" size={24} color="black" />
       </TouchableOpacity>
@@ -95,17 +145,7 @@ const FilterButton = (props: Props) => {
               textHint={props.textHint || "                    "}
             />
             <View style={{ height: SPACING.small }} />
-            {searchedOptions?.map((option, index) => {
-              return (
-                <View key={`filter-${index}`} style={styles(props).modalOption}>
-                  <Checkbox
-                    initialVal={false}
-                    onPress={() => changeActiveFilter(index)}
-                  />
-                  <Text>{option}</Text>
-                </View>
-              );
-            })}
+            {getOptions()}
             {props.options.length > 7 && (
               <View style={{ height: SPACING.medium }} />
             )}

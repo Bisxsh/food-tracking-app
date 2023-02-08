@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import HomeMenu from "./HomeMenu";
-import { HomeFilters } from "./HomeFilters";
+import HomeMenu from "./components/HomeMenu";
+import { HomeFilters } from "./components/HomeSortingFilters";
 
 export function Home(): JSX.Element {
   const isDarkMode = false;
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [selectedFilter, setSelectedFilter] = useState(0);
-  const [checked, setChecked] = useState(false);
 
   return (
     <View

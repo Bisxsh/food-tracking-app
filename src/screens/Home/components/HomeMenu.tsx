@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import CustomSearchBar from "../../components/CustomSearchBar";
-import SortButton from "../../components/SortButton";
-import FilterButton from "../../components/FilterButton";
+import CustomSearchBar from "../../../components/CustomSearchBar";
+import SortButton from "../../../components/SortButton";
+import IngredientsFilter from "./IngredientsFilter";
 
 type Props = {
   ingredientsSearch: string;
@@ -27,11 +27,7 @@ const HomeMenu = (props: Props) => {
         setSelectedOption={props.setSelectedFilter}
         width={216}
       />
-      <FilterButton
-        options={props.filters}
-        width={216}
-        textHint="Search categories"
-      />
+      <IngredientsFilter />
     </View>
   );
 };
