@@ -26,7 +26,7 @@ type Props = {
 const SortButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const transitionAnim = useRef(new Animated.Value(-10)).current;
+  const transitionAnim = useRef(new Animated.Value(-4)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -36,7 +36,7 @@ const SortButton = (props: Props) => {
     }).start();
 
     Animated.timing(transitionAnim, {
-      toValue: showModal ? 0 : -10,
+      toValue: showModal ? 0 : -4,
       duration: 100,
       useNativeDriver: true,
     }).start();
@@ -58,7 +58,7 @@ const SortButton = (props: Props) => {
       <Modal
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={0.1}
+        backdropOpacity={0}
         animationIn="fadeInDown"
         animationOut="fadeOutUp"
         style={{

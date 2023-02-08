@@ -1,15 +1,15 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import CustomSearchBar from "../../../components/CustomSearchBar";
-import SortButton from "../../../components/SortButton";
+import CustomSearchBar from "../../../../components/CustomSearchBar";
+import SortButton from "../../../../components/SortButton";
 import IngredientsFilter from "./IngredientsFilter";
 
 type Props = {
   ingredientsSearch: string;
   setIngredientsSearch: (ingredientsSearch: string) => void;
-  selectedFilter: number;
-  setSelectedFilter: (selectedFilter: number) => void;
-  filters: any[];
+  sort: number;
+  setSort: (sort: number) => void;
+  sortFilters: any[];
 };
 
 const HomeMenu = (props: Props) => {
@@ -22,9 +22,9 @@ const HomeMenu = (props: Props) => {
         width={250}
       />
       <SortButton
-        options={props.filters}
-        selectedOption={props.selectedFilter}
-        setSelectedOption={props.setSelectedFilter}
+        options={props.sortFilters}
+        selectedOption={props.sort}
+        setSelectedOption={props.setSort}
         width={216}
       />
       <IngredientsFilter />

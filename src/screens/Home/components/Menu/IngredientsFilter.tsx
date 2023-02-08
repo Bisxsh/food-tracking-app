@@ -2,21 +2,21 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useState } from "react";
 import Modal from "react-native-modal/dist/modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import FilterButton from "../../../components/FilterButton";
+import ColourPicker from "../../../../components/ColourPicker";
+import FilterButton from "../../../../components/FilterButton";
 import {
+  USER_COLOURS,
   SPACING,
   COLOURS,
   RADIUS,
   DROP_SHADOW,
-  USER_COLOURS,
-} from "../../../util/GlobalStyles";
-import ColourPicker from "../../../components/ColourPicker";
+} from "../../../../util/GlobalStyles";
+import { FiltersContext } from "../../Home";
 
 type Props = {};
 
 const IngredientsFilter = (props: Props) => {
-  //TODO retreive filters from database here
-  const [filters, setFilters] = useState<FilterCategory[]>([]);
+  const [filters, setFilters] = React.useContext(FiltersContext);
   const [showModal, setShowModal] = useState(false);
   const [colour, setColour] = useState(USER_COLOURS[0]);
   const [categoryName, setCategoryName] = useState("");
@@ -36,7 +36,7 @@ const IngredientsFilter = (props: Props) => {
       <Modal
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={0.1}
+        backdropOpacity={0}
         animationIn="fadeInDown"
         animationOut="fadeOutUp"
         style={{
@@ -62,7 +62,7 @@ const IngredientsFilter = (props: Props) => {
               setShowModal(false);
               setFilters((prev) => [
                 ...prev,
-                { name: categoryName, colour: colour },
+                { name: categoryName, colour: colour, active: false },
               ]);
             }}
           />

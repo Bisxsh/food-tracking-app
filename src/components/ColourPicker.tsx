@@ -45,7 +45,7 @@ const ColourPicker = (props: Props) => {
       <Modal
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={0.1}
+        backdropOpacity={0}
         animationIn="fadeInDown"
         animationOut="fadeOutUp"
         style={{
