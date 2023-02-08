@@ -5,6 +5,7 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { FilterCategory } from "../../classes/FilterCategory";
 import AddButton from "../../components/AddButton";
 import { SPACING } from "../../util/GlobalStyles";
+import AddMenu from "./components/Add/AddMenu";
 import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
 import { HomeSortingFilters } from "./components/Menu/HomeSortingFilters";
@@ -20,6 +21,7 @@ export function Home(): JSX.Element {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [selectedSort, setSelectedSort] = useState(0);
   const [filters, setFilters] = useState<FilterCategory[]>([]);
+  const [showAddMenu, setShowAddMenu] = useState(false);
 
   return (
     <FiltersContext.Provider value={[filters, setFilters]}>
@@ -42,7 +44,8 @@ export function Home(): JSX.Element {
         <IndgredientView />
         <View style={{ flex: 1 }} />
       </View>
-      <AddButton onPress={() => {}} />
+      <AddButton onPress={() => setShowAddMenu(true)} />
+      <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
     </FiltersContext.Provider>
   );
 }
