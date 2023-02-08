@@ -18,6 +18,7 @@ import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
 import { getFilteredList } from "../util/SearchUtil";
+import { Logs } from "expo";
 
 type Props = {
   options: FilterCategory[];
@@ -51,6 +52,12 @@ const FilterButton = (props: Props) => {
   }, [showModal]);
 
   useEffect(() => {
+    setSearchText("");
+    setSearchedOptions(props.options);
+  }, [showModal, props.options]);
+
+  useEffect(() => {
+    console.log("HERE");
     if (searchText == "") setSearchedOptions(props.options);
     setSearchedOptions(
       (prev) =>

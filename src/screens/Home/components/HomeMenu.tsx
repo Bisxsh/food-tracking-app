@@ -15,7 +15,6 @@ type Props = {
 const HomeMenu = (props: Props) => {
   return (
     <View style={styles.menu}>
-      <Text>{props.ingredientsSearch}</Text>
       <CustomSearchBar
         textHint="Search stored ingredients"
         text={props.ingredientsSearch}
