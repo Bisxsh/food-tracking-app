@@ -1,10 +1,10 @@
-import { Ingredient, weightUnit } from "../classes/IngredientClass";
-import { Nutrition } from "../classes/NutritionClass";
-
+import { Ingredient } from "../backends/Ingredient";
+import { Nutrition } from "../backends/Nutrition";
+import { create } from "../backends/Database"
 
 //need to add date and categories, perhaps a bit redundant ince you could just directly make the object from the inputs
-export function AddIngredient(name: string, weight: number, weightType: weightUnit, 
-    quantity: number, imgSrc: string, nutrition: Nutrition, id: number){
+export function AddIngredient(id: number, weightType: string, nutrition: Nutrition, categoryId: number, _id?: number, 
+    weight?: number, imgSrc?: string, useDate?: Date, expiryDate?: Date ){
     
         /*
         names = database.read(name)
@@ -14,7 +14,7 @@ export function AddIngredient(name: string, weight: number, weightType: weightUn
         if expiryDate < todays date:
             return false
         */
-        let newIngredient = new Ingredient(name, weight, weightType, quantity, imgSrc, nutrition, id);
+        let newIngredient = new Ingredient(id, weightType, nutrition, categoryId, _id, weight, imgSrc, useDate, expiryDate);
         console.log(newIngredient);
-        //database create(newIngredient: Ingredient)
+        create(newIngredient);
 }

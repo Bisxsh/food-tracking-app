@@ -9,9 +9,11 @@ import { Recipe } from "./src/screens/Recipe";
 import { Profile } from "./src/screens/Profile";
 import { COLOURS } from "./src/util/GlobalStyles";
 
+
 const Tab = createBottomTabNavigator();
 
 function App(): JSX.Element {
+
   return (
     <NavigationContainer>
       <Tab.Navigator
