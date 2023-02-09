@@ -1,11 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useContext } from "react";
-import { FiltersContext } from "../../Home";
 
 type Props = {};
 
 const IndgredientView = (props: Props) => {
-  const [filter, setFilter] = useContext(FiltersContext);
   return (
     <View>
       <Text>IndgredientView</Text>

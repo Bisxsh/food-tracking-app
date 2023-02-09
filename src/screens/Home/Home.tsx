@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { FilterCategory } from "../../classes/FilterCategory";
+import { IngredientCategory } from "../../classes/Categories";
 import AddButton from "../../components/AddButton";
 import { SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";
@@ -10,21 +10,14 @@ import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
 import { HomeSortingFilters } from "./components/Menu/HomeSortingFilters";
 
-export const FiltersContext: React.Context<
-  [FilterCategory[], React.Dispatch<React.SetStateAction<FilterCategory[]>>]
-> = React.createContext<
-  [FilterCategory[], React.Dispatch<React.SetStateAction<FilterCategory[]>>]
->([[], () => {}]);
-
 export function Home(): JSX.Element {
   const isDarkMode = false;
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [selectedSort, setSelectedSort] = useState(0);
-  const [filters, setFilters] = useState<FilterCategory[]>([]);
   const [showAddMenu, setShowAddMenu] = useState(false);
 
   return (
-    <FiltersContext.Provider value={[filters, setFilters]}>
+    <>
       <View
         style={{
           backgroundColor: isDarkMode ? Colors.black : Colors.white,
@@ -46,7 +39,7 @@ export function Home(): JSX.Element {
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
-    </FiltersContext.Provider>
+    </>
   );
 }
 

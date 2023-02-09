@@ -17,10 +17,10 @@ import {
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
-import { FilterCategory } from "../classes/FilterCategory";
+import { IngredientCategory } from "../classes/Categories";
 
 type Props = {
-  options: FilterCategory[];
+  options: IngredientCategory[];
   width?: number;
   textHint?: string;
   onAdd?: (str: string) => void; //Method to run in add section if search returns no results
@@ -64,7 +64,7 @@ const FilterButton = (props: Props) => {
               return o;
             else return null;
           })
-          .filter((o) => o != null) as FilterCategory[]
+          .filter((o) => o != null) as IngredientCategory[]
     );
   }, [searchText]);
 

@@ -17,6 +17,7 @@ import DateTimePicker, {
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateField from "./Fields/DateField";
+import ChipsSelectors from "../../../../components/UserInput/ChipsSelectors";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
@@ -24,6 +25,7 @@ type Props = {
 
 const ManualIngredient = (props: Props) => {
   const ingredientBuilder = new IngredientBuilder();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -55,6 +57,12 @@ const ManualIngredient = (props: Props) => {
         setValue={(date: Date) => ingredientBuilder.setExpiryDate(date)}
       />
       {getSeperator()}
+      <ChipsSelectors
+        fieldName="Categories"
+        optionsList={["Fruit", "Vegetable", "Meat", "Dairy", "Bread", "Other"]}
+        selectedList={selectedCategories}
+        setSelectedList={setSelectedCategories}
+      />
     </ScrollView>
   );
 };

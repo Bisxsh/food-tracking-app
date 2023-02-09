@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Modal from "react-native-modal/dist/modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ColourPicker from "../../../../components/ColourPicker";
@@ -11,20 +11,20 @@ import {
   RADIUS,
   DROP_SHADOW,
 } from "../../../../util/GlobalStyles";
-import { FiltersContext } from "../../Home";
+import { UserDataContext } from "../../../../classes/UserData";
 
 type Props = {};
 
 const IngredientsFilter = (props: Props) => {
-  const [filters, setFilters] = React.useContext(FiltersContext);
   const [showModal, setShowModal] = useState(false);
   const [colour, setColour] = useState(USER_COLOURS[0]);
   const [categoryName, setCategoryName] = useState("");
+  const { userData, setUserData } = useContext(UserDataContext);
 
   return (
     <View>
       <FilterButton
-        options={filters}
+        options={userData.ingredientCategories}
         width={216}
         textHint="Search categories"
         onAdd={(text) => {
@@ -55,10 +55,13 @@ const IngredientsFilter = (props: Props) => {
             size={SPACING.medium}
             onPress={() => {
               setShowModal(false);
-              setFilters((prev) => [
+              setUserData((prev) => ({
                 ...prev,
-                { name: categoryName, colour: colour, active: false },
-              ]);
+                ingredientCategories: [
+                  ...prev.ingredientCategories,
+                  { name: categoryName, colour: colour },
+                ],
+              }));
             }}
           />
         </View>
