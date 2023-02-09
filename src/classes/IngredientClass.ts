@@ -1,90 +1,191 @@
-// import { Nutrition } from "./NutritionClass";
+import { Nutrition } from "./NutritionClass";
 
-// export enum weightUnit {
-//     kg,
-//     grams,
-//   }
+export enum weightUnit {
+  kg,
+  grams,
+}
 
-// export enum categories {
-//     kg,
-//     grams,
-//   }
+export enum categories {
+  kg,
+  grams,
+}
 
-// export class Ingredient {
-//     name: string;
-//     weight: number;
-//     weightType: weightUnit;
-//     quantity: number;
-//     categories: categories;
-//     imgSrc: string;
-//     useDate: Date;
-//     expiryDate: Date;
-//     nutrition: Nutrition;
-//     id: number;
+export class Ingredient {
+  name: string;
+  weight: number;
+  weightType: weightUnit;
+  quantity: number;
+  categories: categories;
+  imgSrc: string;
+  useDate: Date;
+  expiryDate: Date;
+  nutrition: Nutrition;
+  id: number;
 
-//     constructor(name: string, weight: number, weightType: weightUnit, quantity: number, categories: categories, imgSrc: string,
-//         expiryDate: Date, useDate: Date, nutrition: Nutrition, id: number) {
-//         this.name = name;
-//         this.weight = weight;
-//         this.weightType = weightType;
-//         this.quantity = quantity;
-//         this.categories = categories;
-//         this.imgSrc = imgSrc;
-//         this.useDate = useDate;
-//         this.expiryDate = expiryDate;
-//         this.nutrition = nutrition;
-//         this.id = id;
-//         }
+  constructor(
+    name: string,
+    weight: number,
+    weightType: weightUnit,
+    quantity: number,
+    categories: categories,
+    imgSrc: string,
+    expiryDate: Date,
+    useDate: Date,
+    nutrition: Nutrition,
+    id: number
+  ) {
+    this.name = name;
+    this.weight = weight;
+    this.weightType = weightType;
+    this.quantity = quantity;
+    this.categories = categories;
+    this.imgSrc = imgSrc;
+    this.useDate = useDate;
+    this.expiryDate = expiryDate;
+    this.nutrition = nutrition;
+    this.id = id;
+  }
 
-//     //#region getters and setters
+  //#region getters and setters
 
-//     public get getName() : string {
-//         return this.name;
-//     }
-//     public set setName(name : string) {
-//         this.name = name;
-//     }
+  public get getName(): string {
+    return this.name;
+  }
+  public set setName(name: string) {
+    this.name = name;
+  }
 
-//     public get getWeight() : number {
-//         return this.weight;
-//     }
-//     public set setWeight(weight : number) {
-//         this.weight = weight;
-//     }
+  public get getWeight(): number {
+    return this.weight;
+  }
+  public set setWeight(weight: number) {
+    this.weight = weight;
+  }
 
-//     public get getWeightType() : weightUnit {
-//         return this.weightType;
-//     }
-//     public set setWeightType(weightType : weightUnit) {
-//         this.weightType = weightType;
-//     }
+  public get getWeightType(): weightUnit {
+    return this.weightType;
+  }
+  public set setWeightType(weightType: weightUnit) {
+    this.weightType = weightType;
+  }
 
-//     public get getQuantity() : number {
-//         return this.quantity;
-//     }
-//     public set setQuantity(quantity : number) {
-//         this.quantity = quantity;
-//     }
+  public get getQuantity(): number {
+    return this.quantity;
+  }
+  public set setQuantity(quantity: number) {
+    this.quantity = quantity;
+  }
 
-//     public get getImgSrc() : string {
-//         return this.imgSrc;
-//     }
-//     public set setImgSrc(imgSrc : string) {
-//         this.imgSrc = imgSrc;
-//     }
+  public get getImgSrc(): string {
+    return this.imgSrc;
+  }
+  public set setImgSrc(imgSrc: string) {
+    this.imgSrc = imgSrc;
+  }
 
-//     public get getNutrition() : Nutrition {
-//         return this.nutrition;
-//     }
-//     public set setnutrition(nutrition : Nutrition) {
-//         this.nutrition = nutrition;
-//     }
+  public get getNutrition(): Nutrition {
+    return this.nutrition;
+  }
+  public set setnutrition(nutrition: Nutrition) {
+    this.nutrition = nutrition;
+  }
 
-//     public get getId() : number {
-//         return this.id;
-//     }
-//     public set setId(id : number) {
-//         this.id = id;
-//     }
-//     //#endregion
-// }
+  public get getId(): number {
+    return this.id;
+  }
+  public set setId(id: number) {
+    this.id = id;
+  }
+  //#endregion
+}
+
+export class IngredientBuilder {
+  private name: string;
+  private weight: number;
+  private weightType: weightUnit;
+  private quantity: number;
+  private categories: categories;
+  private imgSrc: string;
+  private useDate: Date;
+  private expiryDate: Date;
+  private nutrition: Nutrition;
+  private id: number;
+
+  constructor() {
+    this.name = "";
+    this.weight = 0;
+    this.weightType = weightUnit.grams;
+    this.quantity = 0;
+    this.categories = categories.grams;
+    this.imgSrc = "";
+    this.useDate = new Date();
+    this.expiryDate = new Date();
+    this.nutrition = new Nutrition(0, 0, 0, 0, 0, 0, 0, 0);
+    this.id = 0;
+  }
+
+  public setName(name: string): IngredientBuilder {
+    this.name = name;
+    return this;
+  }
+
+  public setWeight(weight: number): IngredientBuilder {
+    this.weight = weight;
+    return this;
+  }
+
+  public setWeightType(weightType: weightUnit): IngredientBuilder {
+    this.weightType = weightType;
+    return this;
+  }
+
+  public setQuantity(quantity: number): IngredientBuilder {
+    this.quantity = quantity;
+    return this;
+  }
+
+  public setCategories(categories: categories): IngredientBuilder {
+    this.categories = categories;
+    return this;
+  }
+
+  public setImgSrc(imgSrc: string): IngredientBuilder {
+    this.imgSrc = imgSrc;
+    return this;
+  }
+
+  public setUseDate(useDate: Date): IngredientBuilder {
+    this.useDate = useDate;
+    return this;
+  }
+
+  public setExpiryDate(expiryDate: Date): IngredientBuilder {
+    this.expiryDate = expiryDate;
+    return this;
+  }
+
+  public setNutrition(nutrition: Nutrition): IngredientBuilder {
+    this.nutrition = nutrition;
+    return this;
+  }
+
+  public setId(id: number): IngredientBuilder {
+    this.id = id;
+    return this;
+  }
+
+  public build(): Ingredient {
+    return new Ingredient(
+      this.name,
+      this.weight,
+      this.weightType,
+      this.quantity,
+      this.categories,
+      this.imgSrc,
+      this.expiryDate,
+      this.useDate,
+      this.nutrition,
+      this.id
+    );
+  }
+}

@@ -8,14 +8,11 @@ import {
 import React, { useEffect } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import {
-  Ingredient,
-  IngredientBuilder,
-} from "../../../../classes/IngredientClass";
 import NameAndImage from "../../../../components/UserInput/NameAndImage";
 import InputField from "../../../../components/UserInput/InputField";
 import { Dimensions } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { IngredientBuilder } from "../../../../classes/IngredientClass";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
