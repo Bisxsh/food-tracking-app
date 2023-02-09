@@ -3,7 +3,7 @@ export class Nutrition{
     _id!: number
 
     constructor(_id?:number){
-        this._id = _id? _id : Nutrition.count++
+        this._id = (_id != undefined)? _id: Nutrition.count ++
     }
 
     static count = 0;

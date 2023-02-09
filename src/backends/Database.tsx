@@ -12,6 +12,7 @@ const IngredientSchema: Schema = {
     name: "Ingredient",
     properties: {
         _id: "int primary key not null",
+        name: "ntext not null",
         quantity: "int not null",
         weight: "int",
         weightUnit: "ntext not null",
@@ -56,7 +57,7 @@ const NutritionSchema: Schema = {
 
 
 function openDB(): sq.WebSQLDatabase{
-    return sq.openDatabase("DB.db", "v2")
+    return sq.openDatabase("DB.db", "v3")
 }
 
 async function transaction(sql:string, arg:any[], description?:string, verbose = true):Promise<sq.SQLResultSet | undefined>{
@@ -99,7 +100,7 @@ function createTable(schema: Schema){
 
     sql = sql.substring(0, sql.length -2) + ");"
 
-    transaction(sql, [], "Create table", true)
+    transaction(sql, [], "Create table")
 }
 
 export function init(){
@@ -109,38 +110,130 @@ export function init(){
 export function create(ingredient:Ingredient){
     const arg = ingredient.toList()
     var sql: string = "insert into " + IngredientSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-    transaction(sql, arg, "Insert record", true)
+    transaction(sql, arg, "Insert record")
 }
 
-async function read(schema: Schema, id: number):Promise<Object>{
-    var sql: string = "select * from " + schema.name + " where _id = ?;"
-    const result = await transaction(sql, [id], "Select record")
+async function readAll(schema: Schema, property?:string, arg?: any): Promise<Object[]>{
+    var sql: string = "select * from " + schema.name
+    var result
+    if (property != undefined && arg != undefined){
+        sql = sql + " where "+ property +" = ?;"
+        result = await transaction(sql, [arg], "Select record")
+    }else{
+        sql += ";"
+        result = await transaction(sql, [], "Select record")
+    }
+    
+    if (result == undefined){
+        throw Error("Table doesn't exist");
+    }
+    
+    return result.rows._array;
+}
+
+async function read(schema: Schema, property:string, arg: any):Promise<Object|undefined>{
+    var sql: string = "select * from " + schema.name + " where "+ property +" = ?;"
+    const result = await transaction(sql, [arg], "Select record")
     
     if (result == undefined){
         throw Error("Table doesn't exist");
     }else if(result.rows.length == 0){
-        throw Error("ID doesn't match");
+        return;
     }
     
     return result.rows.item(0);
 }
 
-export async function readIngredient(id: number):Promise<Ingredient>{
-    const row = await read(IngredientSchema, id);
+export async function readIngredient(id: number):Promise<Ingredient|undefined>
+
+export async function readIngredient(name: string):Promise<Ingredient[]|[]>
+
+export async function readIngredient(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(IngredientSchema, "_id", value);
+            if (row != undefined){
+                return Ingredient.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(IngredientSchema, "name", value);
+            const ings: Ingredient[] = [];
+            for (const row of rows){
+                ings.push(Ingredient.fromList(Object.values(row)));
+            }
+            return ings;
+        default:
+            break;
+    }
+
+    return;
+}
+
+export async function readAllIngredient():Promise<Ingredient[]>{
+    const rows: Object[] = await readAll(IngredientSchema);
+    const ings: Ingredient[] = [];
+
+    for (const row of rows){
+        ings.push(Ingredient.fromList(Object.values(row)));
+    }
     
-    return Ingredient.fromList(Object.values(row));
+    return ings;
 }
 
-export function deleteAll(){
-    const sql: string = "delete from Ingredient"
-    transaction(sql, [], "Delete all record", true)
+export function updateIngredient(ingredient: Ingredient){
+    const arg = ingredient.toList().slice(1, -1)
+    var sql: string = "update " + IngredientSchema.name + " set "
+    for (const key of Object.keys(IngredientSchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    console.log(sql)
+    transaction(sql, arg, "Update record")
 }
 
-export async function deleteFile(){
+export function deleteIngredient(_id: number):any
+
+export function deleteIngredient(name: string):any
+
+export function deleteIngredient(value: any){
+    var sql: string = "delete from " + IngredientSchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllIngredient(){
+    const sql: string = "delete from " + IngredientSchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+export async function deleteFile(verbose=false){
     const dir:string[] = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")
 
     if (dir.indexOf("DB.db") != -1){
         await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/DB.db")
         await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/DB.db-journal")
+        if (verbose){
+            if ((await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")).length == 0){
+                console.log("SUCCESS: Delete file")
+            }else{
+                console.log("FAIL: Delete file")
+            }
+        }
+    }else{
+        if (verbose){
+            console.log("FAIL: Delete file (No such file)")
+        }
     }
 }
