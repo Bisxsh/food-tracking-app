@@ -8,7 +8,6 @@ type Props = {
   fieldName: string;
   onTextChange: (text: string) => void;
   width?: number;
-  children?: React.ReactNode;
 };
 
 const InputField = (props: Props) => {
@@ -23,7 +22,6 @@ const InputField = (props: Props) => {
         onChangeText={(value: string) => props.onTextChange(value)}
         style={styles(props).input}
       ></TextInput>
-      <View style={styles(props).right}>{props.children}</View>
     </View>
   );
 };
@@ -41,11 +39,5 @@ const styles = (props: Props) =>
       borderWidth: 1,
       marginTop: SPACING.small,
       width: props.width ? props.width : 200,
-    },
-
-    right: {
-      position: "absolute",
-      right: SPACING.small,
-      top: "50%",
     },
   });
