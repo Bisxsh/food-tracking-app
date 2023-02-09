@@ -1,86 +1,92 @@
-import { Nutrition } from "./NutritionClass";
+// import { Nutrition } from "./NutritionClass";
 
-export enum weightUnit {
-    kg,
-    grams,
-  }
+// export enum weightUnit {
+//     kg,
+//     grams,
+//   }
 
-export class Ingredient {
-    name: string;
-    weight: number;
-    weightType: weightUnit;
-    quantity: number;
-    //categories: enum
-    imgSrc: string;
-    //useDate: DateClass;
-    //expiryDate: DateClass;
-    nutrition: Nutrition;
-    id: number;
+// export enum categories {
+//     kg,
+//     grams,
+//   }
 
-
-    constructor(name: string, weight: number, weightType: weightUnit, quantity: number, imgSrc: string,
-        nutrition: Nutrition, id: number) { //imgSrc: string, expiryDate: DateClass, id: number
-        this.name = name;
-        this.weight = weight;
-        this.weightType = weightType;
-        this.quantity = quantity;
-        this.imgSrc = imgSrc;
-        //this.useDate = no date;
-        // this.expiryDate = expiryDate;
-        this.nutrition = nutrition;
-        this.id = id;
-        }
+// export class Ingredient {
+//     name: string;
+//     weight: number;
+//     weightType: weightUnit;
+//     quantity: number;
+//     categories: categories;
+//     imgSrc: string;
+//     useDate: Date;
+//     expiryDate: Date;
+//     nutrition: Nutrition;
+//     id: number;
 
 
-    //#region getters and setters
+//     constructor(name: string, weight: number, weightType: weightUnit, quantity: number, categories: categories, imgSrc: string,
+//         expiryDate: Date, useDate: Date, nutrition: Nutrition, id: number) {
+//         this.name = name;
+//         this.weight = weight;
+//         this.weightType = weightType;
+//         this.quantity = quantity;
+//         this.categories = categories;
+//         this.imgSrc = imgSrc;
+//         this.useDate = useDate;
+//         this.expiryDate = expiryDate;
+//         this.nutrition = nutrition;
+//         this.id = id;
+//         }
 
-    public get getName() : string {
-        return this.name;
-    }
-    public set setName(name : string) {
-        this.name = name;
-    }
 
-    public get getWeight() : number {
-        return this.weight;
-    }
-    public set setWeight(weight : number) {
-        this.weight = weight;
-    }
+//     //#region getters and setters
 
-    public get getWeightType() : weightUnit {
-        return this.weightType;
-    }
-    public set setWeightType(weightType : weightUnit) {
-        this.weightType = weightType;
-    }
+//     public get getName() : string {
+//         return this.name;
+//     }
+//     public set setName(name : string) {
+//         this.name = name;
+//     }
 
-    public get getQuantity() : number {
-        return this.quantity;
-    }
-    public set setQuantity(quantity : number) {
-        this.quantity = quantity;
-    }
+//     public get getWeight() : number {
+//         return this.weight;
+//     }
+//     public set setWeight(weight : number) {
+//         this.weight = weight;
+//     }
 
-    public get getImgSrc() : string {
-        return this.imgSrc;
-    }
-    public set setImgSrc(imgSrc : string) {
-        this.imgSrc = imgSrc;
-    }
+//     public get getWeightType() : weightUnit {
+//         return this.weightType;
+//     }
+//     public set setWeightType(weightType : weightUnit) {
+//         this.weightType = weightType;
+//     }
 
-    public get getNutrition() : Nutrition {
-        return this.nutrition;
-    }
-    public set setnutrition(nutrition : Nutrition) {
-        this.nutrition = nutrition;
-    }
+//     public get getQuantity() : number {
+//         return this.quantity;
+//     }
+//     public set setQuantity(quantity : number) {
+//         this.quantity = quantity;
+//     }
 
-    public get getId() : number {
-        return this.id;
-    }
-    public set setId(id : number) {
-        this.id = id;
-    }
-    //#endregion
-}
+//     public get getImgSrc() : string {
+//         return this.imgSrc;
+//     }
+//     public set setImgSrc(imgSrc : string) {
+//         this.imgSrc = imgSrc;
+//     }
+
+//     public get getNutrition() : Nutrition {
+//         return this.nutrition;
+//     }
+//     public set setnutrition(nutrition : Nutrition) {
+//         this.nutrition = nutrition;
+//     }
+
+//     public get getId() : number {
+//         return this.id;
+//     }
+//     public set setId(id : number) {
+//         this.id = id;
+//     }
+//     //#endregion
+// }
