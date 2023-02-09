@@ -16,7 +16,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import Modal from "react-native-modal/dist/modal";
+import DateField from "./Fields/DateField";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
@@ -24,22 +24,10 @@ type Props = {
 
 const ManualIngredient = (props: Props) => {
   const ingredientBuilder = new IngredientBuilder();
-  const [showCalendar, setShowCalendar] = useState(false);
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
-
-  const setDateNew = (event: DateTimePickerEvent, date?: Date | undefined) => {
-    const {
-      type,
-      nativeEvent: { timestamp },
-    } = event;
-
-    if (type === "set" && timestamp !== undefined) {
-      ingredientBuilder.setExpiryDate(new Date(timestamp));
-    }
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -60,24 +48,13 @@ const ManualIngredient = (props: Props) => {
         onNameChange={(str) => ingredientBuilder.setName(str)}
       />
       {getSeperator()}
-      <InputField
+      <DateField
         fieldName="Expiry Date"
         required
-        onTextChange={(str) => {}}
         width={Dimensions.get("screen").width - 2 * SPACING.medium}
-      >
-        <TouchableOpacity onPress={() => setShowCalendar(true)}>
-          <MaterialCommunityIcons name="calendar" size={24} color="black" />
-        </TouchableOpacity>
-      </InputField>
-      {showCalendar && (
-        <RNDateTimePicker
-          value={new Date()}
-          onChange={setDateNew}
-          accentColor={COLOURS.primary}
-          minimumDate={new Date()}
-        />
-      )}
+        setValue={(date: Date) => ingredientBuilder.setExpiryDate(date)}
+      />
+      {getSeperator()}
     </ScrollView>
   );
 };
