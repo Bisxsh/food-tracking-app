@@ -2,7 +2,9 @@
   "expo": {
     "slug": "foodtrackingapp",
     "name": "foodtrackingapp",
-    "sdkVersion": "47.0.0"
+    "sdkVersion": "47.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic"
   },
   "name": "foodtrackingapp"
 }

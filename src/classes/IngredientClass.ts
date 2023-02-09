@@ -12,8 +12,8 @@ export class Ingredient {
   quantity: number;
   //categories: enum
   imgSrc: string;
-  //useDate: DateClass;
-  //expiryDate: DateClass;
+  useDate: Date;
+  expiryDate: Date;
   nutrition: Nutrition;
   id: number;
 
@@ -23,6 +23,8 @@ export class Ingredient {
     weightType: weightUnit,
     quantity: number,
     imgSrc: string,
+    useDate: Date,
+    expiryDate: Date,
     nutrition: Nutrition,
     id: number
   ) {
@@ -32,8 +34,8 @@ export class Ingredient {
     this.weightType = weightType;
     this.quantity = quantity;
     this.imgSrc = imgSrc;
-    //this.useDate = no date;
-    // this.expiryDate = expiryDate;
+    this.useDate = useDate;
+    this.expiryDate = expiryDate;
     this.nutrition = nutrition;
     this.id = id;
   }
@@ -97,6 +99,8 @@ export class IngredientBuilder {
   private weightType: weightUnit;
   private quantity: number;
   private imgSrc: string;
+  private useDate: Date;
+  private expiryDate: Date;
   private nutrition: Nutrition;
   private id: number;
 
@@ -106,6 +110,8 @@ export class IngredientBuilder {
     this.weightType = weightUnit.grams;
     this.quantity = 0;
     this.imgSrc = "";
+    this.useDate = new Date();
+    this.expiryDate = new Date();
     this.nutrition = new Nutrition(0, 0, 0, 0, 0, 0, 0, 0);
     this.id = 0;
   }
@@ -135,6 +141,16 @@ export class IngredientBuilder {
     return this;
   }
 
+  public setUseDate(useDate: Date): IngredientBuilder {
+    this.useDate = useDate;
+    return this;
+  }
+
+  public setExpiryDate(expiryDate: Date): IngredientBuilder {
+    this.expiryDate = expiryDate;
+    return this;
+  }
+
   public setNutrition(nutrition: Nutrition): IngredientBuilder {
     this.nutrition = nutrition;
     return this;
@@ -152,6 +168,8 @@ export class IngredientBuilder {
       this.weightType,
       this.quantity,
       this.imgSrc,
+      this.useDate,
+      this.expiryDate,
       this.nutrition,
       this.id
     );

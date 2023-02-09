@@ -9,6 +9,7 @@ import {
   SPACING,
 } from "../../../../util/GlobalStyles";
 import BarcodeScanner from "./BarcodeScanner";
+import ManualIngredient from "./ManualIngredient";
 
 type Props = {
   showModal: boolean;
@@ -17,6 +18,7 @@ type Props = {
 
 const AddMenu = (props: Props) => {
   const [showBarcode, setShowBarcode] = useState(false);
+  const [showManual, setShowManual] = useState(false);
   return (
     <>
       <Modal
@@ -47,7 +49,13 @@ const AddMenu = (props: Props) => {
               Barcode
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.button, styles.secondary]}>
+          <TouchableOpacity
+            style={[styles.button, styles.secondary]}
+            onPress={() => {
+              setShowManual(true);
+              props.setShowModal(false);
+            }}
+          >
             <MaterialCommunityIcons
               name="pencil-box-outline"
               size={48}
@@ -70,6 +78,7 @@ const AddMenu = (props: Props) => {
           setShowBarcode={setShowBarcode}
         />
       )}
+      {showManual && <ManualIngredient setShowManual={setShowManual} />}
     </>
   );
 };

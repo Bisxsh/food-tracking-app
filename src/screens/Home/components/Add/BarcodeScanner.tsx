@@ -13,6 +13,7 @@ type Props = {
 
 const BarcodeScanner = (props: Props) => {
   const [showFlash, setShowFlash] = useState(false);
+  const [permission, requestPermission] = Camera.useCameraPermissions();
 
   const handleBarCodeScanned = (info: any) => {
     console.log(info);
