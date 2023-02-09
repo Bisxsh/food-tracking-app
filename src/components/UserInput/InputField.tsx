@@ -13,7 +13,7 @@ type Props = {
 
 const InputField = (props: Props) => {
   return (
-    <View>
+    <View style={{ position: "relative" }}>
       <Text>
         {props.fieldName}
         {props.required ? "*" : ""}
@@ -22,8 +22,8 @@ const InputField = (props: Props) => {
         placeholder={props.textHint ? props.textHint : props.fieldName}
         onChangeText={(value: string) => props.onTextChange(value)}
         style={styles(props).input}
-      />
-      {props.children}
+      ></TextInput>
+      <View style={styles(props).right}>{props.children}</View>
     </View>
   );
 };
@@ -41,5 +41,11 @@ const styles = (props: Props) =>
       borderWidth: 1,
       marginTop: SPACING.small,
       width: props.width ? props.width : 200,
+    },
+
+    right: {
+      position: "absolute",
+      right: SPACING.small,
+      top: "50%",
     },
   });

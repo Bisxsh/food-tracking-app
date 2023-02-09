@@ -5,14 +5,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import NameAndImage from "../../../../components/UserInput/NameAndImage";
 import InputField from "../../../../components/UserInput/InputField";
 import { Dimensions } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import Modal from "react-native-modal/dist/modal";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
@@ -20,10 +24,22 @@ type Props = {
 
 const ManualIngredient = (props: Props) => {
   const ingredientBuilder = new IngredientBuilder();
+  const [showCalendar, setShowCalendar] = useState(false);
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
+
+  const setDateNew = (event: DateTimePickerEvent, date?: Date | undefined) => {
+    const {
+      type,
+      nativeEvent: { timestamp },
+    } = event;
+
+    if (type === "set" && timestamp !== undefined) {
+      ingredientBuilder.setExpiryDate(new Date(timestamp));
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -50,8 +66,18 @@ const ManualIngredient = (props: Props) => {
         onTextChange={(str) => {}}
         width={Dimensions.get("screen").width - 2 * SPACING.medium}
       >
-        <View />
+        <TouchableOpacity onPress={() => setShowCalendar(true)}>
+          <MaterialCommunityIcons name="calendar" size={24} color="black" />
+        </TouchableOpacity>
       </InputField>
+      {showCalendar && (
+        <RNDateTimePicker
+          value={new Date()}
+          onChange={setDateNew}
+          accentColor={COLOURS.primary}
+          minimumDate={new Date()}
+        />
+      )}
     </ScrollView>
   );
 };
