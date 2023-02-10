@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -41,8 +41,13 @@ const ManualIngredient = (props: Props) => {
   }
 
   function saveIngredient() {
+    if (!ingredientBuilder.allRequiredFieldsSet()) {
+      alert("All required fields must be set");
+      return;
+    }
     ingredientBuilder.setCategories(categories);
-    console.log(ingredientBuilder);
+    userData.storedIngredients.push(ingredientBuilder.build());
+    props.setShowManual(false);
   }
 
   return (
@@ -103,9 +108,7 @@ const ManualIngredient = (props: Props) => {
           <InputFieldWithUnits
             fieldName="Weight"
             onTextChange={(weight) => {
-              console.log(weight);
               ingredientBuilder.setWeight(weight);
-              console.log(ingredientBuilder);
             }}
             units={Object.values(weightUnit)}
             onUnitChange={(unit) => ingredientBuilder.setWeightType(unit)}

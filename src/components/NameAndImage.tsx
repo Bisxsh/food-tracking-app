@@ -23,10 +23,9 @@ const NameAndImage = (props: Props) => {
       quality: 1,
     });
 
-    console.log(result);
-
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+      props.onImgChange(result.assets[0].uri);
     }
   };
 

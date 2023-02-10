@@ -169,6 +169,10 @@ export class IngredientBuilder {
     return this;
   }
 
+  public allRequiredFieldsSet(): boolean {
+    return this.name !== "" && this.weight !== 0;
+  }
+
   public build(): Ingredient {
     return new Ingredient(
       this.name,
