@@ -10,7 +10,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { SPACING, COLOURS, RADIUS } from "../../../../../util/GlobalStyles";
+import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
 
 type Props = {
   required?: boolean;
@@ -35,21 +35,26 @@ const DateField = (props: Props) => {
       props.setValue(new Date(timestamp));
       setDateString(new Date(timestamp).toString().substring(0, 15));
     }
+    setShowCalendar(false);
   };
   return (
-    <View style={{ position: "relative" }}>
+    <TouchableOpacity
+      style={{ position: "relative" }}
+      onPress={() => setShowCalendar(true)}
+    >
       <Text>
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>
       <Text style={styles(props).container}>{dateString}</Text>
 
-      <TouchableOpacity
-        onPress={() => setShowCalendar(true)}
+      <MaterialCommunityIcons
+        name="calendar"
+        size={24}
+        color="black"
         style={styles(props).icon}
-      >
-        <MaterialCommunityIcons name="calendar" size={24} color="black" />
-      </TouchableOpacity>
+      />
+
       {showCalendar && (
         <RNDateTimePicker
           value={new Date()}
@@ -58,7 +63,7 @@ const DateField = (props: Props) => {
           minimumDate={new Date()}
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

@@ -10,12 +10,16 @@ type Props = {
 
 const Chips = (props: Props) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={props.onClose}>
       <Text>{props.text}</Text>
-      <TouchableOpacity style={styles.close} onPress={props.onClose}>
-        <MaterialCommunityIcons name="close" size={16} color="black" />
-      </TouchableOpacity>
-    </View>
+
+      <MaterialCommunityIcons
+        name="close"
+        size={16}
+        color="black"
+        style={styles.close}
+      />
+    </TouchableOpacity>
   );
 };
 

@@ -15,11 +15,11 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-import DateField from "./Fields/DateField";
 import ChipsSelectors from "../../../../components/ChipsSelectors";
 import NameAndImage from "../../../../components/NameAndImage";
 import { Category } from "../../../../classes/Categories";
 import { UserDataContext } from "../../../../classes/UserData";
+import DateField from "../../../../components/DateField";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
