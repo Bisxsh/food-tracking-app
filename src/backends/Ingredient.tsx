@@ -30,6 +30,58 @@ export class Ingredient{
         return [this._id, this.name, this.quantity, this.weight, this.weightUnit, this.imgSrc, this.useDate, this.expiryDate, JSON.stringify(this.nutrition), this.categoryId];
     }
 
+    //#region getters and setters
+
+    public get getName(): string {
+        return this.name;
+    }
+    public set setName(name: string) {
+        this.name = name;
+    }
+
+    public get getWeight(): number | undefined {
+        return this.weight;
+    }
+    public set setWeight(weight: number) {
+        this.weight = weight;
+    }
+
+    public get getWeightUnit(): string {
+        return this.weightUnit;
+    }
+    public set setWeightUnit(weightType: string) {
+        this.weightUnit = weightType;
+    }
+
+    public get getQuantity(): number {
+        return this.quantity;
+    }
+    public set setQuantity(quantity: number) {
+        this.quantity = quantity;
+    }
+
+    public get getImgSrc(): string | undefined {
+        return this.imgSrc;
+    }
+    public set setImgSrc(imgSrc: string) {
+        this.imgSrc = imgSrc;
+    }
+
+    public get getNutrition(): Nutrition {
+        return this.nutrition;
+    }
+    public set setnutrition(nutrition: Nutrition) {
+        this.nutrition = nutrition;
+    }
+
+    public get getId(): number {
+        return this._id;
+    }
+    public set setId(id: number) {
+        this._id = id;
+    }
+    //#endregion
+
     static count:number = 0
 
     static fromList(properties:any[]): Ingredient{
