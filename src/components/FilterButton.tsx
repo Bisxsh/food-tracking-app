@@ -25,6 +25,7 @@ type Props = {
   textHint?: string;
   onAdd?: (str: string) => void; //Method to run in add section if search returns no results
   setOptions?: (options: Category[]) => void;
+  plusSymbol?: boolean;
 };
 
 const FilterButton = (props: Props) => {
@@ -143,7 +144,11 @@ const FilterButton = (props: Props) => {
           setShowModal(true);
         }}
       >
-        <MaterialCommunityIcons name="filter-variant" size={24} color="black" />
+        <MaterialCommunityIcons
+          name={props.plusSymbol ? "plus" : "filter-variant"}
+          size={24}
+          color="black"
+        />
       </TouchableOpacity>
 
       <View style={{ backgroundColor: "purple", position: "relative" }}>

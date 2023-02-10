@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     paddingRight: SPACING.medium,
     margin: SPACING.tiny,
     alignSelf: "flex-start",
-    ...DROP_SHADOW,
   },
 
   close: {
