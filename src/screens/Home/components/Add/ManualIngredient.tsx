@@ -5,19 +5,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Dimensions } from "react-native";
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from "@react-native-community/datetimepicker";
+
 import {
   IngredientBuilder,
   weightUnit,
 } from "../../../../classes/IngredientClass";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
 import ChipsSelectors from "../../../../components/ChipsSelectors";
 import NameAndImage from "../../../../components/NameAndImage";
 import { Category } from "../../../../classes/Categories";
