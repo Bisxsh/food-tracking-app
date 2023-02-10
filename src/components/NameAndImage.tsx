@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   camera: {
     aspectRatio: 1,
     backgroundColor: COLOURS.grey,
-    width: 80,
+    width: 104,
     marginRight: SPACING.small,
     justifyContent: "center",
     alignItems: "center",

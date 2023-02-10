@@ -85,3 +85,78 @@ export class Nutrition {
   }
   //#endregion
 }
+
+export class NutritionBuilder {
+  private carbs: number;
+  private energy: number;
+  private protein: number;
+  private fat: number;
+  private saturatedFat: number;
+  private fibre: number;
+  private salt: number;
+  private sugar: number;
+
+  constructor() {
+    this.carbs = 0;
+    this.energy = 0;
+    this.protein = 0;
+    this.fat = 0;
+    this.saturatedFat = 0;
+    this.fibre = 0;
+    this.salt = 0;
+    this.sugar = 0;
+  }
+
+  public setCarbs(carbs: number): NutritionBuilder {
+    this.carbs = carbs;
+    return this;
+  }
+
+  public setEnergy(energy: number): NutritionBuilder {
+    this.energy = energy;
+    return this;
+  }
+
+  public setProtein(protein: number): NutritionBuilder {
+    this.protein = protein;
+    return this;
+  }
+
+  public setFat(fat: number): NutritionBuilder {
+    this.fat = fat;
+    return this;
+  }
+
+  public setSaturatedFat(saturatedFat: number): NutritionBuilder {
+    this.saturatedFat = saturatedFat;
+    return this;
+  }
+
+  public setFibre(fibre: number): NutritionBuilder {
+    this.fibre = fibre;
+    return this;
+  }
+
+  public setSalt(salt: number): NutritionBuilder {
+    this.salt = salt;
+    return this;
+  }
+
+  public setSugar(sugar: number): NutritionBuilder {
+    this.sugar = sugar;
+    return this;
+  }
+
+  public build(): Nutrition {
+    return new Nutrition(
+      this.carbs,
+      this.energy,
+      this.protein,
+      this.fat,
+      this.saturatedFat,
+      this.fibre,
+      this.salt,
+      this.sugar
+    );
+  }
+}
