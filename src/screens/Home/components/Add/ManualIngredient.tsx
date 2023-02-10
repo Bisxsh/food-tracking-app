@@ -26,11 +26,13 @@ import NumberInputRow from "./NumberInputRow";
 import PrimaryButton from "../../../../components/PrimaryButton";
 
 type Props = {
-  setShowManual: (showManual: boolean) => void;
+  setShowManual?: (showManual: boolean) => void;
+  setIngredient?: (ingredient: IngredientBuilder | null) => void;
+  ingredientBuilder?: IngredientBuilder;
 };
 
 const ManualIngredient = (props: Props) => {
-  const ingredientBuilder = new IngredientBuilder();
+  const ingredientBuilder = props.ingredientBuilder || new IngredientBuilder();
   const { userData, setUserData } = useContext(UserDataContext);
   const [categories, setCategories] = useState<Category[]>(
     userData.ingredientCategories
@@ -47,16 +49,18 @@ const ManualIngredient = (props: Props) => {
     }
     ingredientBuilder.setCategories(categories);
     userData.storedIngredients.push(ingredientBuilder.build());
-    props.setShowManual(false);
+    closeManual();
+  }
+
+  function closeManual() {
+    props.setShowManual && props.setShowManual(false);
+    props.setIngredient && props.setIngredient(null);
   }
 
   return (
     <View style={styles.container}>
       <View style={styles.menu}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => props.setShowManual(false)}
-        >
+        <TouchableOpacity style={styles.button} onPress={closeManual}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
         </TouchableOpacity>
         <Text>Add an ingredient</Text>
@@ -74,6 +78,7 @@ const ManualIngredient = (props: Props) => {
         <NameAndImage
           onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
           onNameChange={(str) => ingredientBuilder.setName(str)}
+          imgStr={ingredientBuilder.getImgSrc()}
         />
         {getSeperator()}
         <DateField
@@ -115,6 +120,9 @@ const ManualIngredient = (props: Props) => {
             required
             textWidth={104}
             maxWidth={180}
+            defaultText={
+              props.ingredientBuilder?.getWeight()?.toString() || undefined
+            }
           />
           <InputField
             fieldName="Quantity"
@@ -136,6 +144,14 @@ const ManualIngredient = (props: Props) => {
           }
           textHintLeft="kcal"
           textHintRight="g"
+          defaultValueLeft={
+            ingredientBuilder.getNutritionBuilder().getEnergy()?.toString() ||
+            undefined
+          }
+          defaultValueRight={
+            ingredientBuilder.getNutritionBuilder().getProtein()?.toString() ||
+            undefined
+          }
         />
         {getSeperator()}
         <NumberInputRow
@@ -149,6 +165,16 @@ const ManualIngredient = (props: Props) => {
           }
           textHintLeft="g"
           textHintRight="g"
+          defaultValueLeft={
+            ingredientBuilder.getNutritionBuilder().getFat()?.toString() ||
+            undefined
+          }
+          defaultValueRight={
+            ingredientBuilder
+              .getNutritionBuilder()
+              .getSaturatedFat()
+              ?.toString() || undefined
+          }
         />
         {getSeperator()}
         <NumberInputRow
@@ -162,6 +188,14 @@ const ManualIngredient = (props: Props) => {
           }
           textHintLeft="g"
           textHintRight="g"
+          defaultValueLeft={
+            ingredientBuilder.getNutritionBuilder().getCarbs()?.toString() ||
+            undefined
+          }
+          defaultValueRight={
+            ingredientBuilder.getNutritionBuilder().getSugar()?.toString() ||
+            undefined
+          }
         />
         {getSeperator()}
         <NumberInputRow
@@ -175,6 +209,14 @@ const ManualIngredient = (props: Props) => {
           }
           textHintLeft="g"
           textHintRight="g"
+          defaultValueLeft={
+            ingredientBuilder.getNutritionBuilder().getFibre()?.toString() ||
+            undefined
+          }
+          defaultValueRight={
+            ingredientBuilder.getNutritionBuilder().getSalt()?.toString() ||
+            undefined
+          }
         />
         {getSeperator()}
         <PrimaryButton text="Save" onPress={saveIngredient} />

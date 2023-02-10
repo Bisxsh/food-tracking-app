@@ -9,10 +9,11 @@ import * as ImagePicker from "expo-image-picker";
 type Props = {
   onImgChange: (img: string) => void;
   onNameChange: (name: string) => void;
+  imgStr?: string;
 };
 
 const NameAndImage = (props: Props) => {
-  const [image, setImage] = useState<string>("");
+  const [image, setImage] = useState<string>(props.imgStr || "");
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library

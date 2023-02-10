@@ -9,6 +9,7 @@ type Props = {
   onTextChange: (text: any) => void;
   width?: number;
   numberInput?: boolean;
+  defaultValue?: string;
 };
 
 const InputField = (props: Props) => {
@@ -23,6 +24,7 @@ const InputField = (props: Props) => {
         onChangeText={(value: string) => props.onTextChange(value)}
         style={styles(props).input}
         keyboardType={props.numberInput ? "numeric" : "default"}
+        defaultValue={props.defaultValue}
       ></TextInput>
     </View>
   );

@@ -9,6 +9,8 @@ type Props = {
   fieldNameRight: string;
   textHintLeft?: string;
   textHintRight?: string;
+  defaultValueLeft?: string;
+  defaultValueRight?: string;
 };
 
 const NumberInputRow = (props: Props) => {
@@ -23,6 +25,7 @@ const NumberInputRow = (props: Props) => {
             props.textHintLeft ? props.textHintLeft : props.fieldNameLeft
           }
           width={180}
+          defaultValue={props.defaultValueLeft}
         />
         <InputField
           fieldName={props.fieldNameRight}
@@ -32,6 +35,7 @@ const NumberInputRow = (props: Props) => {
             props.textHintRight ? props.textHintRight : props.fieldNameRight
           }
           width={180}
+          defaultValue={props.defaultValueRight}
         />
       </View>
     </View>

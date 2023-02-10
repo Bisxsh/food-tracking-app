@@ -9,6 +9,7 @@ import { Camera, FlashMode } from "expo-camera";
 type Props = {
   showBarcode: boolean;
   setShowBarcode: (showBarcode: boolean) => void;
+  onBarcodeScanned: (barcode: string) => void;
 };
 
 const BarcodeScanner = (props: Props) => {
@@ -16,8 +17,8 @@ const BarcodeScanner = (props: Props) => {
   const [permission, requestPermission] = Camera.useCameraPermissions();
 
   const handleBarCodeScanned = (info: any) => {
-    console.log(info);
     props.setShowBarcode(false);
+    props.onBarcodeScanned(info.data);
   };
 
   return (

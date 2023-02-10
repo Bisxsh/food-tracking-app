@@ -19,6 +19,7 @@ type Props = {
   units: any[]; //List of units from enum
   textWidth?: number;
   maxWidth?: number;
+  defaultText?: string;
 };
 
 const InputFieldWithUnits = (props: Props) => {
@@ -34,6 +35,7 @@ const InputFieldWithUnits = (props: Props) => {
         onTextChange={props.onTextChange}
         width={props.textWidth}
         numberInput
+        defaultValue={props.defaultText}
       />
       <Menu style={styles.unitContainer}>
         <MenuTrigger text={value} style={{ height: 40 }} />

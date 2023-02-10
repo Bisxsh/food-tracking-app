@@ -2,8 +2,8 @@ import { Category } from "./Categories";
 import { Nutrition, NutritionBuilder } from "./NutritionClass";
 
 export enum weightUnit {
-  kg = "kg",
   grams = "grams",
+  kg = "kg",
 }
 
 export class Ingredient {
@@ -171,6 +171,42 @@ export class IngredientBuilder {
 
   public allRequiredFieldsSet(): boolean {
     return this.name !== "" && this.weight !== 0;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getWeight(): number {
+    return this.weight;
+  }
+
+  public getWeightType(): weightUnit {
+    return this.weightType;
+  }
+
+  public getQuantity(): number {
+    return this.quantity;
+  }
+
+  public getCategories(): Category[] {
+    return this.categories;
+  }
+
+  public getImgSrc(): string {
+    return this.imgSrc;
+  }
+
+  public getUseDate(): Date {
+    return this.useDate;
+  }
+
+  public getExpiryDate(): Date {
+    return this.expiryDate;
+  }
+
+  public getId(): number {
+    return this.id;
   }
 
   public build(): Ingredient {

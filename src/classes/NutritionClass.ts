@@ -147,6 +147,38 @@ export class NutritionBuilder {
     return this;
   }
 
+  public getCarbs(): number {
+    return this.carbs;
+  }
+
+  public getEnergy(): number {
+    return this.energy;
+  }
+
+  public getProtein(): number {
+    return this.protein;
+  }
+
+  public getFat(): number {
+    return this.fat;
+  }
+
+  public getSaturatedFat(): number {
+    return this.saturatedFat;
+  }
+
+  public getFibre(): number {
+    return this.fibre;
+  }
+
+  public getSalt(): number {
+    return this.salt;
+  }
+
+  public getSugar(): number {
+    return this.sugar;
+  }
+
   public build(): Nutrition {
     return new Nutrition(
       this.carbs,

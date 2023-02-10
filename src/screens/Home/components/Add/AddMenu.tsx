@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -10,6 +10,11 @@ import {
 } from "../../../../util/GlobalStyles";
 import BarcodeScanner from "./BarcodeScanner";
 import ManualIngredient from "./ManualIngredient";
+import { getIngredientBuilder } from "../../../../util/FoodAPIHelper";
+import {
+  Ingredient,
+  IngredientBuilder,
+} from "../../../../classes/IngredientClass";
 
 type Props = {
   showModal: boolean;
@@ -19,6 +24,29 @@ type Props = {
 const AddMenu = (props: Props) => {
   const [showBarcode, setShowBarcode] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [scannedData, setScannedData] = useState<string>("");
+  const [ingredient, setIngredient] = useState<IngredientBuilder | null>(null);
+
+  useEffect(() => {
+    if (!scannedData) return;
+    fetch(`https://world.openfoodfacts.org/api/v0/product/${scannedData}.json`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setIngredient(getIngredientBuilder(responseJson));
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    setScannedData("");
+  }, [scannedData]);
+
+  function onBarcodeScanned(barcodeData: string) {
+    console.log(barcodeData);
+    setScannedData(barcodeData);
+  }
+
+  console.log(ingredient);
+
   return (
     <>
       <Modal
@@ -76,9 +104,21 @@ const AddMenu = (props: Props) => {
         <BarcodeScanner
           showBarcode={showBarcode}
           setShowBarcode={setShowBarcode}
+          onBarcodeScanned={onBarcodeScanned}
         />
       )}
-      {showManual && <ManualIngredient setShowManual={setShowManual} />}
+      {showManual && (
+        <ManualIngredient
+          setShowManual={setShowManual}
+          ingredientBuilder={ingredient || undefined}
+        />
+      )}
+      {ingredient && (
+        <ManualIngredient
+          setIngredient={setIngredient}
+          ingredientBuilder={ingredient || undefined}
+        />
+      )}
     </>
   );
 };
