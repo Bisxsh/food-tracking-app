@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import Chips from "./Chips";
 import { Category } from "../classes/Categories";
 import IngredientsFilter from "./IngredientsFilter";
+import { SPACING } from "../util/GlobalStyles";
 
 type Props = {
   fieldName: string;
@@ -22,32 +23,35 @@ const ChipsSelectors = (props: Props) => {
   }, [props.categories]);
 
   return (
-    <View style={styles.container}>
-      {selectedFilters.map((category, index) => (
-        <Chips
-          key={`category.name-${index}`}
-          text={category.name}
-          onClose={() => {
-            setSelectedFilters((prev) =>
-              prev.filter((cat) => cat.name !== category.name)
-            );
-            let newCategories = props.categories.map((cat) => {
-              if (cat.name === category.name) {
-                cat.active = false;
-              }
-              return cat;
-            });
-            props.setCategories(newCategories);
-          }}
+    <>
+      <Text style={{ marginBottom: SPACING.small }}>{props.fieldName}</Text>
+      <View style={styles.container}>
+        {selectedFilters.map((category, index) => (
+          <Chips
+            key={`category.name-${index}`}
+            text={category.name}
+            onClose={() => {
+              setSelectedFilters((prev) =>
+                prev.filter((cat) => cat.name !== category.name)
+              );
+              let newCategories = props.categories.map((cat) => {
+                if (cat.name === category.name) {
+                  cat.active = false;
+                }
+                return cat;
+              });
+              props.setCategories(newCategories);
+            }}
+          />
+        ))}
+        <IngredientsFilter
+          options={props.categories}
+          setOptions={props.setCategories}
+          onAdd={props.onAdd}
+          plusSymbol
         />
-      ))}
-      <IngredientsFilter
-        options={props.categories}
-        setOptions={props.setCategories}
-        onAdd={props.onAdd}
-        plusSymbol
-      />
-    </View>
+      </View>
+    </>
   );
 };
 

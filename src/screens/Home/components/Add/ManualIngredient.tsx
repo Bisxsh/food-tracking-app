@@ -73,6 +73,7 @@ const ManualIngredient = (props: Props) => {
           });
         }}
       />
+      {getSeperator()}
     </ScrollView>
   );
 };
