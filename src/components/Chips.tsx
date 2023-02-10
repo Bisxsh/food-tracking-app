@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../../util/GlobalStyles";
+import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {

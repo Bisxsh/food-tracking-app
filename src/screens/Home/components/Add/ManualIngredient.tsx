@@ -8,8 +8,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import NameAndImage from "../../../../components/UserInput/NameAndImage";
-import InputField from "../../../../components/UserInput/InputField";
+
 import { Dimensions } from "react-native";
 import DateTimePicker, {
   DateTimePickerEvent,
@@ -17,7 +16,8 @@ import DateTimePicker, {
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateField from "./Fields/DateField";
-import ChipsSelectors from "../../../../components/UserInput/ChipsSelectors";
+import ChipsSelectors from "../../../../components/ChipsSelectors";
+import NameAndImage from "../../../../components/NameAndImage";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;

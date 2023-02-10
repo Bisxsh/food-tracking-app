@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import CustomSearchBar from "../../../../components/CustomSearchBar";
 import SortButton from "../../../../components/SortButton";
-import IngredientsFilter from "./IngredientsFilter";
+import IngredientsFilter from "../../../../components/IngredientsFilter";
 
 type Props = {
   ingredientsSearch: string;

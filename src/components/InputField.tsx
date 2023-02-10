@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import React from "react";
-import { COLOURS, RADIUS, SPACING } from "../../util/GlobalStyles";
+import { RADIUS, COLOURS, SPACING } from "../util/GlobalStyles";
 
 type Props = {
   required?: boolean;

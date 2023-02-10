@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { COLOURS, SPACING } from "../../util/GlobalStyles";
+
 import InputField from "./InputField";
 import { MaterialIcons } from "@expo/vector-icons";
+import { COLOURS, SPACING } from "../util/GlobalStyles";
 
 type Props = {
   onImgChange: (img: string) => void;

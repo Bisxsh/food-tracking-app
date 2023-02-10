@@ -2,16 +2,16 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useContext, useState } from "react";
 import Modal from "react-native-modal/dist/modal";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ColourPicker from "../../../../components/ColourPicker";
-import FilterButton from "../../../../components/FilterButton";
+import { UserDataContext } from "../classes/UserData";
 import {
   USER_COLOURS,
   SPACING,
   COLOURS,
   RADIUS,
   DROP_SHADOW,
-} from "../../../../util/GlobalStyles";
-import { UserDataContext } from "../../../../classes/UserData";
+} from "../util/GlobalStyles";
+import ColourPicker from "./ColourPicker";
+import FilterButton from "./FilterButton";
 
 type Props = {};
 
