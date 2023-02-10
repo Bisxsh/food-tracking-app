@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 
 import { Ingredient } from "./Ingredient";
 import { Category } from "./Category";
-import { Nutrition } from "./Nutrition";
+import { User } from "./User";
 
 
 
@@ -24,7 +24,7 @@ const IngredientSchema: Schema = {
         imgSrc: "ntext",
         useDate: "date",
         expiryDate: "date",
-        nutrition: "text not null",
+        nutrition: "ntext not null",
         categoryId: "int not null",
     },
 };
@@ -35,30 +35,65 @@ const CategorySchema: Schema = {
         _id: "int primary key not null",
         name: "ntext not null",
         colour: "text not null",
-        active: "bool",
+        active: "boolean",
     },
 };
 
+const UserSchema: Schema = {
+    name: "User",
+    properties: {
+        _id: "int primary key not null",
+        name: "ntext not null",
+        imgSrc: "ntext",
+        dateOfReg: "date not null",
+        dietReq: "ntext not null",
+        setting: "ntext not null"
+    }
+}
+
+// Probably not needed
+const SettingSchema: Schema = {
+    name: "Setting",
+    properties: {
+        _id: "int primary key not null",
+        useId: "int not null",
+        notification: "boolean",
+        appearance: "int not null",
+    }
+}
+
+const HistorySchema: Schema = {
+    name: "History",
+    properties: {
+        _id: "int primary key not null",
+        userId: "int not null",
+        date: "date not null",
+        waste: "real not null",
+        cost: "real not null"
+    }
+}
+
+// Probably not needed
 const NutritionSchema: Schema = {
     name: "Nutrition",
     properties: {
-        _id: "objectId",
-        carbs: "float?",
-        carbsUnit: "str",
-        energy: "float?",
-        energyUnit: "str",
-        protein: "float?",
-        proteinUnit: "str",
-        fat: "float?",
-        fatUnit: "str",
-        saturatedFat: "float?",
-        saturatedFatUnit: "str",
-        fibre: "float?",
-        fibreUnit: "str",
-        salt: "float?",
-        saltUnit: "str",
-        sugar: "float?",
-        sugarUnit: "str",
+        _id: "int primary key not null",
+        carbs: "real not null",
+        carbsUnit: "ntext not null",
+        energy: "real not null",
+        energyUnit: "ntext not null",
+        protein: "real not null",
+        proteinUnit: "ntext not null",
+        fat: "real not null",
+        fatUnit: "ntext not null",
+        saturatedFat: "real not null",
+        saturatedFatUnit: "ntext not null",
+        fibre: "real not null",
+        fibreUnit: "ntext not null",
+        salt: "real not null",
+        saltUnit: "ntext not null",
+        sugar: "real not null",
+        sugarUnit: "ntext not null",
     },
 };
 
@@ -116,6 +151,7 @@ function createTable(schema: Schema){
 export function init(){
     createTable(IngredientSchema);
     createTable(CategorySchema);
+    createTable(UserSchema);
 }
 
 // ======== Create records ==============================================================
@@ -123,6 +159,8 @@ export function init(){
 export function create(ingredient:Ingredient):any
 
 export function create(category: Category):any
+
+export function create(user: User): any
 
 export function create(value: any){
     var sql: string;
@@ -134,8 +172,10 @@ export function create(value: any){
         const arg = value.toList()
         sql = "insert into " + CategorySchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
         transaction(sql, arg, "Insert record")
-    }else if (value instanceof Nutrition){
-
+    }else if (value instanceof User){
+        const arg = value.toList()
+        sql = "insert into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
     }
 }
 
@@ -226,11 +266,11 @@ export async function readCategory(value: any): Promise<any>{
             break;
         case "string":
             const rows = await readAll(CategorySchema, "name", value);
-            const ings: Category[] = [];
+            const cats: Category[] = [];
             for (const row of rows){
-                ings.push(Category.fromList(Object.values(row)));
+                cats.push(Category.fromList(Object.values(row)));
             }
-            return ings;
+            return cats;
         default:
             break;
     }
@@ -240,13 +280,51 @@ export async function readCategory(value: any): Promise<any>{
 
 export async function readAllCategory():Promise<Category[]>{
     const rows: Object[] = await readAll(CategorySchema);
-    const ings: Category[] = [];
+    const cats: Category[] = [];
 
     for (const row of rows){
-        ings.push(Category.fromList(Object.values(row)));
+        cats.push(Category.fromList(Object.values(row)));
     }
     
-    return ings;
+    return cats;
+}
+
+export async function readUser(id: number):Promise<User|undefined>
+
+//export async function readUser(name: string):Promise<User[]|[]>
+
+export async function readUser(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(UserSchema, "_id", value);
+            if (row != undefined){
+                return User.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(UserSchema, "name", value);
+            const users: User[] = [];
+            for (const row of rows){
+                users.push(User.fromList(Object.values(row)));
+            }
+            return users;
+        default:
+            break;
+    }
+
+    return;
+}
+
+export async function readAllUser():Promise<User[]>{
+    const rows: Object[] = await readAll(UserSchema);
+    const users: User[] = [];
+
+    for (const row of rows){
+        users.push(User.fromList(Object.values(row)));
+    }
+    
+    return users;
 }
 
 // ======== Update records ==============================================================
@@ -266,6 +344,17 @@ export function updateCategory(Category: Category){
     const arg = Category.toList().slice(1, -1)
     var sql: string = "update " + CategorySchema.name + " set "
     for (const key of Object.keys(CategorySchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    console.log(sql)
+    transaction(sql, arg, "Update record")
+}
+
+export function updateUser(User: User){
+    const arg = User.toList().slice(1, -1)
+    var sql: string = "update " + UserSchema.name + " set "
+    for (const key of Object.keys(UserSchema.properties).slice(1,-1)){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
@@ -322,6 +411,31 @@ export function deleteCategory(value: any){
 
 export function deleteAllCategory(){
     const sql: string = "delete from " + CategorySchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+export function deleteUser(_id: number):any
+
+//export function deleteUser(name: string):any
+
+export function deleteUser(value: any){
+    var sql: string = "delete from " + UserSchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllUser(){
+    const sql: string = "delete from " + UserSchema.name
     transaction(sql, [], "Delete all record")
 }
 
