@@ -30,11 +30,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: COLOURS.grey,
     borderRadius: RADIUS.standard,
-    padding: SPACING.small,
+    padding: SPACING.small + 2,
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
     margin: SPACING.tiny,
     alignSelf: "flex-start",
+    alignItems: "center",
   },
 
   close: {
