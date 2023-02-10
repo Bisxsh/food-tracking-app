@@ -17,6 +17,7 @@ import { Category } from "../classes/Categories";
 type Props = {
   options: Category[];
   setOptions: (options: Category[]) => void;
+  onAdd?: (arg: Category) => void;
 };
 
 const IngredientsFilter = (props: Props) => {
@@ -64,6 +65,7 @@ const IngredientsFilter = (props: Props) => {
                 { colour, name: categoryName, active: false },
               ];
               props.setOptions(newOptions);
+              if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
             }}
           />
         </View>

@@ -31,13 +31,15 @@ const FilterButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState("");
   //TODO synchronize with filters
-  const [filters, setFilters] = useState<any>(
-    props.options.map((o, index) => {
-      return {
-        id: index,
-        ...o,
-      };
-    })
+  const [filters, setFilters] = useState<Category[]>(
+    props.options
+      ? props.options.map((o, index) => {
+          return {
+            id: index,
+            ...o,
+          };
+        })
+      : []
   );
 
   const fadeAnim = useRef(new Animated.Value(0)).current;

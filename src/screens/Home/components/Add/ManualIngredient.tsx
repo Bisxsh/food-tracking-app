@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -18,6 +18,8 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import DateField from "./Fields/DateField";
 import ChipsSelectors from "../../../../components/ChipsSelectors";
 import NameAndImage from "../../../../components/NameAndImage";
+import { Category } from "../../../../classes/Categories";
+import { UserDataContext } from "../../../../classes/UserData";
 
 type Props = {
   setShowManual: (showManual: boolean) => void;
@@ -25,7 +27,10 @@ type Props = {
 
 const ManualIngredient = (props: Props) => {
   const ingredientBuilder = new IngredientBuilder();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { userData, setUserData } = useContext(UserDataContext);
+  const [categories, setCategories] = useState<Category[]>(
+    userData.ingredientCategories
+  );
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -59,9 +64,14 @@ const ManualIngredient = (props: Props) => {
       {getSeperator()}
       <ChipsSelectors
         fieldName="Categories"
-        optionsList={["Fruit", "Vegetable", "Meat", "Dairy", "Bread", "Other"]}
-        selectedList={selectedCategories}
-        setSelectedList={setSelectedCategories}
+        categories={categories}
+        setCategories={setCategories}
+        onAdd={(category: Category) => {
+          setUserData({
+            ...userData,
+            ingredientCategories: [...userData.ingredientCategories, category],
+          });
+        }}
       />
     </ScrollView>
   );
