@@ -1,11 +1,11 @@
 import React, { createContext, Dispatch, SetStateAction } from "react";
 import { HomeSortingFilter } from "../screens/Home/components/Menu/HomeSortingFilters";
-import { IngredientCategory } from "./Categories";
+import { Category } from "./Categories";
 import { Ingredient } from "./IngredientClass";
 
 export interface UserData {
   storedIngredients: Ingredient[];
-  ingredientCategories: IngredientCategory[];
+  ingredientCategories: Category[];
   homePageSort: HomeSortingFilter;
   //TODO implement
   // savedRecipes: Recipe[];

@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import CustomSearchBar from "../../../../components/CustomSearchBar";
 import SortButton from "../../../../components/SortButton";
 import IngredientsFilter from "../../../../components/IngredientsFilter";
+import { UserDataContext } from "../../../../classes/UserData";
 
 type Props = {
   ingredientsSearch: string;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 const HomeMenu = (props: Props) => {
+  const { userData, setUserData } = useContext(UserDataContext);
   return (
     <View style={styles.menu}>
       <CustomSearchBar
@@ -27,7 +29,12 @@ const HomeMenu = (props: Props) => {
         setSelectedOption={props.setSort}
         width={216}
       />
-      <IngredientsFilter />
+      <IngredientsFilter
+        options={userData.ingredientCategories}
+        setOptions={(options) =>
+          setUserData({ ...userData, ingredientCategories: options })
+        }
+      />
     </View>
   );
 };

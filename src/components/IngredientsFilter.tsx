@@ -12,25 +12,29 @@ import {
 } from "../util/GlobalStyles";
 import ColourPicker from "./ColourPicker";
 import FilterButton from "./FilterButton";
+import { Category } from "../classes/Categories";
 
-type Props = {};
+type Props = {
+  options: Category[];
+  setOptions: (options: Category[]) => void;
+};
 
 const IngredientsFilter = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [colour, setColour] = useState(USER_COLOURS[0]);
   const [categoryName, setCategoryName] = useState("");
-  const { userData, setUserData } = useContext(UserDataContext);
 
   return (
     <View>
       <FilterButton
-        options={userData.ingredientCategories}
+        options={props.options}
         width={216}
         textHint="Search categories"
         onAdd={(text) => {
           setShowModal(true);
           setCategoryName(text);
         }}
+        setOptions={props.setOptions}
       />
 
       <Modal
@@ -55,13 +59,11 @@ const IngredientsFilter = (props: Props) => {
             size={SPACING.medium}
             onPress={() => {
               setShowModal(false);
-              setUserData((prev) => ({
-                ...prev,
-                ingredientCategories: [
-                  ...prev.ingredientCategories,
-                  { name: categoryName, colour: colour },
-                ],
-              }));
+              let newOptions = [
+                ...props.options,
+                { colour, name: categoryName, active: false },
+              ];
+              props.setOptions(newOptions);
             }}
           />
         </View>

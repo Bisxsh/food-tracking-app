@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { IngredientCategory } from "../../classes/Categories";
+import { Category } from "../../classes/Categories";
 import AddButton from "../../components/AddButton";
 import { SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";

@@ -1,4 +1,4 @@
-export interface IngredientCategory {
+export interface Category {
   colour: string;
   name: string;
   active?: boolean;

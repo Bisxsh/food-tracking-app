@@ -17,20 +17,28 @@ import {
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
-import { IngredientCategory } from "../classes/Categories";
+import { Category } from "../classes/Categories";
 
 type Props = {
-  options: IngredientCategory[];
+  options: Category[];
   width?: number;
   textHint?: string;
   onAdd?: (str: string) => void; //Method to run in add section if search returns no results
+  setOptions?: (options: Category[]) => void;
 };
 
 const FilterButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [searchText, setSearchText] = useState("");
   //TODO synchronize with filters
-  const [filters, setFilters] = useState(props.options);
+  const [filters, setFilters] = useState<any>(
+    props.options.map((o, index) => {
+      return {
+        id: index,
+        ...o,
+      };
+    })
+  );
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const transitionAnim = useRef(new Animated.Value(-4)).current;
@@ -51,36 +59,49 @@ const FilterButton = (props: Props) => {
 
   useEffect(() => {
     setSearchText("");
-    setFilters(props.options);
+    setFilters(
+      props.options.map((o, index) => {
+        return {
+          id: index,
+          ...o,
+        };
+      })
+    );
   }, [showModal, props.options]);
 
   useEffect(() => {
-    if (searchText == "") setFilters(props.options);
-    setFilters(
-      (prev) =>
-        prev
-          .map((o) => {
-            if (o.name.toLowerCase().includes(searchText.toLowerCase()))
-              return o;
-            else return null;
-          })
-          .filter((o) => o != null) as IngredientCategory[]
+    if (searchText == "")
+      setFilters(
+        props.options.map((o, index) => {
+          return {
+            id: index,
+            ...o,
+          };
+        })
+      );
+    setFilters((prev: any) =>
+      prev
+        .map((o: any) => {
+          if (o.name.toLowerCase().includes(searchText.toLowerCase())) return o;
+          else return null;
+        })
+        .filter((o: any) => o != null)
     );
   }, [searchText]);
 
   function changeActiveFilter(index: number) {
-    const newFilters = [...filters];
-    newFilters[index] = { ...filters[index], active: !filters[index].active };
-    setFilters(newFilters);
+    const newFilters = [...props.options];
+    newFilters[index].active = !newFilters[index].active;
+    props.setOptions && props.setOptions(newFilters);
   }
 
   function getOptions() {
-    const list = filters?.map((option, index) => {
+    const list = filters?.map((option: any, index: number) => {
       return (
         <View key={`filter-${index}`} style={styles(props).modalOption}>
           <Checkbox
-            initialVal={false}
-            onPress={() => changeActiveFilter(index)}
+            initialVal={option.active}
+            onPress={() => changeActiveFilter(option.id)}
           />
           <View
             style={{
