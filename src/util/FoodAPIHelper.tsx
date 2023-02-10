@@ -2,6 +2,10 @@
 import { IngredientBuilder } from "../classes/IngredientClass";
 
 export function getIngredientBuilder(ingredientJSON: any) {
+  if (ingredientJSON.status_verbose) {
+    alert("Product not found. Please enter details manually.");
+    return new IngredientBuilder();
+  }
   let product = ingredientJSON.product;
   const ingredientBuilder = new IngredientBuilder();
   ingredientBuilder.setName(product.generic_name_en);
