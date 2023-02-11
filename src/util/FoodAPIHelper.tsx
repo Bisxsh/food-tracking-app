@@ -2,7 +2,7 @@
 import { IngredientBuilder } from "../classes/IngredientClass";
 
 export function getIngredientBuilder(ingredientJSON: any) {
-  if (ingredientJSON.status_verbose) {
+  if (ingredientJSON.status_verbose !== "product found") {
     alert("Product not found. Please enter details manually.");
     return new IngredientBuilder();
   }

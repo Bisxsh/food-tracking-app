@@ -4,13 +4,12 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Home } from "./src/screens/Home/Home";
 import { Recipe } from "./src/screens/Recipe";
-import { Profile } from "./src/screens/Profile/Profile";
 import { COLOURS } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
 import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
+import HomeNavigator from "./src/screens/Home/components/HomeNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,15 +22,15 @@ function App(): JSX.Element {
       <UserDataContext.Provider value={{ userData, setUserData }}>
         <NavigationContainer>
           <Tab.Navigator
-            initialRouteName="Home"
+            initialRouteName="HomeNavigator"
             screenOptions={{
               tabBarActiveTintColor: COLOURS.primary,
               headerShown: false,
             }}
           >
             <Tab.Screen
-              name="Home"
-              component={Home}
+              name="HomeNavigator"
+              component={HomeNavigator}
               options={{
                 tabBarShowLabel: false,
                 tabBarIcon: ({ color, size }) => (

@@ -3,9 +3,9 @@
 // import { create } from "../backends/Database"
 
 // //need to add date and categories, perhaps a bit redundant ince you could just directly make the object from the inputs
-// export function AddIngredient(id: number, weightType: string, nutrition: Nutrition, categoryId: number, _id?: number, 
+// export function AddIngredient(id: number, weightType: string, nutrition: Nutrition, categoryId: number, _id?: number,
 //     weight?: number, imgSrc?: string, useDate?: Date, expiryDate?: Date ){
-    
+
 //         /*
 //         names = database.read(name)
 //         if name in names:

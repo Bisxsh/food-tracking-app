@@ -24,6 +24,8 @@ import InputFieldWithUnits from "../../../../components/InputFieldWithUnits";
 import InputField from "../../../../components/InputField";
 import NumberInputRow from "./NumberInputRow";
 import PrimaryButton from "../../../../components/PrimaryButton";
+import { HomeContext } from "../HomeContextProvider";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {
   setShowManual?: (showManual: boolean) => void;
@@ -32,11 +34,14 @@ type Props = {
 };
 
 const ManualIngredient = (props: Props) => {
-  const ingredientBuilder = props.ingredientBuilder || new IngredientBuilder();
+  const { homeContext, setHomeContext } = useContext(HomeContext);
   const { userData, setUserData } = useContext(UserDataContext);
   const [categories, setCategories] = useState<Category[]>(
     userData.ingredientCategories
   );
+  const navigation = useNavigation<any>();
+  const ingredientBuilder =
+    homeContext.ingredientBeingEdited || new IngredientBuilder();
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -53,8 +58,9 @@ const ManualIngredient = (props: Props) => {
   }
 
   function closeManual() {
-    props.setShowManual && props.setShowManual(false);
     props.setIngredient && props.setIngredient(null);
+    setHomeContext({ ...homeContext, ingredientBeingEdited: null });
+    navigation.goBack();
   }
 
   return (

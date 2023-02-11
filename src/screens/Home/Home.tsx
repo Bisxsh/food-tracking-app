@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -16,6 +17,7 @@ export function Home(): JSX.Element {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [selectedSort, setSelectedSort] = useState(0);
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const navigation = useNavigation<any>();
 
   return (
     <>
