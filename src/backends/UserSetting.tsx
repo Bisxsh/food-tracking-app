@@ -1,12 +1,12 @@
 
 export const Appearance = {
-    0: "Automatic",
+    0: "System",
     1: "Light",
     2: "Dark"
 }
 
 
-export class Setting{
+export class UserSetting{
     notification: boolean
     appearance: number
 
@@ -19,8 +19,8 @@ export class Setting{
         return [this.notification, this.appearance];
     }
 
-    static fromList(properties:any[]):Setting{
-        return new Setting(properties[0], properties[1]);
+    static fromList(properties:any[]):UserSetting{
+        return new UserSetting(properties[0], properties[1]);
     }
     
 }

@@ -5,6 +5,7 @@ export const COLOURS = {
   grey: "#EEEEEE",
   darkGrey: "#C0C0C0",
   textHint: "#9E9E9E",
+  textTouchable: "#06BCEE",
   white: "#FFFFFF",
   black: "#000000",
 };
@@ -18,6 +19,15 @@ export const FONT_SIZES = {
   small: 16,
   tiny: 8,
 };
+
+export const ICON_SIZES = {
+    //TODO change if needed
+    extraLarge: 40,
+    large: 32,
+    medium: 24,
+    small: 16,
+    tiny: 8,
+}
 
 export const SPACING = {
   //TODO change if needed
