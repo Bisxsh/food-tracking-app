@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Ingredient } from "../../../../classes/IngredientClass";
-import { Dimensions } from "react-native";
+import { Dimensions, Image } from "react-native";
 import { COLOURS, RADIUS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTimeLeft } from "../../../../util/ExpiryCalc";
@@ -11,12 +11,14 @@ type Props = {
 };
 
 const IngredientTile = ({ ingredient }: Props) => {
-  function getCardContent() {
+  function getCardContent(showText?: boolean) {
     return (
       <>
-        <Text style={{ textAlign: "center", marginBottom: SPACING.medium }}>
-          {ingredient.name}
-        </Text>
+        {showText && (
+          <Text style={{ textAlign: "center", marginBottom: SPACING.medium }}>
+            {ingredient.name}
+          </Text>
+        )}
         <View style={styles.timeContainer}>
           <MaterialCommunityIcons
             name="clock-outline"
@@ -32,9 +34,12 @@ const IngredientTile = ({ ingredient }: Props) => {
   }
 
   return ingredient.imgSrc == "" ? (
-    <View style={styles.container}>{getCardContent()}</View>
+    <View style={styles.container}>{getCardContent(true)}</View>
   ) : (
-    <View style={styles.container}>{getCardContent()}</View>
+    <View style={styles.container}>
+      <Image source={{ uri: ingredient.imgSrc }} style={styles.image} />
+      {getCardContent()}
+    </View>
   );
 };
 
@@ -65,5 +70,14 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(238, 238, 238, 0.92)",
     borderBottomLeftRadius: RADIUS.standard,
     borderBottomRightRadius: RADIUS.standard,
+  },
+
+  image: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    borderRadius: RADIUS.standard,
   },
 });

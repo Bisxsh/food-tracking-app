@@ -25,8 +25,8 @@ const IndgredientView = (props: Props) => {
                 IngredientBuilder.fromIngredient(ingredient),
             });
             navigation.navigate("ManualIngredient");
-            console.log("ingredient being edited: ", ingredient);
           }}
+          key={`${ingredient.getId} - ${ingredient.getName}`}
         >
           <IngredientCard ingredient={ingredient} />
         </TouchableOpacity>
