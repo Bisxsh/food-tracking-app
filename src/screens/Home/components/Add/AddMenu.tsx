@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -8,13 +8,8 @@ import {
   RADIUS,
   SPACING,
 } from "../../../../util/GlobalStyles";
-import BarcodeScanner from "./BarcodeScanner";
 import ManualIngredient from "./ManualIngredient";
-import { getIngredientBuilder } from "../../../../util/FoodAPIHelper";
-import {
-  Ingredient,
-  IngredientBuilder,
-} from "../../../../classes/IngredientClass";
+import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import { useNavigation } from "@react-navigation/native";
 
 type Props = {
@@ -23,23 +18,7 @@ type Props = {
 };
 
 const AddMenu = (props: Props) => {
-  const [showBarcode, setShowBarcode] = useState(false);
-  const [showManual, setShowManual] = useState(false);
-  const [scannedData, setScannedData] = useState<string>("");
   const [ingredient, setIngredient] = useState<IngredientBuilder | null>(null);
-
-  useEffect(() => {
-    if (!scannedData) return;
-    fetch(`https://world.openfoodfacts.org/api/v0/product/${scannedData}.json`)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        setIngredient(getIngredientBuilder(responseJson));
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    setScannedData("");
-  }, [scannedData]);
 
   const navigation = useNavigation<any>();
 
@@ -96,13 +75,6 @@ const AddMenu = (props: Props) => {
           </TouchableOpacity>
         </View>
       </Modal>
-      {showBarcode && <BarcodeScanner />}
-      {showManual && (
-        <ManualIngredient
-          setShowManual={setShowManual}
-          ingredientBuilder={ingredient || undefined}
-        />
-      )}
       {ingredient && (
         <ManualIngredient
           setIngredient={setIngredient}
