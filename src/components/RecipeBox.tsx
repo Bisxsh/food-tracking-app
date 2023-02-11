@@ -10,6 +10,10 @@ import { requestMicrophonePermissionsAsync } from 'expo-camera';
 type Props = {
     recipeName: string,
     recipeImage: string,
+    recipeCalories: string,
+    recipeServings: string,
+    recipeCautions: string,
+    recipeIngredients: string,
   };
 
 const RecipeBox = (props: Props) => {
@@ -25,6 +29,9 @@ const RecipeBox = (props: Props) => {
           <View style={styles.container}>
             <Image source={{uri: props.recipeImage}} style={styles.foodImage}/>
             <Text style={styles.textHeading}>{props.recipeName}</Text>
+            <Text style={styles.textSmall}>{parseInt(props.recipeCalories)/parseInt(props.recipeServings)} Calories</Text>
+            <Text style={styles.textSmall}>Contains {props.recipeCautions}</Text>
+            <Text style={styles.textSmall}>Contains {props.recipeIngredients.length}</Text>
           </View>
       </>
   );
@@ -43,25 +50,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
 
-  button: {
-    paddingTop: SPACING.medium,
-    paddingBottom: SPACING.medium,
-    paddingLeft: 48,
-    paddingRight: 48,
-    borderRadius: RADIUS.small,
-    textAlign: "center",
-    borderColor: COLOURS.primary,
-    borderWidth: 1,
-  },
-
-  primary: {
-    backgroundColor: COLOURS.primary,
-  },
-
-  secondary: {
-    backgroundColor: COLOURS.white,
-  },
-
   foodImage: {
     borderRadius: RADIUS.small,
     width: 124, 
@@ -72,8 +60,15 @@ const styles = StyleSheet.create({
 
   textHeading: {
     left: '35%',
-    bottom: "80%",
+    bottom: "50%",
     fontSize: 16,
+  },
+
+  textSmall: {
+    left: '40%',
+    bottom: "40%",
+    fontSize: 14,
+    // position: 'absolute',
   },
 
 });
