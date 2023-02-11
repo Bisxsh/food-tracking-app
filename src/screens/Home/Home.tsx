@@ -10,14 +10,59 @@ import { SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";
 import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
-import { HomeSortingFilters } from "./components/Menu/HomeSortingFilters";
+import {
+  HomeSortingFilter,
+  HomeSortingFilters,
+} from "./components/Menu/HomeSortingFilters";
 
 export function Home(): JSX.Element {
   const isDarkMode = false;
   const [ingredientsSearch, setIngredientsSearch] = useState("");
-  const [selectedSort, setSelectedSort] = useState(0);
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const navigation = useNavigation<any>();
+  const { userData, setUserData } = useContext(UserDataContext);
+  const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
+
+  useEffect(() => {
+    switch (selectedSort) {
+      default:
+      case HomeSortingFilter.ExpiryDateFirstToLast:
+        setUserData({
+          ...userData,
+          storedIngredients: userData.storedIngredients.sort((a, b) => {
+            return a.expiryDate.getTime() - b.expiryDate.getTime();
+          }),
+        });
+        break;
+      case HomeSortingFilter.ExpiryDateLastToFirst:
+        setUserData({
+          ...userData,
+          storedIngredients: userData.storedIngredients.sort((a, b) => {
+            return b.expiryDate.getTime() - a.expiryDate.getTime();
+          }),
+        });
+        break;
+      case HomeSortingFilter.QuantityLowToHigh:
+        setUserData({
+          ...userData,
+          storedIngredients: userData.storedIngredients.sort((a, b) => {
+            return a.quantity - b.quantity;
+          }),
+        });
+        break;
+      case HomeSortingFilter.QuantityHighToLow:
+        setUserData({
+          ...userData,
+          storedIngredients: userData.storedIngredients.sort((a, b) => {
+            return b.quantity - a.quantity;
+          }),
+        });
+        break;
+    }
+    setUserData({
+      ...userData,
+      homePageSort: selectedSort,
+    });
+  }, [selectedSort]);
 
   return (
     <>
@@ -35,9 +80,9 @@ export function Home(): JSX.Element {
         <HomeMenu
           sortFilters={HomeSortingFilters}
           ingredientsSearch={ingredientsSearch}
-          sort={selectedSort}
+          sort={HomeSortingFilters.indexOf(selectedSort)}
           setIngredientsSearch={setIngredientsSearch}
-          setSort={setSelectedSort}
+          setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
         />
         <IndgredientView />
         <View style={{ flex: 1 }} />

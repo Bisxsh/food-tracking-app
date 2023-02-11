@@ -158,6 +158,7 @@ const ManualIngredient = (props: Props) => {
             numberInput
             textHint="Quantity"
             width={180}
+            defaultValue={ingredientBuilder.getQuantity()?.toString()}
           />
         </View>
         {getSeperator()}

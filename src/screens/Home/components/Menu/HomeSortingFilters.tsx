@@ -1,13 +1,13 @@
 export enum HomeSortingFilter {
-  ExpiryDateLowToHigh = "Expiry Date: Low to High",
-  ExpiryDateHighToLow = "Expiry Date: High to Low",
+  ExpiryDateFirstToLast = "Expiry Date: First to Last",
+  ExpiryDateLastToFirst = "Expiry Date: Last to First",
   QuantityLowToHigh = "Quantity: Low to High",
   QuantityHighToLow = "Quantity: High to Low",
 }
 
 export const HomeSortingFilters = [
-  HomeSortingFilter.ExpiryDateLowToHigh,
-  HomeSortingFilter.ExpiryDateHighToLow,
+  HomeSortingFilter.ExpiryDateFirstToLast,
+  HomeSortingFilter.ExpiryDateLastToFirst,
   HomeSortingFilter.QuantityLowToHigh,
   HomeSortingFilter.QuantityHighToLow,
 ];
