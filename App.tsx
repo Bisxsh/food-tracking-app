@@ -6,10 +6,11 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Home } from "./src/screens/Home/Home";
 import { Recipe } from "./src/screens/Recipe";
-import { Profile } from "./src/screens/Profile";
+import { Profile } from "./src/screens/Profile/Profile";
 import { COLOURS } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
+import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -57,8 +58,8 @@ function App(): JSX.Element {
               }}
             />
             <Tab.Screen
-              name="Profile"
-              component={Profile}
+              name="ProfileNavigator"
+              component={ProfileNavigator}
               options={{
                 tabBarShowLabel: false,
                 tabBarIcon: ({ color, size }) => (

@@ -2,12 +2,17 @@ import * as sq from "expo-sqlite";
 import * as FileSystem from 'expo-file-system';
 
 import { Ingredient } from "./Ingredient";
+import { Category } from "./Category";
+import { User } from "./User";
+
+
 
 interface Schema {
     name: string,
     properties: any,
 }
 
+// Configuration of tables
 const IngredientSchema: Schema = {
     name: "Ingredient",
     properties: {
@@ -19,7 +24,7 @@ const IngredientSchema: Schema = {
         imgSrc: "ntext",
         useDate: "date",
         expiryDate: "date",
-        nutrition: "text not null",
+        nutrition: "ntext not null",
         categoryId: "int not null",
     },
 };
@@ -27,34 +32,72 @@ const IngredientSchema: Schema = {
 const CategorySchema: Schema = {
     name: "Category",
     properties: {
-        _id: "objectId",
-        name: "str"
+        _id: "int primary key not null",
+        name: "ntext not null",
+        colour: "text not null",
+        active: "boolean",
     },
 };
 
+const UserSchema: Schema = {
+    name: "User",
+    properties: {
+        _id: "int primary key not null",
+        name: "ntext not null",
+        imgSrc: "ntext",
+        dateOfReg: "date not null",
+        dietReq: "ntext not null",
+        setting: "ntext not null"
+    }
+}
+
+// Probably not needed
+const SettingSchema: Schema = {
+    name: "Setting",
+    properties: {
+        _id: "int primary key not null",
+        useId: "int not null",
+        notification: "boolean",
+        appearance: "int not null",
+    }
+}
+
+const HistorySchema: Schema = {
+    name: "History",
+    properties: {
+        _id: "int primary key not null",
+        userId: "int not null",
+        date: "date not null",
+        waste: "real not null",
+        cost: "real not null"
+    }
+}
+
+// Probably not needed
 const NutritionSchema: Schema = {
     name: "Nutrition",
     properties: {
-        _id: "objectId",
-        carbs: "float?",
-        carbsUnit: "str",
-        energy: "float?",
-        energyUnit: "str",
-        protein: "float?",
-        proteinUnit: "str",
-        fat: "float?",
-        fatUnit: "str",
-        saturatedFat: "float?",
-        saturatedFatUnit: "str",
-        fibre: "float?",
-        fibreUnit: "str",
-        salt: "float?",
-        saltUnit: "str",
-        sugar: "float?",
-        sugarUnit: "str",
+        _id: "int primary key not null",
+        carbs: "real not null",
+        carbsUnit: "ntext not null",
+        energy: "real not null",
+        energyUnit: "ntext not null",
+        protein: "real not null",
+        proteinUnit: "ntext not null",
+        fat: "real not null",
+        fatUnit: "ntext not null",
+        saturatedFat: "real not null",
+        saturatedFatUnit: "ntext not null",
+        fibre: "real not null",
+        fibreUnit: "ntext not null",
+        salt: "real not null",
+        saltUnit: "ntext not null",
+        sugar: "real not null",
+        sugarUnit: "ntext not null",
     },
 };
 
+// ======== Basic Operation on DB ==============================================================
 
 function openDB(): sq.WebSQLDatabase{
     return sq.openDatabase("DB.db", "v3")
@@ -91,6 +134,8 @@ async function transaction(sql:string, arg:any[], description?:string, verbose =
     return result;
 }
 
+// ======== Create tables ==============================================================
+
 function createTable(schema: Schema){
     var sql:string = "create table if not exists " + schema.name + " ("
 
@@ -105,13 +150,36 @@ function createTable(schema: Schema){
 
 export function init(){
     createTable(IngredientSchema);
+    createTable(CategorySchema);
+    createTable(UserSchema);
 }
 
-export function create(ingredient:Ingredient){
-    const arg = ingredient.toList()
-    var sql: string = "insert into " + IngredientSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-    transaction(sql, arg, "Insert record")
+// ======== Create records ==============================================================
+
+export function create(ingredient:Ingredient):any
+
+export function create(category: Category):any
+
+export function create(user: User): any
+
+export function create(value: any){
+    var sql: string;
+    if (value instanceof  Ingredient){
+        const arg = value.toList()
+        sql = "insert into " + IngredientSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
+    }else if (value instanceof Category){
+        const arg = value.toList()
+        sql = "insert into " + CategorySchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
+    }else if (value instanceof User){
+        const arg = value.toList()
+        sql = "insert into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
+    }
 }
+
+// ======== Create records ==============================================================
 
 async function readAll(schema: Schema, property?:string, arg?: any): Promise<Object[]>{
     var sql: string = "select * from " + schema.name
@@ -143,6 +211,7 @@ async function read(schema: Schema, property:string, arg: any):Promise<Object|un
     
     return result.rows.item(0);
 }
+
 
 export async function readIngredient(id: number):Promise<Ingredient|undefined>
 
@@ -182,6 +251,84 @@ export async function readAllIngredient():Promise<Ingredient[]>{
     return ings;
 }
 
+export async function readCategory(id: number):Promise<Category|undefined>
+
+export async function readCategory(name: string):Promise<Category[]|[]>
+
+export async function readCategory(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(CategorySchema, "_id", value);
+            if (row != undefined){
+                return Category.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(CategorySchema, "name", value);
+            const cats: Category[] = [];
+            for (const row of rows){
+                cats.push(Category.fromList(Object.values(row)));
+            }
+            return cats;
+        default:
+            break;
+    }
+
+    return;
+}
+
+export async function readAllCategory():Promise<Category[]>{
+    const rows: Object[] = await readAll(CategorySchema);
+    const cats: Category[] = [];
+
+    for (const row of rows){
+        cats.push(Category.fromList(Object.values(row)));
+    }
+    
+    return cats;
+}
+
+export async function readUser(id: number):Promise<User|undefined>
+
+//export async function readUser(name: string):Promise<User[]|[]>
+
+export async function readUser(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(UserSchema, "_id", value);
+            if (row != undefined){
+                return User.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(UserSchema, "name", value);
+            const users: User[] = [];
+            for (const row of rows){
+                users.push(User.fromList(Object.values(row)));
+            }
+            return users;
+        default:
+            break;
+    }
+
+    return;
+}
+
+export async function readAllUser():Promise<User[]>{
+    const rows: Object[] = await readAll(UserSchema);
+    const users: User[] = [];
+
+    for (const row of rows){
+        users.push(User.fromList(Object.values(row)));
+    }
+    
+    return users;
+}
+
+// ======== Update records ==============================================================
+
 export function updateIngredient(ingredient: Ingredient){
     const arg = ingredient.toList().slice(1, -1)
     var sql: string = "update " + IngredientSchema.name + " set "
@@ -192,6 +339,30 @@ export function updateIngredient(ingredient: Ingredient){
     console.log(sql)
     transaction(sql, arg, "Update record")
 }
+
+export function updateCategory(Category: Category){
+    const arg = Category.toList().slice(1, -1)
+    var sql: string = "update " + CategorySchema.name + " set "
+    for (const key of Object.keys(CategorySchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    console.log(sql)
+    transaction(sql, arg, "Update record")
+}
+
+export function updateUser(User: User){
+    const arg = User.toList().slice(1, -1)
+    var sql: string = "update " + UserSchema.name + " set "
+    for (const key of Object.keys(UserSchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    console.log(sql)
+    transaction(sql, arg, "Update record")
+}
+
+// ======== Delete records ==============================================================
 
 export function deleteIngredient(_id: number):any
 
@@ -217,6 +388,58 @@ export function deleteAllIngredient(){
     const sql: string = "delete from " + IngredientSchema.name
     transaction(sql, [], "Delete all record")
 }
+
+export function deleteCategory(_id: number):any
+
+export function deleteCategory(name: string):any
+
+export function deleteCategory(value: any){
+    var sql: string = "delete from " + CategorySchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllCategory(){
+    const sql: string = "delete from " + CategorySchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+export function deleteUser(_id: number):any
+
+//export function deleteUser(name: string):any
+
+export function deleteUser(value: any){
+    var sql: string = "delete from " + UserSchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllUser(){
+    const sql: string = "delete from " + UserSchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+// ======== Delete DB file ==============================================================
 
 export async function deleteFile(verbose=false){
     const dir:string[] = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")
