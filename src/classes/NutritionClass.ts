@@ -107,6 +107,18 @@ export class NutritionBuilder {
     this.sugar = 0;
   }
 
+  public static fromNutrition(nutrition: Nutrition): NutritionBuilder {
+    return new NutritionBuilder()
+      .setCarbs(nutrition.getCarbs)
+      .setEnergy(nutrition.getEnergy)
+      .setProtein(nutrition.getProtein)
+      .setFat(nutrition.getFat)
+      .setSaturatedFat(nutrition.getSaturatedFat)
+      .setFibre(nutrition.getFibre)
+      .setSalt(nutrition.getSalt)
+      .setSugar(nutrition.getSugar);
+  }
+
   public setCarbs(carbs: number): NutritionBuilder {
     this.carbs = carbs;
     return this;

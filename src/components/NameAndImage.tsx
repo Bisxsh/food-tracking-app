@@ -10,10 +10,12 @@ type Props = {
   onImgChange: (img: string) => void;
   onNameChange: (name: string) => void;
   imgStr?: string;
+  nameStr?: string;
 };
 
 const NameAndImage = (props: Props) => {
   const [image, setImage] = useState<string>(props.imgStr || "");
+  const [nameStr, setNameStr] = useState(props.nameStr || "");
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -45,7 +47,11 @@ const NameAndImage = (props: Props) => {
       <InputField
         fieldName="Name"
         required
-        onTextChange={(str) => props.onNameChange(str)}
+        onTextChange={(str) => {
+          props.onNameChange(str);
+          setNameStr(str);
+        }}
+        defaultValue={nameStr}
       />
     </View>
   );

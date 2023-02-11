@@ -120,6 +120,21 @@ export class IngredientBuilder {
     this.id = 0;
   }
 
+  public static fromIngredient(ingredient: Ingredient): IngredientBuilder {
+    let builder = new IngredientBuilder();
+    builder.name = ingredient.name;
+    builder.weight = ingredient.weight;
+    builder.weightType = ingredient.weightType;
+    builder.quantity = ingredient.quantity;
+    builder.categories = ingredient.categories;
+    builder.imgSrc = ingredient.imgSrc;
+    builder.useDate = ingredient.useDate;
+    builder.expiryDate = ingredient.expiryDate;
+    builder.nutrition = NutritionBuilder.fromNutrition(ingredient.nutrition);
+    builder.id = ingredient.id;
+    return builder;
+  }
+
   public setName(name: string): IngredientBuilder {
     this.name = name;
     return this;

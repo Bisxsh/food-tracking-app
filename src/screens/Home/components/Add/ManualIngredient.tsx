@@ -53,14 +53,35 @@ const ManualIngredient = (props: Props) => {
       return;
     }
     ingredientBuilder.setCategories(categories);
-    userData.storedIngredients.push(ingredientBuilder.build());
+    if (
+      ingredientBuilder.getId() == 0 &&
+      userData.storedIngredients.length > 0
+    ) {
+      ingredientBuilder.setId(userData.storedIngredients.length);
+    }
+    console.log("ID: ", ingredientBuilder.getId());
+    if (
+      userData.storedIngredients.find(
+        (ing) => ing.id === ingredientBuilder.getId()
+      )
+    ) {
+      setUserData({
+        ...userData,
+        storedIngredients: userData.storedIngredients.map((ing) =>
+          ing.id === ingredientBuilder.getId() ? ingredientBuilder.build() : ing
+        ),
+      });
+    } else userData.storedIngredients.push(ingredientBuilder.build());
     closeManual();
   }
 
   function closeManual() {
     props.setIngredient && props.setIngredient(null);
     setHomeContext({ ...homeContext, ingredientBeingEdited: null });
-    navigation.goBack();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Home" }],
+    });
   }
 
   return (
@@ -85,6 +106,7 @@ const ManualIngredient = (props: Props) => {
           onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
           onNameChange={(str) => ingredientBuilder.setName(str)}
           imgStr={ingredientBuilder.getImgSrc()}
+          nameStr={ingredientBuilder.getName()}
         />
         {getSeperator()}
         <DateField

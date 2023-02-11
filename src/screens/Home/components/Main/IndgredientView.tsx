@@ -1,26 +1,37 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../../../classes/UserData";
 import IngredientCard from "./IngredientCard";
 import { SPACING } from "../../../../util/GlobalStyles";
+import { HomeContext } from "../HomeContextProvider";
+import { useNavigation } from "@react-navigation/native";
+import { IngredientBuilder } from "../../../../classes/IngredientClass";
 
 type Props = {};
 
 const IndgredientView = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
+  const { homeContext, setHomeContext } = useContext(HomeContext);
+  const navigation = useNavigation<any>();
 
   return (
-    <UserDataContext.Consumer>
-      {(value) => {
-        return (
-          <View style={styles.container}>
-            {value.userData.storedIngredients.map((ingredient) => {
-              return <IngredientCard ingredient={ingredient} />;
-            })}
-          </View>
-        );
-      }}
-    </UserDataContext.Consumer>
+    <View style={styles.container}>
+      {userData.storedIngredients.map((ingredient) => (
+        <TouchableOpacity
+          onPress={() => {
+            setHomeContext({
+              ...homeContext,
+              ingredientBeingEdited:
+                IngredientBuilder.fromIngredient(ingredient),
+            });
+            navigation.navigate("ManualIngredient");
+            console.log("ingredient being edited: ", ingredient);
+          }}
+        >
+          <IngredientCard ingredient={ingredient} />
+        </TouchableOpacity>
+      ))}
+    </View>
   );
 };
 
