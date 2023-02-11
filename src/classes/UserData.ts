@@ -1,6 +1,7 @@
 import React, { createContext, Dispatch, SetStateAction } from "react";
 import { HomeSortingFilter } from "../screens/Home/components/Menu/HomeSortingFilters";
 import { Category } from "./Categories";
+import { DUMMY_CATEGORIES, DUMMY_STORED_INGREDIENTS } from "./DummyData";
 import { Ingredient } from "./IngredientClass";
 
 export interface UserData {
@@ -23,9 +24,10 @@ export interface UserDataContextInterface {
 }
 
 export const DEFAULT_USER_DATA: UserData = {
-  storedIngredients: [],
-  ingredientCategories: [],
-  homePageSort: HomeSortingFilter.ExpiryDateHighToLow,
+  //TODO replace with empty arrays
+  storedIngredients: DUMMY_STORED_INGREDIENTS,
+  ingredientCategories: DUMMY_CATEGORIES,
+  homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
 };
 
 export const DEFAULT_USER_DATA_CONTEXT: UserDataContextInterface = {

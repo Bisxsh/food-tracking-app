@@ -36,12 +36,26 @@ type Props = {
 const ManualIngredient = (props: Props) => {
   const { homeContext, setHomeContext } = useContext(HomeContext);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [categories, setCategories] = useState<Category[]>(
-    userData.ingredientCategories
-  );
+
   const navigation = useNavigation<any>();
   const ingredientBuilder =
     homeContext.ingredientBeingEdited || new IngredientBuilder();
+  const [categories, setCategories] = useState<Category[]>(
+    userData.ingredientCategories.map((cat) => {
+      console.log(cat);
+      console.log(ingredientBuilder.getCategories().includes(cat));
+      return {
+        ...cat,
+        active:
+          ingredientBuilder
+            .getCategories()
+            .filter(
+              (ingCat) =>
+                ingCat.name === cat.name && ingCat.colour === cat.colour
+            ).length > 0,
+      };
+    })
+  );
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -52,7 +66,7 @@ const ManualIngredient = (props: Props) => {
       alert("All required fields must be set");
       return;
     }
-    ingredientBuilder.setCategories(categories);
+    ingredientBuilder.setCategories(categories.filter((cat) => cat.active));
     if (
       ingredientBuilder.getId() == 0 &&
       userData.storedIngredients.length > 0
@@ -83,6 +97,8 @@ const ManualIngredient = (props: Props) => {
       routes: [{ name: "Home" }],
     });
   }
+
+  console.log("ManualIngredient: ", ingredientBuilder.getCategories());
 
   return (
     <View style={styles.container}>
@@ -148,9 +164,8 @@ const ManualIngredient = (props: Props) => {
             required
             textWidth={104}
             maxWidth={180}
-            defaultText={
-              props.ingredientBuilder?.getWeight()?.toString() || undefined
-            }
+            defaultText={ingredientBuilder.getWeight()?.toString() || undefined}
+            defaultUnit={ingredientBuilder.getWeightType()}
           />
           <InputField
             fieldName="Quantity"

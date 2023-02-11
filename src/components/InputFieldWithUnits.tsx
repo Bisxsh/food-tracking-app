@@ -20,11 +20,14 @@ type Props = {
   textWidth?: number;
   maxWidth?: number;
   defaultText?: string;
+  defaultUnit?: string;
 };
 
 const InputFieldWithUnits = (props: Props) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(props.units[0]?.toString() || "Select");
+  const [value, setValue] = useState(
+    props.defaultUnit || props.units[0]?.toString() || "Select"
+  );
   const [items, setItems] = useState(props.units);
 
   return (

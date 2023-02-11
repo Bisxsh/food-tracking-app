@@ -1,9 +1,7 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { Category } from "../../classes/Categories";
 import { UserDataContext } from "../../classes/UserData";
 import AddButton from "../../components/AddButton";
 import { SPACING } from "../../util/GlobalStyles";
