@@ -5,61 +5,31 @@ import { getRecipes } from '../util/GetRecipe';
 import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestMicrophonePermissionsAsync } from 'expo-camera';
-import RecipeBox from '../components/RecipeBox';
 
 
-export function Recipe(): JSX.Element {
+type Props = {
+    recipeName: string,
+    recipeImage: string,
+  };
+
+const RecipeBox = (props: Props) => {
+
   const isDarkMode = false;
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-
-  const [recipes, setRecipes] = useState([]);
-
-
-  useEffect(() => {
-    genRecipe()
-  },[]);
-
-
-  async function genRecipe(){
-    var recipeList = await getRecipes("chicken")
-    console.log(recipeList.hits[0])
-    console.log(typeof(recipeList))
-    let recipeImage = recipeList.hits[0].recipe.image
-    let recipeName = recipeList.hits[0].recipe.label
-    setRecipes(recipeList.hits)
-    console.log(recipes[1])
-  }
-
-
   return (
-    // <ScrollView>
-    <View
-      style={{
-        backgroundColor: isDarkMode ? Colors.black : Colors.white,
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center"
-      }}>
-      <Text>This is Profile page</Text>
-      <Button
-          title='Get Chicken'
-          onPress={()=>{
-            genRecipe();
-          }}
-        />
-        {recipes.map((recipe) => {
-          return (
-          <RecipeBox recipeImage={recipe["recipe"]["image"]} recipeName={recipe["recipe"]["label"]}/>
-          )
-        })}
-    </View>
-    
+      <>
+          <View style={styles.container}>
+            <Image source={{uri: props.recipeImage}} style={styles.foodImage}/>
+            <Text style={styles.textHeading}>{props.recipeName}</Text>
+          </View>
+      </>
   );
 }
+export default RecipeBox
 
 const styles = StyleSheet.create({
   container: {
@@ -97,14 +67,14 @@ const styles = StyleSheet.create({
     width: 124, 
     height: 124,
     marginRight: 'auto',
-    marginBottom: 'auto'
+    marginBottom: 'auto',
   },
 
   textHeading: {
     left: '35%',
     bottom: "80%",
     fontSize: 16,
-  }
+  },
 
 });
 
