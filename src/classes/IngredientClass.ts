@@ -1,13 +1,9 @@
-import { Nutrition } from "./NutritionClass";
+import { Category } from "./Categories";
+import { Nutrition, NutritionBuilder } from "./NutritionClass";
 
 export enum weightUnit {
-  kg,
-  grams,
-}
-
-export enum categories {
-  kg,
-  grams,
+  grams = "grams",
+  kg = "kg",
 }
 
 export class Ingredient {
@@ -15,7 +11,7 @@ export class Ingredient {
   weight: number;
   weightType: weightUnit;
   quantity: number;
-  categories: categories;
+  categories: Category[];
   imgSrc: string;
   useDate: Date;
   expiryDate: Date;
@@ -27,7 +23,7 @@ export class Ingredient {
     weight: number,
     weightType: weightUnit,
     quantity: number,
-    categories: categories,
+    categories: Category[],
     imgSrc: string,
     expiryDate: Date,
     useDate: Date,
@@ -104,24 +100,39 @@ export class IngredientBuilder {
   private weight: number;
   private weightType: weightUnit;
   private quantity: number;
-  private categories: categories;
+  private categories: Category[];
   private imgSrc: string;
   private useDate: Date;
   private expiryDate: Date;
-  private nutrition: Nutrition;
+  private nutrition: NutritionBuilder;
   private id: number;
 
   constructor() {
     this.name = "";
     this.weight = 0;
-    this.weightType = weightUnit.grams;
+    this.weightType = weightUnit.kg;
     this.quantity = 0;
-    this.categories = categories.grams;
+    this.categories = [];
     this.imgSrc = "";
     this.useDate = new Date();
     this.expiryDate = new Date();
-    this.nutrition = new Nutrition(0, 0, 0, 0, 0, 0, 0, 0);
+    this.nutrition = new NutritionBuilder();
     this.id = 0;
+  }
+
+  public static fromIngredient(ingredient: Ingredient): IngredientBuilder {
+    let builder = new IngredientBuilder();
+    builder.name = ingredient.name;
+    builder.weight = ingredient.weight;
+    builder.weightType = ingredient.weightType;
+    builder.quantity = ingredient.quantity;
+    builder.categories = ingredient.categories;
+    builder.imgSrc = ingredient.imgSrc;
+    builder.useDate = ingredient.useDate;
+    builder.expiryDate = ingredient.expiryDate;
+    builder.nutrition = NutritionBuilder.fromNutrition(ingredient.nutrition);
+    builder.id = ingredient.id;
+    return builder;
   }
 
   public setName(name: string): IngredientBuilder {
@@ -144,7 +155,7 @@ export class IngredientBuilder {
     return this;
   }
 
-  public setCategories(categories: categories): IngredientBuilder {
+  public setCategories(categories: Category[]): IngredientBuilder {
     this.categories = categories;
     return this;
   }
@@ -164,14 +175,53 @@ export class IngredientBuilder {
     return this;
   }
 
-  public setNutrition(nutrition: Nutrition): IngredientBuilder {
-    this.nutrition = nutrition;
-    return this;
+  public getNutritionBuilder(): NutritionBuilder {
+    return this.nutrition;
   }
 
   public setId(id: number): IngredientBuilder {
     this.id = id;
     return this;
+  }
+
+  public allRequiredFieldsSet(): boolean {
+    return this.name !== "" && this.weight !== 0;
+  }
+
+  public getName(): string {
+    return this.name;
+  }
+
+  public getWeight(): number {
+    return this.weight;
+  }
+
+  public getWeightType(): weightUnit {
+    return this.weightType;
+  }
+
+  public getQuantity(): number {
+    return this.quantity;
+  }
+
+  public getCategories(): Category[] {
+    return this.categories;
+  }
+
+  public getImgSrc(): string {
+    return this.imgSrc;
+  }
+
+  public getUseDate(): Date {
+    return this.useDate;
+  }
+
+  public getExpiryDate(): Date {
+    return this.expiryDate;
+  }
+
+  public getId(): number {
+    return this.id;
   }
 
   public build(): Ingredient {
@@ -184,7 +234,7 @@ export class IngredientBuilder {
       this.imgSrc,
       this.expiryDate,
       this.useDate,
-      this.nutrition,
+      this.nutrition.build(),
       this.id
     );
   }

@@ -1,24 +1,49 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
 import { Camera, FlashMode } from "expo-camera";
+import { useNavigation } from "@react-navigation/native";
+import { getIngredientBuilder } from "../../../../util/FoodAPIHelper";
+import { HomeContext } from "../HomeContextProvider";
 
-type Props = {
-  showBarcode: boolean;
-  setShowBarcode: (showBarcode: boolean) => void;
-};
+export type Props = {};
 
 const BarcodeScanner = (props: Props) => {
   const [showFlash, setShowFlash] = useState(false);
   const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [scanning, setScanning] = useState(false);
+  const navigation = useNavigation<any>();
+  const { homeContext, setHomeContext } = useContext(HomeContext);
 
   const handleBarCodeScanned = (info: any) => {
-    console.log(info);
-    props.setShowBarcode(false);
+    if (!info.data) {
+      return;
+    }
+    setScanning(true);
+    navigation.goBack();
+    fetch(`https://world.openfoodfacts.org/api/v0/product/${info.data}.json`)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        let ingBuilder = getIngredientBuilder(responseJson);
+        setHomeContext({
+          ...homeContext,
+          ingredientBeingEdited: ingBuilder,
+        });
+
+        navigation.navigate("ManualIngredient");
+        setScanning(false);
+      })
+      .catch((error) => {
+        alert("Failed to get ingredient information. Please enter manually.");
+        navigation.navigate("ManualIngredient");
+        setScanning(false);
+      });
   };
+
+  if (scanning) return <View style={{ backgroundColor: "red" }}></View>;
 
   return (
     <View style={styles.container}>
@@ -28,7 +53,7 @@ const BarcodeScanner = (props: Props) => {
       />
       <View style={styles.menuBar}>
         <TouchableOpacity
-          onPress={() => props.setShowBarcode(false)}
+          onPress={() => navigation.goBack()}
           style={{ padding: SPACING.small }}
         >
           <MaterialCommunityIcons name="close" size={24} color="white" />
@@ -81,9 +106,9 @@ const styles = StyleSheet.create({
 
   scanner: {
     flex: 1,
-    width: Dimensions.get("screen").width * 1.8,
     position: "absolute",
     top: 0,
+    width: Dimensions.get("screen").width * 1.8,
     left: -Dimensions.get("screen").width * 0.4,
     height: Dimensions.get("screen").height * 1.1,
     aspectRatio:

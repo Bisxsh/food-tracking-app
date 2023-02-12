@@ -8,8 +8,9 @@ import {
   RADIUS,
   SPACING,
 } from "../../../../util/GlobalStyles";
-import BarcodeScanner from "./BarcodeScanner";
 import ManualIngredient from "./ManualIngredient";
+import { IngredientBuilder } from "../../../../classes/IngredientClass";
+import { useNavigation } from "@react-navigation/native";
 
 type Props = {
   showModal: boolean;
@@ -17,8 +18,10 @@ type Props = {
 };
 
 const AddMenu = (props: Props) => {
-  const [showBarcode, setShowBarcode] = useState(false);
-  const [showManual, setShowManual] = useState(false);
+  const [ingredient, setIngredient] = useState<IngredientBuilder | null>(null);
+
+  const navigation = useNavigation<any>();
+
   return (
     <>
       <Modal
@@ -41,7 +44,7 @@ const AddMenu = (props: Props) => {
               size={48}
               color="white"
               onPress={() => {
-                setShowBarcode(true);
+                navigation.navigate("BarcodeScanner");
                 props.setShowModal(false);
               }}
             />
@@ -52,7 +55,7 @@ const AddMenu = (props: Props) => {
           <TouchableOpacity
             style={[styles.button, styles.secondary]}
             onPress={() => {
-              setShowManual(true);
+              navigation.navigate("ManualIngredient");
               props.setShowModal(false);
             }}
           >
@@ -72,13 +75,12 @@ const AddMenu = (props: Props) => {
           </TouchableOpacity>
         </View>
       </Modal>
-      {showBarcode && (
-        <BarcodeScanner
-          showBarcode={showBarcode}
-          setShowBarcode={setShowBarcode}
+      {ingredient && (
+        <ManualIngredient
+          setIngredient={setIngredient}
+          ingredientBuilder={ingredient || undefined}
         />
       )}
-      {showManual && <ManualIngredient setShowManual={setShowManual} />}
     </>
   );
 };
