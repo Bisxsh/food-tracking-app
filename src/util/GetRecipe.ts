@@ -13,17 +13,29 @@ export async function getRecipes(){
     //need to pull dietary requirements from user profile
     //need to check for duplicate recipes
     //
-    var currentIngredientsNames = ["cheese","beef"] 
-    var dietReq = ["Kosher"]
-    await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
-        const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
-        const data = await Axios.get(url);
-        recipeList = recipeList.concat(data.data.hits);
-    }))
-    return recipeList
+    let ingredients = await readAllIngredient()
+    var currentIngredientsNames: string[] = [] 
+    ingredients.map((ingredient)=>{
+        currentIngredientsNames.push(ingredient.name)
+    })
+    console.log("current name are")
+    console.log(currentIngredientsNames)
+    if(currentIngredientsNames.length == 0){
+        return recipeList;
+    }
+    else{
+        await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
+            const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
+            const data = await Axios.get(url);
+            recipeList = recipeList.concat(data.data.hits);
+        }))
+        return recipeList
+    }
 
 }
 
-export function getDietReq(){
+export async function getDietReq(){
+    console.log(await readAllIngredient())
+    //check for user dietary requirements
     return ["Kosher","Dairy-Free"]
 }

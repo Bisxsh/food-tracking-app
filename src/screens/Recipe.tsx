@@ -21,6 +21,7 @@ export function Recipe(): JSX.Element {
 
   useEffect(() => {
     genRecipe()
+    getDietReq()
   },[]);
 
 
@@ -40,7 +41,7 @@ export function Recipe(): JSX.Element {
         }}>
         <Text>This is Profile page</Text>
           {recipes.map((recipe) => {
-            if( getDietReq().every(elem => recipe["recipe"]["healthLabels"].includes(elem))){
+            if( [].every(elem => recipe["recipe"]["healthLabels"].includes(elem))){
               return (
                 <RecipeBox recipeImage={recipe["recipe"]["image"]} recipeName={recipe["recipe"]["label"]} 
                 recipeCalories={recipe["recipe"]["calories"]} recipeServings={recipe["recipe"]["yield"]}
