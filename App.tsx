@@ -28,110 +28,63 @@ function App(): JSX.Element {
 
   return (
     <MenuProvider>
-      <UserDataContext.Provider value={{ userData, setUserData }}>
-        <NavigationContainer>
-          <Tab.Navigator
-            initialRouteName="HomeNavigator"
-            screenOptions={{
-              tabBarActiveTintColor: COLOURS.primary,
-              headerShown: false,
-            }}
-          >
-            <Tab.Screen
-              name="HomeNavigator"
-              component={HomeNavigator}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons
-                    name="home"
-                    color={color}
-                    size={size}
-                  />
-                ),
+      <UserContext.Provider value={{user, setUser}}>
+        <UserDataContext.Provider value={{ userData, setUserData }}>
+          <NavigationContainer>
+            <Tab.Navigator
+              initialRouteName="HomeNavigator"
+              screenOptions={{
+                tabBarActiveTintColor: COLOURS.primary,
+                headerShown: false,
               }}
-            />
-            <Tab.Screen
-              name="Recipe"
-              component={Recipe}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons
-                    name="food"
-                    color={color}
-                    size={size}
-                  />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="ProfileNavigator"
-              component={ProfileNavigator}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons
-                    name="account"
-                    color={color}
-                    size={size}
-                  />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </UserDataContext.Provider>
+            >
+              <Tab.Screen
+                name="HomeNavigator"
+                component={HomeNavigator}
+                options={{
+                  tabBarShowLabel: false,
+                  tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons
+                      name="home"
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="Recipe"
+                component={Recipe}
+                options={{
+                  tabBarShowLabel: false,
+                  tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons
+                      name="food"
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              />
+              <Tab.Screen
+                name="ProfileNavigator"
+                component={ProfileNavigator}
+                options={{
+                  tabBarShowLabel: false,
+                  tabBarIcon: ({ color, size }) => (
+                    <MaterialCommunityIcons
+                      name="account"
+                      color={color}
+                      size={size}
+                    />
+                  ),
+                }}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </UserDataContext.Provider>
+      </UserContext.Provider>
     </MenuProvider>
-    <UserContext.Provider value={{user, setUser}}>
-      <UserDataContext.Provider value={{ userData, setUserData }}>
-        <NavigationContainer>
-          <Tab.Navigator
-            initialRouteName="Home"
-            screenOptions={{
-              tabBarActiveTintColor: COLOURS.primary,
-              headerShown: false,
-            }}
-          >
-            <Tab.Screen
-              name="Home"
-              component={Home}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="home" color={color} size={size} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Recipe"
-              component={Recipe}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons name="food" color={color} size={size} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="ProfileNavigator"
-              component={ProfileNavigator}
-              options={{
-                tabBarShowLabel: false,
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialCommunityIcons
-                    name="account"
-                    color={color}
-                    size={size}
-                  />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </UserDataContext.Provider>
-    </UserContext.Provider>
-    
   );
 }
 
