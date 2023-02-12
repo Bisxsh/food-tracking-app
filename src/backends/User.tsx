@@ -1,3 +1,5 @@
+import React, { createContext, Dispatch, SetStateAction } from "react";
+
 import { UserSetting } from "./UserSetting"
 
 export class User{
@@ -18,13 +20,29 @@ export class User{
     }
 
     toList(): any[]{
-        return [this._id, this.name, this.imgSrc, this.dateOfReg, this.dietReq, JSON.stringify(this.setting)];
+        return [this._id, this.name, this.imgSrc, this.dateOfReg.toISOString().replace("T", " ").replace("Z", ""), this.dietReq.toString(), JSON.stringify(this.setting)];
     }
 
     static count = 0;
 
     static fromList(properties:any[]):User{
-        return new User(properties[1], properties[0], properties[2], properties[3], properties[4], UserSetting.fromList(Object.values(JSON.parse(properties[5]))));
+        return new User(properties[1], properties[0], properties[2], new Date((properties[3] as string).replace(" ", "T")+"Z"), (properties[4] as string).split(","), UserSetting.fromList(Object.values(JSON.parse(properties[5]))));
     }
     
 }
+
+export interface UserContextInterface {
+    user: User;
+    setUser: Dispatch<SetStateAction<User>>;
+}
+
+export const DEFAULT_USER: User = new User("Hello Welcome")
+  
+export const DEFAULT_USER_CONTEXT: UserContextInterface = {
+    user: DEFAULT_USER,
+    setUser: () => {},
+};
+
+export const UserContext = createContext<UserContextInterface>(
+    DEFAULT_USER_CONTEXT
+);

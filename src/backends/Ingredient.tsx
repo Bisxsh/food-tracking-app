@@ -27,7 +27,7 @@ export class Ingredient{
     }
 
     toList(): any[]{
-        return [this._id, this.name, this.quantity, this.weight, this.weightUnit, this.imgSrc, this.useDate, this.expiryDate, JSON.stringify(this.nutrition), this.categoryId];
+        return [this._id, this.name, this.quantity, this.weight, this.weightUnit, this.imgSrc, (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, JSON.stringify(this.nutrition), this.categoryId];
     }
 
     //#region getters and setters
@@ -85,8 +85,8 @@ export class Ingredient{
     static count:number = 0
 
     static fromList(properties:any[]): Ingredient{
-        //         Attribute  name           quantity       weightUnit    Nutrition                                                      CategoryID     _id            weight         imgSrc         useDate        expiryDate
-        return new Ingredient(properties[1], properties[2], properties[4], Nutrition.fromList(Object.values(JSON.parse(properties[8]))), properties[9], properties[0], properties[3], properties[5], properties[6], properties[7])
+        //         Attribute  name           quantity       weightUnit    Nutrition                                                      CategoryID     _id            weight         imgSrc         useDate                                                                                  expiryDate
+        return new Ingredient(properties[1], properties[2], properties[4], Nutrition.fromList(Object.values(JSON.parse(properties[8]))), properties[9], properties[0], properties[3], properties[5], (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined, (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined)
     }
 }
 
