@@ -6,10 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import * as DB from '../../backends/Database'
-import { Ingredient } from '../../backends/Ingredient';
-import { Nutrition } from '../../backends/Nutrition';
-import { COLOURS, ICON_SIZES, SPACING } from '../../util/GlobalStyles';
+import * as DB from '../../../backends/Database'
+import { Ingredient } from '../../../backends/Ingredient';
+import { Nutrition } from '../../../backends/Nutrition';
+import { COLOURS, ICON_SIZES, SPACING } from '../../../util/GlobalStyles';
 
 
 export function Profile(): JSX.Element {

@@ -1,13 +1,14 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
+import {Appearance as SysAppearance} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../util/GlobalStyles';
-import { User, UserContext } from '../../backends/User';
-import * as DB from '../../backends/Database';
-import { UserSetting } from '../../backends/UserSetting';
+import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/GlobalStyles';
+import { User, UserContext } from '../../../backends/User';
+import * as DB from '../../../backends/Database';
+import { UserSetting } from '../../../backends/UserSetting';
 
 const HorizontalLine = (
   <View
@@ -28,7 +29,9 @@ const NavigateRow = (text:string, destination: string)=>{
         justifyContent: "space-between",
         alignSelf: "flex-start",
       }}
-      onPress={()=>{navigation.navigate(destination)}}
+      onPress={async ()=>{
+        navigation.navigate(destination)
+      }}
     >
       <Text style={{
           flex: 1,
@@ -107,16 +110,12 @@ const TouchableRow = (text:string, func:Function)=>{
 
 export function Setting(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
-  const isDarkMode = false;
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const isDarkMode = (user.setting.appearance == 2 || (SysAppearance.getColorScheme()=="dark" && user.setting.appearance == 0));
 
   return (
     <View
       style={{
-        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         flex: 1,
       }}>
       <View style={styles.container}>

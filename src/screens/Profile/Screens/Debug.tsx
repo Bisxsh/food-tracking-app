@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Picker } from "@react-native-picker/picker";
 
 
-import * as DB from '../../backends/Database'
-import { Ingredient } from "../../backends/Ingredient";
-import { Nutrition } from "../../backends/Nutrition";
-import { Category } from "../../backends/Category";
-import { User } from "../../backends/User";
+import * as DB from '../../../backends/Database'
+import { Ingredient } from "../../../backends/Ingredient";
+import { Nutrition } from "../../../backends/Nutrition";
+import { Category } from "../../../backends/Category";
+import { User } from "../../../backends/User";
 
 export function Debug(): JSX.Element{
     const [ing, setIng] = useState<Ingredient>();

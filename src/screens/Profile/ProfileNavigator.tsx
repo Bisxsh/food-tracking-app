@@ -2,11 +2,13 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 
-
-import { Profile } from "./Profile";
+import { Profile } from "./Screens/Profile";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { Setting } from "./Setting";
-import { Debug } from "./Debug";
+import { Setting } from "./Screens/Setting";
+import { Debug } from "./Screens/Debug";
+import { About } from "./Screens/About";
+import { Help } from "./Screens/Help";
+import { Theme } from "./Screens/Theme";
 
 const stack = createNativeStackNavigator();
 
@@ -26,10 +28,10 @@ export function ProfileNavigator(): JSX.Element{
             <stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
             <stack.Screen name="Setting" component={Setting}/>
             <stack.Screen name="Account" component={Setting}/>
-            <stack.Screen name="Theme" component={Setting}/>
+            <stack.Screen name="Theme" component={Theme}/>
             <stack.Screen name="Debug" component={Debug}/>
-            <stack.Screen name="Help" component={Setting}/>
-            <stack.Screen name="About" component={Setting}/>
+            <stack.Screen name="Help" component={Help}/>
+            <stack.Screen name="About" component={About}/>
         </stack.Navigator>
     );
 }
