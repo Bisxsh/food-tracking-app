@@ -1,11 +1,112 @@
 import { MaterialIcons } from '@expo/vector-icons';
-import React from 'react';
-import {SafeAreaView, ScrollView, StatusBar, Switch, Text, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../util/GlobalStyles';
+import { User, UserContext } from '../../backends/User';
+import * as DB from '../../backends/Database';
+import { UserSetting } from '../../backends/UserSetting';
+
+const HorizontalLine = (
+  <View
+    style={{
+      borderColor: COLOURS.darkGrey,
+      borderBottomWidth: 1,
+      alignSelf: "stretch",
+    }}
+  />
+);
+
+const NavigateRow = (text:string, destination: string)=>{
+  const navigation = useNavigation<any>();
+  return (
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignSelf: "flex-start",
+      }}
+      onPress={()=>{navigation.navigate(destination)}}
+    >
+      <Text style={{
+          flex: 1,
+          fontSize: FONT_SIZES.medium,
+          alignSelf: "center",
+          marginVertical: SPACING.small,
+        }}
+      >{text}</Text>
+      <MaterialIcons 
+        name="arrow-forward-ios" 
+        color={COLOURS.black} 
+        size={ICON_SIZES.medium} 
+        style={{alignSelf: "center",}}
+      />
+    </TouchableOpacity>
+  );
+}
+
+const SwitchRow = (text:string, key: keyof UserSetting)=>{
+  const { user, setUser } = useContext(UserContext);
+  const [ value, setValue ] = useState<boolean>(user.setting[key] as boolean);
+
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignSelf: "flex-start",
+      }}
+    >
+      <Text style={{
+          flex: 1,
+          fontSize: FONT_SIZES.medium,
+          alignSelf: "center",
+          marginVertical: SPACING.small,
+        }}
+      >{text}</Text>
+      <Switch
+        style={{
+          flex: 1,
+          alignSelf: "center"
+        }}
+        value={value}
+        onValueChange={(value)=>{
+          (user.setting[key] as boolean) = value
+          setUser(user)
+          setValue(value)
+          DB.updateUser(user)
+        }}
+      />
+    </View>
+  );
+}
+
+const TouchableRow = (text:string, func:Function)=>{
+  return (
+    <TouchableOpacity
+      style={{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignSelf: "flex-start",
+      }}
+      onPress={func()}
+    >
+      <Text style={{
+          flex: 1,
+          fontSize: FONT_SIZES.medium,
+          alignSelf: "center",
+          marginVertical: SPACING.small,
+          color: COLOURS.textTouchable,
+        }}
+      >{text}</Text>
+    </TouchableOpacity>
+  )
+}
 
 export function Setting(): JSX.Element {
+  const { user, setUser } = useContext(UserContext);
   const isDarkMode = false;
 
   const backgroundStyle = {
@@ -18,214 +119,38 @@ export function Setting(): JSX.Element {
         backgroundColor: isDarkMode ? Colors.black : Colors.white,
         flex: 1,
       }}>
-      <View 
-        style={{
-          backgroundColor: COLOURS.grey,
-          flexDirection: "column",
-          alignSelf: "flex-start",
-          margin: SPACING.medium,
-          paddingHorizontal: SPACING.medium,
-          borderRadius: RADIUS.standard,
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-          onPress={()=>{}}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >Edit Account</Text>
-          <MaterialIcons 
-            name="arrow-forward-ios" 
-            color={COLOURS.black} 
-            size={ICON_SIZES.medium} 
-            style={{alignSelf: "center",}}
-          />
-        </TouchableOpacity>
+      <View style={styles.container}>
+        {NavigateRow("Edit Account", "Account")}
       </View>
-      <View 
-        style={{
-          backgroundColor: COLOURS.grey,
-          flexDirection: "column",
-          alignSelf: "flex-start",
-          margin: SPACING.medium,
-          paddingHorizontal: SPACING.medium,
-          borderRadius: RADIUS.standard,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >Notification</Text>
-          <Switch
-            style={{
-              flex: 1,
-              alignSelf: "center"
-            }}
-          />
-        </View>
-        <View
-          style={{
-            borderColor: COLOURS.darkGrey,
-            borderBottomWidth: 1,
-            alignSelf: "stretch",
-          }}
-        />
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-          onPress={()=>{}}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >Theme</Text>
-          <MaterialIcons 
-            name="arrow-forward-ios" 
-            color={COLOURS.black} 
-            size={ICON_SIZES.medium} 
-            style={{alignSelf: "center",}}
-          />
-        </TouchableOpacity>
+      <View style={styles.container}>
+        {SwitchRow("Notification", "notification")}
+        {HorizontalLine}
+        {NavigateRow("Theme", "Theme")}
       </View>
-      <View 
-        style={{
-          backgroundColor: COLOURS.grey,
-          flexDirection: "column",
-          alignSelf: "flex-start",
-          margin: SPACING.medium,
-          paddingHorizontal: SPACING.medium,
-          borderRadius: RADIUS.standard,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >Debug Mode</Text>
-          <Switch
-            style={{
-              flex: 1,
-              alignSelf: "center"
-            }}
-          />
-        </View>
-        <View
-          style={{
-            borderColor: COLOURS.darkGrey,
-            borderBottomWidth: 1,
-            alignSelf: "stretch",
-          }}
-        />
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-          onPress={()=>{}}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-              color: COLOURS.textTouchable,
-            }}
-          >Reset</Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            borderColor: COLOURS.darkGrey,
-            borderBottomWidth: 1,
-            alignSelf: "stretch",
-          }}
-        />
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-          onPress={()=>{}}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >Help</Text>
-          <MaterialIcons 
-            name="arrow-forward-ios" 
-            color={COLOURS.black} 
-            size={ICON_SIZES.medium} 
-            style={{alignSelf: "center",}}
-          />
-        </TouchableOpacity>
-        <View
-          style={{
-            borderColor: COLOURS.darkGrey,
-            borderBottomWidth: 1,
-            alignSelf: "stretch",
-          }}
-        />
-        <TouchableOpacity
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignSelf: "flex-start",
-          }}
-          onPress={()=>{}}
-        >
-          <Text style={{
-              flex: 1,
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "center",
-              marginVertical: SPACING.small,
-            }}
-          >About</Text>
-          <MaterialIcons 
-            name="arrow-forward-ios" 
-            color={COLOURS.black} 
-            size={ICON_SIZES.medium} 
-            style={{alignSelf: "center",}}
-          />
-        </TouchableOpacity>
+      <View style={styles.container}>
+        {SwitchRow("Debug Mode", "debug")}
+        {user.setting.debug && (
+          NavigateRow("Debug Window", "Debug")
+        )}
+        {HorizontalLine}
+        {TouchableRow("Reset", ()=>{})}
+        {HorizontalLine}
+        {NavigateRow("Help", "Help")}
+        {HorizontalLine}
+        {NavigateRow("About", "About")}
       </View>
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: COLOURS.grey,
+    flexDirection: "column",
+    alignSelf: "flex-start",
+    margin: SPACING.medium,
+    paddingHorizontal: SPACING.medium,
+    borderRadius: RADIUS.standard,
+  },
+});

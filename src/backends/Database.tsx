@@ -6,7 +6,6 @@ import { Category } from "./Category";
 import { User } from "./User";
 
 
-
 interface Schema {
     name: string,
     properties: any,
@@ -45,9 +44,9 @@ const UserSchema: Schema = {
         _id: "int primary key not null",
         name: "ntext not null",
         imgSrc: "ntext",
-        dateOfReg: "date not null",
+        dateOfReg: "date",
         dietReq: "ntext not null",
-        setting: "ntext not null"
+        setting: "ntext not null",
     }
 }
 
@@ -59,6 +58,7 @@ const SettingSchema: Schema = {
         useId: "int not null",
         notification: "boolean",
         appearance: "int not null",
+        debug: "boolean"
     }
 }
 
@@ -100,10 +100,10 @@ const NutritionSchema: Schema = {
 // ======== Basic Operation on DB ==============================================================
 
 function openDB(): sq.WebSQLDatabase{
-    return sq.openDatabase("DB.db", "v3")
+    return sq.openDatabase("DB.db", "v4")
 }
 
-async function transaction(sql:string, arg:any[], description?:string, verbose = true):Promise<sq.SQLResultSet | undefined>{
+async function transaction(sql:string, arg:any[], description?:string, verbose = false):Promise<sq.SQLResultSet | undefined>{
     var db = openDB()
     var result: sq.SQLResultSet | undefined;
     
@@ -124,7 +124,7 @@ async function transaction(sql:string, arg:any[], description?:string, verbose =
                 },
             );
         },
-        () => {console.log('FAIL: SQL Execution')},
+        (reason?:any) => {console.log('FAIL: SQL Execution\n' + reason)},
         () => {if (verbose) {console.log('SUCCESS: SQL Execution')}}
         )
     })
@@ -136,7 +136,7 @@ async function transaction(sql:string, arg:any[], description?:string, verbose =
 
 // ======== Create tables ==============================================================
 
-function createTable(schema: Schema){
+async function createTable(schema: Schema){
     var sql:string = "create table if not exists " + schema.name + " ("
 
     for (const key of Object.keys(schema.properties)){
@@ -145,13 +145,13 @@ function createTable(schema: Schema){
 
     sql = sql.substring(0, sql.length -2) + ");"
 
-    transaction(sql, [], "Create table")
+    await transaction(sql, [], "Create table")
 }
 
-export function init(){
-    createTable(IngredientSchema);
-    createTable(CategorySchema);
-    createTable(UserSchema);
+export async function init(){
+    await createTable(IngredientSchema);
+    await createTable(CategorySchema);
+    await createTable(UserSchema);
 }
 
 // ======== Create records ==============================================================
@@ -174,7 +174,7 @@ export function create(value: any){
         transaction(sql, arg, "Insert record")
     }else if (value instanceof User){
         const arg = value.toList()
-        sql = "insert into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        sql = "insert or ignore into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
         transaction(sql, arg, "Insert record")
     }
 }
@@ -336,7 +336,6 @@ export function updateIngredient(ingredient: Ingredient){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
-    console.log(sql)
     transaction(sql, arg, "Update record")
 }
 
@@ -347,7 +346,6 @@ export function updateCategory(Category: Category){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
-    console.log(sql)
     transaction(sql, arg, "Update record")
 }
 
@@ -358,7 +356,6 @@ export function updateUser(User: User){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
-    console.log(sql)
     transaction(sql, arg, "Update record")
 }
 
