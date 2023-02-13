@@ -27,11 +27,7 @@ import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 
-type Props = {
-  setShowManual?: (showManual: boolean) => void;
-  setIngredient?: (ingredient: IngredientBuilder | null) => void;
-  ingredientBuilder?: IngredientBuilder;
-};
+type Props = {};
 
 const ManualIngredient = (props: Props) => {
   const { homeContext, setHomeContext } = useContext(HomeContext);
@@ -42,8 +38,6 @@ const ManualIngredient = (props: Props) => {
     homeContext.ingredientBeingEdited || new IngredientBuilder();
   const [categories, setCategories] = useState<Category[]>(
     userData.ingredientCategories.map((cat) => {
-      console.log(cat);
-      console.log(ingredientBuilder.getCategories().includes(cat));
       return {
         ...cat,
         active:
@@ -57,6 +51,8 @@ const ManualIngredient = (props: Props) => {
     })
   );
 
+  console.log(ingredientBuilder);
+
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
@@ -67,13 +63,9 @@ const ManualIngredient = (props: Props) => {
       return;
     }
     ingredientBuilder.setCategories(categories.filter((cat) => cat.active));
-    if (
-      ingredientBuilder.getId() == 0 &&
-      userData.storedIngredients.length > 0
-    ) {
+    if (ingredientBuilder.getId() == -1) {
       ingredientBuilder.setId(userData.storedIngredients.length);
     }
-    console.log("ID: ", ingredientBuilder.getId());
     if (
       userData.storedIngredients.find(
         (ing) => ing.id === ingredientBuilder.getId()
@@ -90,15 +82,12 @@ const ManualIngredient = (props: Props) => {
   }
 
   function closeManual() {
-    props.setIngredient && props.setIngredient(null);
     setHomeContext({ ...homeContext, ingredientBeingEdited: null });
     navigation.reset({
       index: 0,
       routes: [{ name: "Home" }],
     });
   }
-
-  console.log("ManualIngredient: ", ingredientBuilder.getCategories());
 
   return (
     <View style={styles.container}>
@@ -130,12 +119,14 @@ const ManualIngredient = (props: Props) => {
           required
           width={Dimensions.get("screen").width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setExpiryDate(date)}
+          defaultValue={ingredientBuilder.getExpiryDate()}
         />
         {getSeperator()}
         <DateField
           fieldName="Use-by Date"
           width={Dimensions.get("screen").width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setUseDate(date)}
+          defaultValue={ingredientBuilder.getUseDate()}
         />
         {getSeperator()}
         <ChipsSelectors
@@ -173,7 +164,11 @@ const ManualIngredient = (props: Props) => {
             numberInput
             textHint="Quantity"
             width={180}
-            defaultValue={ingredientBuilder.getQuantity()?.toString()}
+            defaultValue={
+              ingredientBuilder.getQuantity() == 0
+                ? undefined
+                : ingredientBuilder.getQuantity().toString()
+            }
           />
         </View>
         {getSeperator()}
@@ -189,12 +184,20 @@ const ManualIngredient = (props: Props) => {
           textHintLeft="kcal"
           textHintRight="g"
           defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getEnergy()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getEnergy() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
           defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getProtein()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getProtein() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
         />
         {getSeperator()}
@@ -210,14 +213,20 @@ const ManualIngredient = (props: Props) => {
           textHintLeft="g"
           textHintRight="g"
           defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getFat()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getFat() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
           defaultValueRight={
-            ingredientBuilder
-              .getNutritionBuilder()
-              .getSaturatedFat()
-              ?.toString() || undefined
+            ingredientBuilder.getNutritionBuilder().getSaturatedFat() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
         />
         {getSeperator()}
@@ -233,12 +242,20 @@ const ManualIngredient = (props: Props) => {
           textHintLeft="g"
           textHintRight="g"
           defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getCarbs()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getCarbs() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
           defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getSugar()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getSugar() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
         />
         {getSeperator()}
@@ -254,12 +271,20 @@ const ManualIngredient = (props: Props) => {
           textHintLeft="g"
           textHintRight="g"
           defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getFibre()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getFibre() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
           defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getSalt()?.toString() ||
-            undefined
+            ingredientBuilder.getNutritionBuilder().getSalt() == 0
+              ? undefined
+              : ingredientBuilder
+                  .getNutritionBuilder()
+                  .getEnergy()
+                  ?.toString() || undefined
           }
         />
         {getSeperator()}

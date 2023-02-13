@@ -18,12 +18,14 @@ type Props = {
   fieldName: string;
   width?: number;
   setValue: (date: Date) => void;
+  defaultValue?: Date;
 };
 
 const DateField = (props: Props) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const [dateString, setDateString] = useState(
-    new Date().toString().substring(0, 15)
+    props.defaultValue?.toString().substring(0, 15) ||
+      new Date().toString().substring(0, 15)
   );
   const setDateNew = (event: DateTimePickerEvent, date?: Date | undefined) => {
     const {
