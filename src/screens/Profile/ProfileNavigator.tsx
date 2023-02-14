@@ -11,6 +11,7 @@ import { Help } from "./Screens/Help";
 import { Theme } from "./Screens/Theme";
 import { UserContext } from "../../backends/User";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+import { Account } from "./Screens/Account";
 
 
 export type StackParams ={
@@ -59,13 +60,12 @@ export function ProfileNavigator(): JSX.Element{
                     },
                     headerTintColor: isDarkMode ? Colors.white : Colors.black,
                     headerShadowVisible: false,
-                    
                 })}
                 
             >
                 <stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
                 <stack.Screen name="Setting" component={Setting}/>
-                <stack.Screen name="Account" component={Setting}/>
+                <stack.Screen name="Account" component={Account}/>
                 <stack.Screen name="Theme" component={Theme}/>
                 <stack.Screen name="Debug" component={Debug}/>
                 <stack.Screen name="Help" component={Help}/>

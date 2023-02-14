@@ -12,8 +12,10 @@ export class Ingredient{
     expiryDate?: Date
     nutrition: Nutrition
     categoryId: number
+    barcode?: number
+    memo?: string
 
-    constructor(name:string, quantity: number, weightUnit: string, nutrition: Nutrition, categoryId: number, _id?: number, weight?: number, imgSrc?: string, useDate?: Date, expiryDate?: Date){
+    constructor(name:string, quantity: number, weightUnit: string, nutrition: Nutrition, categoryId: number, _id?: number, weight?: number, imgSrc?: string, useDate?: Date, expiryDate?: Date, barcode?: number, memo?: string){
         this._id = (_id != undefined)? _id: Ingredient.count ++
         this.name = name
         this.quantity = quantity
@@ -24,10 +26,12 @@ export class Ingredient{
         this.expiryDate = expiryDate
         this.nutrition = nutrition
         this.categoryId = categoryId
+        this.barcode = barcode
+        this.memo = (memo != undefined)? memo: ""
     }
 
     toList(): any[]{
-        return [this._id, this.name, this.quantity, this.weight, this.weightUnit, this.imgSrc, (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, JSON.stringify(this.nutrition), this.categoryId];
+        return [this._id, this.name, this.quantity, this.weight, this.weightUnit, this.imgSrc, (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, JSON.stringify(this.nutrition), this.categoryId, this.barcode, this.memo];
     }
 
     //#region getters and setters
@@ -85,8 +89,8 @@ export class Ingredient{
     static count:number = 0
 
     static fromList(properties:any[]): Ingredient{
-        //         Attribute  name           quantity       weightUnit    Nutrition                                                      CategoryID     _id            weight         imgSrc         useDate                                                                                  expiryDate
-        return new Ingredient(properties[1], properties[2], properties[4], Nutrition.fromList(Object.values(JSON.parse(properties[8]))), properties[9], properties[0], properties[3], properties[5], (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined, (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined)
+        //         Attribute  name           quantity       weightUnit    Nutrition                                                      CategoryID     _id            weight         imgSrc         useDate                                                                                  expiryDate                                                                             barcode        memo
+        return new Ingredient(properties[1], properties[2], properties[4], Nutrition.fromList(Object.values(JSON.parse(properties[8]))), properties[9], properties[0], properties[3], properties[5], (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined, (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined, properties[8], properties[9])
     }
 }
 

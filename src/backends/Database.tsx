@@ -24,7 +24,9 @@ const IngredientSchema: Schema = {
         useDate: "date",
         expiryDate: "date",
         nutrition: "ntext not null",
-        categoryId: "int not null",
+        categoryId: "int references Category(_id)",
+        barcode: "int",
+        memo: "ntext",
     },
 };
 
@@ -100,10 +102,14 @@ const NutritionSchema: Schema = {
 // ======== Basic Operation on DB ==============================================================
 
 function openDB(): sq.WebSQLDatabase{
-    return sq.openDatabase("DB.db", "v4")
+    const db = sq.openDatabase("DB.db", "v5")
+    db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
+        console.log('Foreign keys turned on')
+    );
+    return db
 }
 
-async function transaction(sql:string, arg:any[], description?:string, verbose = false):Promise<sq.SQLResultSet | undefined>{
+async function transaction(sql:string, arg:any[], description?:string, verbose = true):Promise<sq.SQLResultSet | undefined>{
     var db = openDB()
     var result: sq.SQLResultSet | undefined;
     
@@ -149,9 +155,9 @@ async function createTable(schema: Schema){
 }
 
 export async function init(){
-    await createTable(IngredientSchema);
     await createTable(CategorySchema);
     await createTable(UserSchema);
+    await createTable(IngredientSchema);
 }
 
 // ======== Create records ==============================================================
@@ -181,12 +187,13 @@ export function create(value: any){
 
 // ======== Create records ==============================================================
 
-async function readAll(schema: Schema, property?:string, arg?: any): Promise<Object[]>{
+async function readAll(schema: Schema, property?:string, arg?: any, partial=false): Promise<Object[]>{
     var sql: string = "select * from " + schema.name
     var result
     if (property != undefined && arg != undefined){
-        sql = sql + " where "+ property +" = ?;"
-        result = await transaction(sql, [arg], "Select record")
+        sql = sql + " where "+ property + ((partial)? " like '%"+arg+"%';": " = ?;")
+        console.log(sql)
+        result = await transaction(sql, (partial)? []: [arg], "Select record")
     }else{
         sql += ";"
         result = await transaction(sql, [], "Select record")
@@ -217,6 +224,8 @@ export async function readIngredient(id: number):Promise<Ingredient|undefined>
 
 export async function readIngredient(name: string):Promise<Ingredient[]|[]>
 
+export async function readIngredient(category: Category):Promise<Ingredient[]|[]>
+
 export async function readIngredient(value: any): Promise<any>{
 
     switch(typeof(value)){
@@ -227,13 +236,20 @@ export async function readIngredient(value: any): Promise<any>{
             }
             break;
         case "string":
-            const rows = await readAll(IngredientSchema, "name", value);
+            const rows = await readAll(IngredientSchema, "name", value, true);
             const ings: Ingredient[] = [];
             for (const row of rows){
                 ings.push(Ingredient.fromList(Object.values(row)));
             }
             return ings;
         default:
+            if (value instanceof Category){
+                const rows = await readAll(IngredientSchema, "categoryId", value._id, true);
+                const ings: Ingredient[] = [];
+                for (const row of rows){
+                    ings.push(Ingredient.fromList(Object.values(row)));
+                }
+            }
             break;
     }
 
@@ -440,10 +456,10 @@ export function deleteAllUser(){
 
 export async function deleteFile(verbose=false){
     const dir:string[] = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")
-
     if (dir.indexOf("DB.db") != -1){
-        await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/DB.db")
-        await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/DB.db-journal")
+        for (const file of dir){
+            await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/"+file)
+        }
         if (verbose){
             if ((await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")).length == 0){
                 console.log("SUCCESS: Delete file")
