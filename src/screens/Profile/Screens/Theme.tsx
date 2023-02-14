@@ -1,7 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
-import {Appearance as SysAppearance} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -9,6 +8,7 @@ import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/
 import { User, UserContext } from '../../../backends/User';
 import * as DB from '../../../backends/Database';
 import { Appearance, UserSetting } from '../../../backends/UserSetting';
+import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 
 
 type ItemProp = {
@@ -83,9 +83,10 @@ const TouchableSelector = (texts: string[], func: Function, defaultIndex: number
     )
 }
 
-export function Theme(): JSX.Element {
+export function Theme({navigation}: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
-  const isDarkMode = (user.setting.appearance == 2 || (SysAppearance.getColorScheme()=="dark" && user.setting.appearance == 0));
+  const { tabNavi, setTabNavi } = useContext(TabNaviContext)
+  var isDarkMode = user.setting.isDark()
 
   return (
     <View
@@ -99,6 +100,18 @@ export function Theme(): JSX.Element {
                 user.setting.appearance = index
                 setUser(user)
                 DB.updateUser(user)
+                isDarkMode = user.setting.isDark()
+                tabNavi?.setOptions({
+                  tabBarStyle: {
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white
+                  }
+                })
+                navigation.setOptions({
+                  headerStyle: {
+                      backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                  },
+                  headerTintColor: isDarkMode ? Colors.white : Colors.black,
+                })
             },
             user.setting.appearance
         )}

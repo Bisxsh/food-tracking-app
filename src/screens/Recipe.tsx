@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Text, View, Button, Image} from 'react-native';
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 import { getRecipes, getDietReq } from '../util/GetRecipe';
@@ -6,14 +6,19 @@ import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestMicrophonePermissionsAsync } from 'expo-camera';
 import RecipeBox from '../components/RecipeBox';
+import { useNavigation } from '@react-navigation/native';
+import { UserContext } from '../backends/User';
 
 
 export function Recipe(): JSX.Element {
-  const isDarkMode = false;
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const { user, setUser } = useContext(UserContext);
+  const isDarkMode = user.setting.isDark()
+  
+  useNavigation()?.setOptions({
+      tabBarStyle: {
+        backgroundColor: isDarkMode ? Colors.darker : Colors.white
+      }
+  })
 
 
   const [recipes, setRecipes] = useState<any[]>([]);
@@ -34,7 +39,7 @@ export function Recipe(): JSX.Element {
   return (
       <View
         style={{
-          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
           flex: 1,
           justifyContent: "center",
           alignItems: "center"

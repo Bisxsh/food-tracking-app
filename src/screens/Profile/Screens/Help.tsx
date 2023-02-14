@@ -1,20 +1,18 @@
-import React, {} from 'react';
+import React, { useContext } from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
+import { UserContext } from '../../../backends/User';
 import { COLOURS, RADIUS, SPACING } from '../../../util/GlobalStyles';
 
 export function Help(): JSX.Element{
-    const isDarkMode = false;
-
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+    const { user, setUser } = useContext(UserContext);
+    const isDarkMode = user.setting.isDark()
 
     return (
         <View
             style={{
-                backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                 flex: 1,
             }}
         >

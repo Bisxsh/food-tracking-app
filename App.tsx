@@ -12,6 +12,7 @@ import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
 import HomeNavigator from "./src/screens/Home/components/HomeNavigator";
 import { DEFAULT_USER, UserContext } from "./src/backends/User";
 import * as DB from './src/backends/Database';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,7 +25,8 @@ function App(): JSX.Element {
   DB.init().then(()=>{
     DB.create(user)
   })
-  
+  const isDarkMode = user.setting.isDark()
+
 
   return (
     <MenuProvider>
@@ -36,6 +38,9 @@ function App(): JSX.Element {
               screenOptions={{
                 tabBarActiveTintColor: COLOURS.primary,
                 headerShown: false,
+                tabBarStyle: {
+                  backgroundColor: isDarkMode ? Colors.darker : Colors.white
+                }
               }}
             >
               <Tab.Screen
@@ -50,6 +55,7 @@ function App(): JSX.Element {
                       size={size}
                     />
                   ),
+                  unmountOnBlur: true
                 }}
               />
               <Tab.Screen
@@ -64,6 +70,7 @@ function App(): JSX.Element {
                       size={size}
                     />
                   ),
+                  unmountOnBlur: true
                 }}
               />
               <Tab.Screen
@@ -78,6 +85,7 @@ function App(): JSX.Element {
                       size={size}
                     />
                   ),
+                  unmountOnBlur: true
                 }}
               />
             </Tab.Navigator>
