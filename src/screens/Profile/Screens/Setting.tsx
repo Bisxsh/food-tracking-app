@@ -4,10 +4,12 @@ import {StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../util/GlobalStyles';
-import { User, UserContext } from '../../backends/User';
-import * as DB from '../../backends/Database';
-import { UserSetting } from '../../backends/UserSetting';
+import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/GlobalStyles';
+import { User, UserContext } from '../../../backends/User';
+import * as DB from '../../../backends/Database';
+import { UserSetting } from '../../../backends/UserSetting';
+import { ScreenProp, StackParams } from '../ProfileNavigator';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 const HorizontalLine = (
   <View
@@ -19,8 +21,7 @@ const HorizontalLine = (
   />
 );
 
-const NavigateRow = (text:string, destination: string)=>{
-  const navigation = useNavigation<any>();
+const NavigateRow = (text:string, destination: keyof StackParams, navigation: NativeStackNavigationProp<StackParams, any, undefined>)=>{
   return (
     <TouchableOpacity
       style={{
@@ -28,7 +29,9 @@ const NavigateRow = (text:string, destination: string)=>{
         justifyContent: "space-between",
         alignSelf: "flex-start",
       }}
-      onPress={()=>{navigation.navigate(destination)}}
+      onPress={async ()=>{
+        navigation.navigate(destination)
+      }}
     >
       <Text style={{
           flex: 1,
@@ -105,39 +108,45 @@ const TouchableRow = (text:string, func:Function)=>{
   )
 }
 
-export function Setting(): JSX.Element {
+export function Setting({navigation}: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
-  const isDarkMode = false;
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark())
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  useEffect(
+    ()=>{
+      const unsubscribe = navigation.addListener("focus", ()=>{
+        setIsDarkMode(user.setting.isDark())
+      })
+      return unsubscribe
+    }, 
+    [navigation]
+  ) 
 
   return (
     <View
       style={{
-        backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         flex: 1,
       }}>
       <View style={styles.container}>
-        {NavigateRow("Edit Account", "Account")}
+        {NavigateRow("Edit Account", "Account", navigation)}
       </View>
       <View style={styles.container}>
         {SwitchRow("Notification", "notification")}
         {HorizontalLine}
-        {NavigateRow("Theme", "Theme")}
+        {NavigateRow("Theme", "Theme", navigation)}
       </View>
       <View style={styles.container}>
         {SwitchRow("Debug Mode", "debug")}
         {user.setting.debug && (
-          NavigateRow("Debug Window", "Debug")
+          NavigateRow("Debug Window", "Debug", navigation)
         )}
         {HorizontalLine}
         {TouchableRow("Reset", ()=>{})}
         {HorizontalLine}
-        {NavigateRow("Help", "Help")}
+        {NavigateRow("Help", "Help", navigation)}
         {HorizontalLine}
-        {NavigateRow("About", "About")}
+        {NavigateRow("About", "About", navigation)}
       </View>
     </View>
   );

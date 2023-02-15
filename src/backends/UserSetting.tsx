@@ -1,3 +1,5 @@
+import {Appearance as SysAppearance} from 'react-native';
+
 
 export const Appearance = {
     0: "System",
@@ -19,6 +21,10 @@ export class UserSetting{
 
     toList(): any[]{
         return [this.notification, this.appearance, this.debug];
+    }
+
+    isDark():boolean{
+        return (this.appearance == 2 || (SysAppearance.getColorScheme()=="dark" && this.appearance == 0));
     }
 
     static fromList(properties:any[]):UserSetting{

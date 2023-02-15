@@ -1,27 +1,22 @@
-import { useState } from "react";
+import React, {useContext, useState} from 'react';
 import { Colors } from "react-native/Libraries/NewAppScreen";
-import { Button, Text, View, ScrollView, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { Button, Text, View } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 
 
-import * as DB from '../../backends/Database'
-import { Ingredient } from "../../backends/Ingredient";
-import { Nutrition } from "../../backends/Nutrition";
-import { Category } from "../../backends/Category";
-import { User } from "../../backends/User";
+import * as DB from '../../../backends/Database'
+import { Ingredient } from "../../../backends/Ingredient";
+import { Nutrition } from "../../../backends/Nutrition";
+import { Category } from "../../../backends/Category";
+import { User, UserContext } from '../../../backends/User';
 
 export function Debug(): JSX.Element{
     const [ing, setIng] = useState<Ingredient>();
     const [cat, setCat] = useState<Category>();
-    const [user, setUser] = useState<User>();
+    const [userLocal, setUserLocal] = useState<User>();
+    const { user, setUser } = useContext(UserContext);
     const [selectedTable, setSelectedTable] = useState<string>("Ingredient");
-    const isDarkMode = false;
-
-    const backgroundStyle = {
-        backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-    };
+    const isDarkMode = user.setting.isDark()
 
     return (
         <View 
@@ -32,7 +27,7 @@ export function Debug(): JSX.Element{
         >
             <View
                 style={{
-                    //backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                     flex: 1,
                     flexDirection: "column",
                     alignItems: "flex-start",
@@ -54,7 +49,7 @@ export function Debug(): JSX.Element{
             </View>
             <View
                 style={{
-                    backgroundColor: isDarkMode ? Colors.black : Colors.white,
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                     flex: 1,
                     justifyContent: "space-around",
                     alignItems: "flex-start",
@@ -83,7 +78,7 @@ export function Debug(): JSX.Element{
                                 break;
                             case "User":
                                 const newUser = new User("Hello Welcome")
-                                setUser(newUser)
+                                setUserLocal(newUser)
                                 console.log(newUser)
                                 break;
                             default:
@@ -102,7 +97,7 @@ export function Debug(): JSX.Element{
                                 if (cat){ DB.create(cat) }
                                 break;
                             case "User":
-                                if (user){ DB.create(user) }
+                                if (userLocal){ DB.create(userLocal) }
                                 break;
                             default:
                                 break;
