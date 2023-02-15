@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Recipe } from "./src/screens/Recipe";
+import { Recipe } from "./src/screens/Recipe/Recipe";
 import { COLOURS } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
