@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
 import CustomSearchBar from "../../components/CustomSearchBar";
-import SortButton from "../../components/SortButton";
 import IngredientsFilter from "../../components/IngredientsFilter";
 import { UserDataContext } from "../../classes/UserData";
 
