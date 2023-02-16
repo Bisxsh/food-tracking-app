@@ -15,7 +15,14 @@ const IndgredientView = (props: Props) => {
   const navigation = useNavigation<any>();
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        userData.storedIngredients.length > 2
+          ? { justifyContent: "center" }
+          : {},
+      ]}
+    >
       {userData.storedIngredients.map((ingredient) => (
         <TouchableOpacity
           onPress={() => {

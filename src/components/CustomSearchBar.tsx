@@ -40,11 +40,12 @@ const styles = (props: Props) =>
       width: props.width ? props.width : "auto",
       alignSelf: "stretch",
       height: props.height ? props.height : "auto",
-      marginLeft: SPACING.medium,
+      marginLeft: SPACING.small,
       marginRight: SPACING.medium,
       padding: SPACING.small,
       paddingLeft: SPACING.medium,
       paddingRight: SPACING.medium,
       borderRadius: RADIUS.standard,
+      flex: 1,
     },
   });
