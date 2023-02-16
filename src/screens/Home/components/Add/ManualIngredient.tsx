@@ -159,12 +159,12 @@ const ManualIngredient = (props: Props) => {
             defaultText={ingredientBuilder.getWeight()?.toString() || undefined}
             defaultUnit={ingredientBuilder.getWeightType()}
           />
+          <View style={{ width: SPACING.medium }} />
           <InputField
             fieldName="Quantity"
             onTextChange={(quantity) => ingredientBuilder.setQuantity(quantity)}
             numberInput
             textHint="Quantity"
-            width={180}
             defaultValue={
               ingredientBuilder.getQuantity() == 0
                 ? undefined

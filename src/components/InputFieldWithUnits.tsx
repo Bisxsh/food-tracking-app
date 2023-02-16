@@ -24,7 +24,6 @@ type Props = {
 };
 
 const InputFieldWithUnits = (props: Props) => {
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(
     props.defaultUnit || props.units[0]?.toString() || "Select"
   );
@@ -36,7 +35,6 @@ const InputFieldWithUnits = (props: Props) => {
         fieldName={props.fieldName}
         required={props.required}
         onTextChange={props.onTextChange}
-        width={props.textWidth}
         numberInput
         defaultValue={props.defaultText}
       />
@@ -74,6 +72,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
   },
   unitContainer: {
     flex: 1,
