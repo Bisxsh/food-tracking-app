@@ -82,7 +82,16 @@ export function Home(): JSX.Element {
           setIngredientsSearch={setIngredientsSearch}
           setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
         />
-        <IndgredientView />
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <IndgredientView />
+        </View>
         <View style={{ flex: 1 }} />
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />

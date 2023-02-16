@@ -21,13 +21,13 @@ const HomeMenu = (props: Props) => {
         textHint="Search stored ingredients"
         text={props.ingredientsSearch}
         setText={props.setIngredientsSearch}
-        width={250}
+        // width={250}
       />
       <SortButton
         options={props.sortFilters}
         selectedOption={props.sort}
         setSelectedOption={props.setSort}
-        width={216}
+        // width={216}
       />
       <IngredientsFilter
         options={userData.ingredientCategories}
@@ -45,6 +45,6 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
 });
