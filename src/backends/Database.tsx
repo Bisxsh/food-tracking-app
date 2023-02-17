@@ -24,7 +24,7 @@ const IngredientSchema: Schema = {
         useDate: "date",
         expiryDate: "date",
         nutrition: "ntext not null",
-        categoryId: "int references Category(_id)",
+        categoryId: "text",
         barcode: "int",
         memo: "ntext",
     },
@@ -98,6 +98,17 @@ const NutritionSchema: Schema = {
         sugarUnit: "ntext not null",
     },
 };
+
+const MealSchema: Schema = {
+    name: "Meal",
+    properties: {
+        _id: "int primary key not null",
+        name: "ntext not null",
+        url: "ntext",
+        imgSrc: "ntext",
+        category: "text",
+    }
+}
 
 // ======== Basic Operation on DB ==============================================================
 
@@ -244,7 +255,7 @@ export async function readIngredient(value: any): Promise<any>{
             return ings;
         default:
             if (value instanceof Category){
-                const rows = await readAll(IngredientSchema, "categoryId", value._id, true);
+                const rows = await readAll(IngredientSchema, "categoryId", ","+value._id+",", true);
                 const ings: Ingredient[] = [];
                 for (const row of rows){
                     ings.push(Ingredient.fromList(Object.values(row)));

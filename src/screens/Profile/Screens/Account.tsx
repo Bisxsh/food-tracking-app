@@ -31,9 +31,7 @@ export function Account(): JSX.Element{
             >
                 <MaterialIcons 
                     name="photo-camera" 
-                    color={
-                        (isDarkMode)?COLOURS.white: COLOURS.black
-                    } 
+                    color={COLOURS.white} 
                     size={ICON_SIZES.large} 
                     style={{
                         alignSelf: "center"
