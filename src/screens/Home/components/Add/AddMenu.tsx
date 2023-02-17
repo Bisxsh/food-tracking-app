@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -11,6 +11,7 @@ import {
 import ManualIngredient from "./ManualIngredient";
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import { useNavigation } from "@react-navigation/native";
+import { HomeContext } from "../HomeContextProvider";
 
 type Props = {
   showModal: boolean;
@@ -18,7 +19,7 @@ type Props = {
 };
 
 const AddMenu = (props: Props) => {
-  const [ingredient, setIngredient] = useState<IngredientBuilder | null>(null);
+  const { homeContext, setHomeContext } = useContext(HomeContext);
 
   const navigation = useNavigation<any>();
 
@@ -55,6 +56,10 @@ const AddMenu = (props: Props) => {
           <TouchableOpacity
             style={[styles.button, styles.secondary]}
             onPress={() => {
+              setHomeContext({
+                ...homeContext,
+                ingredientBeingEdited: new IngredientBuilder(),
+              });
               navigation.navigate("ManualIngredient");
               props.setShowModal(false);
             }}
@@ -75,12 +80,6 @@ const AddMenu = (props: Props) => {
           </TouchableOpacity>
         </View>
       </Modal>
-      {ingredient && (
-        <ManualIngredient
-          setIngredient={setIngredient}
-          ingredientBuilder={ingredient || undefined}
-        />
-      )}
     </>
   );
 };

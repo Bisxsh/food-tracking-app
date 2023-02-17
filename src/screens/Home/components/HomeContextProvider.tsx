@@ -1,8 +1,10 @@
 import { Dispatch, SetStateAction, createContext } from "react";
+import { Ingredient } from "../../../backends/Ingredient";
 import { IngredientBuilder } from "../../../classes/IngredientClass";
 
 export interface HomeContext {
   ingredientBeingEdited: IngredientBuilder | null;
+  displayedIngredients: Ingredient[];
 }
 
 export interface HomeContextInterface {
@@ -12,6 +14,7 @@ export interface HomeContextInterface {
 
 export const DEFAULT_HOME_DATA: HomeContext = {
   ingredientBeingEdited: null,
+  displayedIngredients: [],
 };
 
 export const DEFAULT_HOME_CONTEXT: HomeContextInterface = {

@@ -5,7 +5,7 @@ import { RADIUS, COLOURS, SPACING } from "../util/GlobalStyles";
 type Props = {
   required?: boolean;
   textHint?: string;
-  fieldName: string;
+  fieldName?: string;
   onTextChange: (text: any) => void;
   width?: number;
   numberInput?: boolean;
@@ -14,7 +14,7 @@ type Props = {
 
 const InputField = (props: Props) => {
   return (
-    <View style={{ position: "relative" }}>
+    <View style={{ position: "relative", flex: 1 }}>
       <Text>
         {props.fieldName}
         {props.required ? "*" : ""}
@@ -42,6 +42,6 @@ const styles = (props: Props) =>
       borderColor: COLOURS.darkGrey,
       borderWidth: 1,
       marginTop: SPACING.small,
-      width: props.width ? props.width : 200,
+      width: props.width ? props.width : "auto",
     },
   });
