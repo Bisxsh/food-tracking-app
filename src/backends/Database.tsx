@@ -4,6 +4,7 @@ import * as FileSystem from 'expo-file-system';
 import { Ingredient } from "./Ingredient";
 import { Category } from "./Category";
 import { User } from "./User";
+import { Meal } from "./Meal";
 
 
 interface Schema {
@@ -106,17 +107,16 @@ const MealSchema: Schema = {
         name: "ntext not null",
         url: "ntext",
         imgSrc: "ntext",
-        category: "text",
+        categoryId: "text",
+        instruction: "ntext",
     }
 }
 
 // ======== Basic Operation on DB ==============================================================
 
 function openDB(): sq.WebSQLDatabase{
-    const db = sq.openDatabase("DB.db", "v5")
-    db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>
-        console.log('Foreign keys turned on')
-    );
+    const db = sq.openDatabase("DB.db", "v6")
+    db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>{});
     return db
 }
 
@@ -169,6 +169,7 @@ export async function init(){
     await createTable(CategorySchema);
     await createTable(UserSchema);
     await createTable(IngredientSchema);
+    await createTable(MealSchema);
 }
 
 // ======== Create records ==============================================================
@@ -178,6 +179,8 @@ export function create(ingredient:Ingredient):any
 export function create(category: Category):any
 
 export function create(user: User): any
+
+export function create(meal: Meal): any
 
 export function create(value: any){
     var sql: string;
@@ -192,6 +195,10 @@ export function create(value: any){
     }else if (value instanceof User){
         const arg = value.toList()
         sql = "insert or ignore into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
+    }else if (value instanceof Meal){
+        const arg = value.toList()
+        sql = "insert or ignore into " + MealSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
         transaction(sql, arg, "Insert record")
     }
 }
@@ -354,6 +361,44 @@ export async function readAllUser():Promise<User[]>{
     return users;
 }
 
+export async function readMeal(id: number):Promise<Meal|undefined>
+
+export async function readMeal(name: string):Promise<Meal[]|[]>
+
+export async function readMeal(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(MealSchema, "_id", value);
+            if (row != undefined){
+                return Meal.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(MealSchema, "name", value);
+            const cats: Meal[] = [];
+            for (const row of rows){
+                cats.push(Meal.fromList(Object.values(row)));
+            }
+            return cats;
+        default:
+            break;
+    }
+
+    return;
+}
+
+export async function readAllMeal():Promise<Meal[]>{
+    const rows: Object[] = await readAll(MealSchema);
+    const cats: Meal[] = [];
+
+    for (const row of rows){
+        cats.push(Meal.fromList(Object.values(row)));
+    }
+    
+    return cats;
+}
+
 // ======== Update records ==============================================================
 
 export function updateIngredient(ingredient: Ingredient){
@@ -380,6 +425,16 @@ export function updateUser(User: User){
     const arg = User.toList().slice(1, -1)
     var sql: string = "update " + UserSchema.name + " set "
     for (const key of Object.keys(UserSchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    transaction(sql, arg, "Update record")
+}
+
+export function updateMeal(Meal: Meal){
+    const arg = Meal.toList().slice(1, -1)
+    var sql: string = "update " + MealSchema.name + " set "
+    for (const key of Object.keys(MealSchema.properties).slice(1,-1)){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
@@ -460,6 +515,31 @@ export function deleteUser(value: any){
 
 export function deleteAllUser(){
     const sql: string = "delete from " + UserSchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+export function deleteMeal(_id: number):any
+
+export function deleteMeal(name: string):any
+
+export function deleteMeal(value: any){
+    var sql: string = "delete from " + MealSchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllMeal(){
+    const sql: string = "delete from " + MealSchema.name
     transaction(sql, [], "Delete all record")
 }
 
