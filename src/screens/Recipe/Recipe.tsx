@@ -13,7 +13,8 @@ import {
   HomeSortingFilter,
   HomeSortingFilters,
 } from "./HomeSortingFilters";
-
+import AddButton from '../../components/AddButton';
+import AddMenu from './AddMenu';
 
 
 export function Recipe(): JSX.Element {
@@ -27,7 +28,7 @@ export function Recipe(): JSX.Element {
       }
   })
 
-
+  const navigation = useNavigation<any>();
 
   const [recipes, setRecipes] = useState<any[]>([]);
   const [explore, setExplore] = useState<any[]>([]);
@@ -87,13 +88,13 @@ export function Recipe(): JSX.Element {
             justifyContent: "center",
             
           }}
-          onPress={() => switchList()}><Text style={{color: currentButton === false ? 'white' : 'black'}}>Explore</Text></TouchableOpacity>
+          onPress={() => currentButton === true ? switchList() : null}><Text style={{color: currentButton === false ? 'white' : 'black'}}>Explore</Text></TouchableOpacity>
         <TouchableOpacity style={{backgroundColor: currentButton === true ? 'black' : 'white', padding: 15, borderRadius: 20,
             marginLeft: SPACING.medium,
             marginRight: SPACING.medium,
             width: "20%",
             alignItems: "center",}}
-          onPress={() => switchList()}><Text style={{color: currentButton === true ? 'white' : 'black'}}>Saved</Text></TouchableOpacity>
+          onPress={() =>  currentButton === false ? switchList() : null}><Text style={{color: currentButton === true ? 'white' : 'black'}}>Saved</Text></TouchableOpacity>
 
 
         </View>
@@ -116,6 +117,8 @@ export function Recipe(): JSX.Element {
           })}
 
           </ScrollView>
+          <AddButton onPress={() => navigation.navigate("ManualIngredient")} />
+          <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
       </View>
   );
 }

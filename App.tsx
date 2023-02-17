@@ -10,6 +10,7 @@ import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
 import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
 import HomeNavigator from "./src/screens/Home/components/HomeNavigator";
+import RecipeNavigator from "./src/screens/Recipe/RecipeNavigator";
 import { DEFAULT_USER, UserContext } from "./src/backends/User";
 import * as DB from './src/backends/Database';
 import { Colors } from "react-native/Libraries/NewAppScreen";
@@ -60,7 +61,7 @@ function App(): JSX.Element {
               />
               <Tab.Screen
                 name="Recipe"
-                component={Recipe}
+                component={RecipeNavigator}
                 options={{
                   tabBarShowLabel: false,
                   tabBarIcon: ({ color, size }) => (
