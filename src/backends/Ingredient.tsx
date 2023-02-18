@@ -10,25 +10,23 @@ export class Ingredient {
   useDate?: Date;
   expiryDate?: Date;
   nutrition: Nutrition;
-  categoryId: number;
+  categoryId: number[];
+  barcode?: number;
+  memo?: string;
 
   constructor(
     name: string,
     quantity: number,
     weightUnit: string,
     nutrition: Nutrition,
-    categoryId: number,
+    categoryId: number[],
     _id?: number,
     weight?: number,
     imgSrc?: string,
     useDate?: Date,
-    expiryDate?: Date
-    nutrition: Nutrition
-    categoryId: number[]
-    barcode?: number
-    memo?: string
-
-    constructor(name:string, quantity: number, weightUnit: string, nutrition: Nutrition, categoryId: number[], _id?: number, weight?: number, imgSrc?: string, useDate?: Date, expiryDate?: Date, barcode?: number, memo?: string){
+    expiryDate?: Date,
+    barcode?: number,
+    memo?: string){
         this._id = (_id != undefined)? _id: Ingredient.count ++
         this.name = name
         this.quantity = quantity
