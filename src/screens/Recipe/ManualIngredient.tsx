@@ -28,6 +28,7 @@ import RecipeIngredientList from "../../components/RecipeIngredientList";
 import PrimaryButton from "../../components/PrimaryButton";
 import { HomeContext } from "../Home/components/HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
+import IngredientsList from "../../components/IngredientsList";
 
 type Props = {
   setShowManual?: (showManual: boolean) => void;
@@ -103,7 +104,7 @@ const ManualIngredient = (props: Props) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView>
+      <ScrollView >
         <NameAndImage
           onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
           onNameChange={(str) => ingredientBuilder.setName(str)}
@@ -127,6 +128,9 @@ const ManualIngredient = (props: Props) => {
         />
         {getSeperator()}
         <RecipeIngredientList />
+        <Text>Instructions</Text>
+        {getSeperator()}
+        <IngredientsList></IngredientsList>
         <PrimaryButton text="Save" onPress={saveIngredient} />
         <View style={{ height: SPACING.medium }} />
       </ScrollView>
