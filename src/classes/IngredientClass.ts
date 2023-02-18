@@ -117,7 +117,7 @@ export class IngredientBuilder {
     this.useDate = new Date();
     this.expiryDate = new Date();
     this.nutrition = new NutritionBuilder();
-    this.id = 0;
+    this.id = -1;
   }
 
   public static fromIngredient(ingredient: Ingredient): IngredientBuilder {

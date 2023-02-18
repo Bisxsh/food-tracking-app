@@ -27,21 +27,32 @@ import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 
-type Props = {
-  setShowManual?: (showManual: boolean) => void;
-  setIngredient?: (ingredient: IngredientBuilder | null) => void;
-  ingredientBuilder?: IngredientBuilder;
-};
+type Props = {};
 
 const ManualIngredient = (props: Props) => {
   const { homeContext, setHomeContext } = useContext(HomeContext);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [categories, setCategories] = useState<Category[]>(
-    userData.ingredientCategories
-  );
+  const [showNutrition, setShowNutrition] = useState(false);
+
   const navigation = useNavigation<any>();
   const ingredientBuilder =
     homeContext.ingredientBeingEdited || new IngredientBuilder();
+  const [categories, setCategories] = useState<Category[]>(
+    userData.ingredientCategories.map((cat) => {
+      return {
+        ...cat,
+        active:
+          ingredientBuilder
+            .getCategories()
+            .filter(
+              (ingCat) =>
+                ingCat.name === cat.name && ingCat.colour === cat.colour
+            ).length > 0,
+      };
+    })
+  );
+
+  console.log(ingredientBuilder);
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -52,14 +63,10 @@ const ManualIngredient = (props: Props) => {
       alert("All required fields must be set");
       return;
     }
-    ingredientBuilder.setCategories(categories);
-    if (
-      ingredientBuilder.getId() == 0 &&
-      userData.storedIngredients.length > 0
-    ) {
+    ingredientBuilder.setCategories(categories.filter((cat) => cat.active));
+    if (ingredientBuilder.getId() == -1) {
       ingredientBuilder.setId(userData.storedIngredients.length);
     }
-    console.log("ID: ", ingredientBuilder.getId());
     if (
       userData.storedIngredients.find(
         (ing) => ing.id === ingredientBuilder.getId()
@@ -76,7 +83,6 @@ const ManualIngredient = (props: Props) => {
   }
 
   function closeManual() {
-    props.setIngredient && props.setIngredient(null);
     setHomeContext({ ...homeContext, ingredientBeingEdited: null });
     navigation.reset({
       index: 0,
@@ -114,12 +120,14 @@ const ManualIngredient = (props: Props) => {
           required
           width={Dimensions.get("screen").width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setExpiryDate(date)}
+          defaultValue={ingredientBuilder.getExpiryDate()}
         />
         {getSeperator()}
         <DateField
           fieldName="Use-by Date"
           width={Dimensions.get("screen").width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setUseDate(date)}
+          defaultValue={ingredientBuilder.getUseDate()}
         />
         {getSeperator()}
         <ChipsSelectors
@@ -148,107 +156,156 @@ const ManualIngredient = (props: Props) => {
             required
             textWidth={104}
             maxWidth={180}
-            defaultText={
-              props.ingredientBuilder?.getWeight()?.toString() || undefined
-            }
+            defaultText={ingredientBuilder.getWeight()?.toString() || undefined}
+            defaultUnit={ingredientBuilder.getWeightType()}
           />
+          <View style={{ width: SPACING.medium }} />
           <InputField
             fieldName="Quantity"
             onTextChange={(quantity) => ingredientBuilder.setQuantity(quantity)}
             numberInput
             textHint="Quantity"
-            width={180}
-            defaultValue={ingredientBuilder.getQuantity()?.toString()}
+            defaultValue={
+              ingredientBuilder.getQuantity() == 0
+                ? undefined
+                : ingredientBuilder.getQuantity().toString()
+            }
           />
         </View>
         {getSeperator()}
-        <NumberInputRow
-          fieldNameLeft="Energy"
-          fieldNameRight="Protein"
-          onTextChangeLeft={(val) =>
-            ingredientBuilder.getNutritionBuilder().setEnergy(val)
-          }
-          onTextChangeRight={(val) =>
-            ingredientBuilder.getNutritionBuilder().setProtein(val)
-          }
-          textHintLeft="kcal"
-          textHintRight="g"
-          defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getEnergy()?.toString() ||
-            undefined
-          }
-          defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getProtein()?.toString() ||
-            undefined
-          }
-        />
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center" }}
+          onPress={() => setShowNutrition((p) => !p)}
+        >
+          <MaterialCommunityIcons
+            name={showNutrition ? "chevron-down" : "chevron-right"}
+            size={24}
+            color="black"
+          />
+          <Text>Nutritional information</Text>
+        </TouchableOpacity>
         {getSeperator()}
-        <NumberInputRow
-          fieldNameLeft="Fat"
-          fieldNameRight="Saturated Fat"
-          onTextChangeLeft={(val) =>
-            ingredientBuilder.getNutritionBuilder().setEnergy(val)
-          }
-          onTextChangeRight={(val) =>
-            ingredientBuilder.getNutritionBuilder().setSaturatedFat(val)
-          }
-          textHintLeft="g"
-          textHintRight="g"
-          defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getFat()?.toString() ||
-            undefined
-          }
-          defaultValueRight={
-            ingredientBuilder
-              .getNutritionBuilder()
-              .getSaturatedFat()
-              ?.toString() || undefined
-          }
-        />
-        {getSeperator()}
-        <NumberInputRow
-          fieldNameLeft="Carbohydrates"
-          fieldNameRight="Sugar"
-          onTextChangeLeft={(val) =>
-            ingredientBuilder.getNutritionBuilder().setCarbs(val)
-          }
-          onTextChangeRight={(val) =>
-            ingredientBuilder.getNutritionBuilder().setSugar(val)
-          }
-          textHintLeft="g"
-          textHintRight="g"
-          defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getCarbs()?.toString() ||
-            undefined
-          }
-          defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getSugar()?.toString() ||
-            undefined
-          }
-        />
-        {getSeperator()}
-        <NumberInputRow
-          fieldNameLeft="Fiber"
-          fieldNameRight="Salt"
-          onTextChangeLeft={(val) =>
-            ingredientBuilder.getNutritionBuilder().setFibre(val)
-          }
-          onTextChangeRight={(val) =>
-            ingredientBuilder.getNutritionBuilder().setSalt(val)
-          }
-          textHintLeft="g"
-          textHintRight="g"
-          defaultValueLeft={
-            ingredientBuilder.getNutritionBuilder().getFibre()?.toString() ||
-            undefined
-          }
-          defaultValueRight={
-            ingredientBuilder.getNutritionBuilder().getSalt()?.toString() ||
-            undefined
-          }
-        />
-        {getSeperator()}
-        <PrimaryButton text="Save" onPress={saveIngredient} />
+        {showNutrition && (
+          <View>
+            <NumberInputRow
+              fieldNameLeft="Energy"
+              fieldNameRight="Protein"
+              onTextChangeLeft={(val) =>
+                ingredientBuilder.getNutritionBuilder().setEnergy(val)
+              }
+              onTextChangeRight={(val) =>
+                ingredientBuilder.getNutritionBuilder().setProtein(val)
+              }
+              textHintLeft="kcal"
+              textHintRight="g"
+              defaultValueLeft={
+                ingredientBuilder.getNutritionBuilder().getEnergy() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+              defaultValueRight={
+                ingredientBuilder.getNutritionBuilder().getProtein() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+            />
+            {getSeperator()}
+            <NumberInputRow
+              fieldNameLeft="Fat"
+              fieldNameRight="Saturated Fat"
+              onTextChangeLeft={(val) =>
+                ingredientBuilder.getNutritionBuilder().setEnergy(val)
+              }
+              onTextChangeRight={(val) =>
+                ingredientBuilder.getNutritionBuilder().setSaturatedFat(val)
+              }
+              textHintLeft="g"
+              textHintRight="g"
+              defaultValueLeft={
+                ingredientBuilder.getNutritionBuilder().getFat() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+              defaultValueRight={
+                ingredientBuilder.getNutritionBuilder().getSaturatedFat() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+            />
+            {getSeperator()}
+            <NumberInputRow
+              fieldNameLeft="Carbohydrates"
+              fieldNameRight="Sugar"
+              onTextChangeLeft={(val) =>
+                ingredientBuilder.getNutritionBuilder().setCarbs(val)
+              }
+              onTextChangeRight={(val) =>
+                ingredientBuilder.getNutritionBuilder().setSugar(val)
+              }
+              textHintLeft="g"
+              textHintRight="g"
+              defaultValueLeft={
+                ingredientBuilder.getNutritionBuilder().getCarbs() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+              defaultValueRight={
+                ingredientBuilder.getNutritionBuilder().getSugar() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+            />
+            {getSeperator()}
+            <NumberInputRow
+              fieldNameLeft="Fiber"
+              fieldNameRight="Salt"
+              onTextChangeLeft={(val) =>
+                ingredientBuilder.getNutritionBuilder().setFibre(val)
+              }
+              onTextChangeRight={(val) =>
+                ingredientBuilder.getNutritionBuilder().setSalt(val)
+              }
+              textHintLeft="g"
+              textHintRight="g"
+              defaultValueLeft={
+                ingredientBuilder.getNutritionBuilder().getFibre() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+              defaultValueRight={
+                ingredientBuilder.getNutritionBuilder().getSalt() == 0
+                  ? undefined
+                  : ingredientBuilder
+                      .getNutritionBuilder()
+                      .getEnergy()
+                      ?.toString() || undefined
+              }
+            />
+            {getSeperator()}
+          </View>
+        )}
+
         <View style={{ height: SPACING.medium }} />
       </ScrollView>
     </View>

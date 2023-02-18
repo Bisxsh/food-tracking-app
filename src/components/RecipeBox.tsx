@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: "3%",
     width: "90%",
-    height: "15%",
+    height: 125,
     flexDirection: "column",
     backgroundColor: COLOURS.grey,
     borderRadius: 10,
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
 
   textHeading: {
     left: '35%',
-    bottom: "50%",
+    bottom: "35%",
     fontSize: 16,
   },
 

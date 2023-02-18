@@ -1,9 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
-import CustomSearchBar from "../../../../components/CustomSearchBar";
-import SortButton from "../../../../components/SortButton";
-import IngredientsFilter from "../../../../components/IngredientsFilter";
-import { UserDataContext } from "../../../../classes/UserData";
+import CustomSearchBar from "../../components/CustomSearchBar";
+import IngredientsFilter from "../../components/IngredientsFilter";
+import { UserDataContext } from "../../classes/UserData";
 
 type Props = {
   ingredientsSearch: string;
@@ -21,13 +20,7 @@ const HomeMenu = (props: Props) => {
         textHint="Search stored ingredients"
         text={props.ingredientsSearch}
         setText={props.setIngredientsSearch}
-        // width={250}
-      />
-      <SortButton
-        options={props.sortFilters}
-        selectedOption={props.sort}
-        setSelectedOption={props.setSort}
-        // width={216}
+        width={300}
       />
       <IngredientsFilter
         options={userData.ingredientCategories}
@@ -45,6 +38,7 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
+    marginBottom: 10,
   },
 });

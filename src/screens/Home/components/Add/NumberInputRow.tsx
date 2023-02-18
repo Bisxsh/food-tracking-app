@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import InputField from "../../../../components/InputField";
+import { SPACING } from "../../../../util/GlobalStyles";
 
 type Props = {
   onTextChangeLeft: (text: any) => void;
@@ -24,9 +25,9 @@ const NumberInputRow = (props: Props) => {
           textHint={
             props.textHintLeft ? props.textHintLeft : props.fieldNameLeft
           }
-          width={180}
           defaultValue={props.defaultValueLeft}
         />
+        <View style={{ width: SPACING.medium }} />
         <InputField
           fieldName={props.fieldNameRight}
           onTextChange={props.onTextChangeRight}
@@ -34,7 +35,6 @@ const NumberInputRow = (props: Props) => {
           textHint={
             props.textHintRight ? props.textHintRight : props.fieldNameRight
           }
-          width={180}
           defaultValue={props.defaultValueRight}
         />
       </View>
