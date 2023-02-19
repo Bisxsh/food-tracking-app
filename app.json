@@ -2,7 +2,15 @@
   "expo": {
     "slug": "foodtrackingapp",
     "name": "foodtrackingapp",
-    "sdkVersion": "47.0.0"
+    "sdkVersion": "47.0.0",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos."
+        }
+      ]
+    ]
   },
   "name": "foodtrackingapp"
 }

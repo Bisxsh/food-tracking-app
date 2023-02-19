@@ -1,11 +1,13 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useContext, useState } from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, AlertButton} from 'react-native';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, AlertButton, Image} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import { User, UserContext } from '../../../backends/User';
 import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING} from '../../../util/GlobalStyles';
 import * as DB from '../../../backends/Database'
+import { getImageSrc } from '../../../util/ImageUtil';
+import { ActionSheetOptions, useActionSheet } from '@expo/react-native-action-sheet';
 
 type inputTextProp = {
     defaultText: string
@@ -18,6 +20,7 @@ type alertProp = {
     desc: string
     buttons: AlertButton[]
 }
+
 
 const HorizontalLine = (
     <View
@@ -37,6 +40,20 @@ function createAlert(prop: alertProp){
         prop.desc,
         prop.buttons
     )
+}
+
+async function getPhoto(
+    showActionSheetWithOptions:(options:ActionSheetOptions, callback:(i?: number | undefined) => void | Promise<void>)=>void,
+    user: User,
+    setUser: React.Dispatch<React.SetStateAction<User>>,
+    setImg: React.Dispatch<React.SetStateAction<string | undefined>>
+){
+    getImageSrc(showActionSheetWithOptions, (uri:string)=>{
+        setImg(uri)
+        user.imgSrc = uri
+        setUser(user)
+        DB.updateUser(user)
+    })
 }
 
 function InputTextRow(prop: inputTextProp): JSX.Element{
@@ -105,6 +122,7 @@ function inputTextRowOnChange(newValue:string, previousValue:string, user: User,
 export function Account(): JSX.Element{
     const { user, setUser } = useContext(UserContext);
     const [ name, setName ] = useState(user.name)
+    const [ img, setImg] = useState(user.imgSrc)
     const [ dietReqRows, setDietReqRows] = useState<JSX.Element[]>(
         user.dietReq.map((value, index)=>{
             const key = index
@@ -122,6 +140,7 @@ export function Account(): JSX.Element{
         }
     ))
     const isDarkMode = user.setting.isDark()
+    const { showActionSheetWithOptions } = useActionSheet();
 
     InputTextRowCount = user.dietReq.length
 
@@ -132,7 +151,20 @@ export function Account(): JSX.Element{
                 flex: 1,
             }}
         >
-            <View
+            {img != undefined && <TouchableOpacity onPress={()=>{getPhoto(showActionSheetWithOptions, user,setUser,setImg)}}>
+                <Image
+                    style={{
+                        alignItems: "center",
+                        aspectRatio: 1,
+                        width: "30%",
+                        justifyContent: "center",
+                        alignSelf: "center",
+                        borderRadius: 100
+                    }}
+                    source={{uri: img}}
+                />
+            </TouchableOpacity>}
+            {img == undefined && <View
                 style={{
                     alignItems: "center",
                     backgroundColor: COLOURS.darkGrey,
@@ -143,15 +175,27 @@ export function Account(): JSX.Element{
                     borderRadius: 100
                 }}
             >
-                <MaterialIcons 
-                    name="photo-camera" 
-                    color={COLOURS.white} 
-                    size={ICON_SIZES.large} 
-                    style={{
-                        textAlign: 'center'
+                <TouchableOpacity
+                    onPress={()=>{
+                        getImageSrc(showActionSheetWithOptions, (uri:string)=>{
+                            setImg(uri)
+                            user.imgSrc = uri
+                            setUser(user)
+                            DB.updateUser(user)
+                        })
                     }}
-                />
-            </View>
+                >
+                    <MaterialIcons 
+                        name="photo-camera" 
+                        color={COLOURS.white} 
+                        size={ICON_SIZES.large} 
+                        style={{
+                            textAlign: 'center'
+                        }}
+                    />
+                </TouchableOpacity>
+                
+            </View>}
             <View style={{
                 flexDirection: "column",
                 paddingHorizontal: SPACING.medium,
