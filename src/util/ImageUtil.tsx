@@ -2,7 +2,7 @@ import { ActionSheetOptions } from '@expo/react-native-action-sheet'
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-const imgDirectory = FileSystem.documentDirectory + "/Image/"
+const imgDirectory = FileSystem.documentDirectory + "Image/"
 
 
 
@@ -11,6 +11,7 @@ export function getImageSrc(
     func: (uri: string)=>void,
     aspect: [number, number] = [1,1]
 ){
+
     const options = ["Camera", "Library", "Cancel"]
     showActionSheetWithOptions(
         {
@@ -20,26 +21,40 @@ export function getImageSrc(
         },
         async (index)=>{
             var result: ImagePicker.ImagePickerResult|undefined
+            var response: ImagePicker.PermissionResponse
             switch(index){
                 case 0: //Camera
-                    result = await ImagePicker.launchCameraAsync({
-                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                        allowsEditing: true,
-                        quality: 1,
-                        aspect: aspect
-                    })
+                    response = await ImagePicker.getCameraPermissionsAsync()
+                    if (!response.granted){
+                        response = await ImagePicker.requestCameraPermissionsAsync()
+                    }
+                    if (response.granted){
+                        result = await ImagePicker.launchCameraAsync({
+                            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                            allowsEditing: true,
+                            quality: 1,
+                            aspect: aspect
+                        })
+                    }
                 case 1: //Library
-                    result = await ImagePicker.launchImageLibraryAsync({
-                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                        allowsEditing: true,
-                        quality: 1,
-                        aspect: aspect
-                    })
+                    response = await ImagePicker.getMediaLibraryPermissionsAsync()
+                    if (!response.granted){
+                        response = await ImagePicker.requestMediaLibraryPermissionsAsync()
+                    }
+                    if (response.granted){
+                        result = await ImagePicker.launchImageLibraryAsync({
+                            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                            allowsEditing: true,
+                            quality: 1,
+                            aspect: aspect
+                        })
+                    }
                 case 2: //Cancel
                     break;
             }
             if (result != undefined && !result.canceled){
-                console.log(result)
+                console.log(imgDirectory)
+                await FileSystem.makeDirectoryAsync(imgDirectory)
                 await FileSystem.copyAsync({
                     from: result.assets[0].uri,
                     to: imgDirectory + result.assets[0].fileName

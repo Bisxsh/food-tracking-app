@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -89,7 +89,7 @@ export function Theme({navigation}: ScreenProp): JSX.Element {
   var isDarkMode = user.setting.isDark()
 
   return (
-    <View
+    <ScrollView
       style={{
         backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         flex: 1,
@@ -115,7 +115,7 @@ export function Theme({navigation}: ScreenProp): JSX.Element {
             },
             user.setting.appearance
         )}
-    </View>
+    </ScrollView>
   );
 }
 

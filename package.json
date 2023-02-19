@@ -38,7 +38,8 @@
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-web": "~0.18.9",
-    "ts-jest": "^29.0.5"
+    "ts-jest": "^29.0.5",
+    "expo-screen-orientation": "~5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

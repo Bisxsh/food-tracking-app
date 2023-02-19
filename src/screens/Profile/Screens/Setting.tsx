@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
-import {StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
+import {ScrollView, StyleSheet, Switch, Text, TouchableOpacity, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
@@ -59,6 +59,7 @@ const SwitchRow = (text:string, key: keyof UserSetting)=>{
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
+        alignContent: "space-between",
         alignSelf: "flex-start",
       }}
     >
@@ -71,7 +72,6 @@ const SwitchRow = (text:string, key: keyof UserSetting)=>{
       >{text}</Text>
       <Switch
         style={{
-          flex: 1,
           alignSelf: "center"
         }}
         value={value}
@@ -123,7 +123,7 @@ export function Setting({navigation}: ScreenProp): JSX.Element {
   ) 
 
   return (
-    <View
+    <ScrollView
       style={{
         backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         flex: 1,
@@ -148,7 +148,7 @@ export function Setting({navigation}: ScreenProp): JSX.Element {
         {HorizontalLine}
         {NavigateRow("About", "About", navigation)}
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
