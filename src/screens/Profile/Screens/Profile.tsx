@@ -1,12 +1,12 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {Button, Text, View, ScrollView, TouchableOpacity, Image} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import { COLOURS, ICON_SIZES, SPACING } from '../../../util/GlobalStyles';
+import { COLOURS, FONT_SIZES, ICON_SIZES, SPACING } from '../../../util/GlobalStyles';
 import { UserContext } from '../../../backends/User';
 import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 
@@ -14,7 +14,7 @@ import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark())
-  
+
   useEffect(
     ()=>{
       const unsubscribe = navigation.addListener("focus", ()=>{
@@ -24,7 +24,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
     }, 
     [navigation]
   ) 
-  
+
   return (
     <SafeAreaView
       style={{
@@ -61,35 +61,71 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             />
           </TouchableOpacity>
         </View>
-        <View
+        <ScrollView
           style={{
             flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
             alignSelf: "stretch",
-            alignContent: "center",
+            flexDirection: "column",
           }}
         >
-          <ScrollView
+          <View
             style={{
-              flexDirection: "column",
-            }}
-            contentContainerStyle={{
-              flexGrow: 1
+              flexDirection: "row",
+              paddingHorizontal: SPACING.medium,
             }}
           >
+            {user.imgSrc != undefined && <Image
+                style={{
+                    alignItems: "center",
+                    aspectRatio: 1,
+                    width: "30%",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    borderRadius: 100
+                }}
+                source={{uri: user.imgSrc}}
+            />}
+            {user.imgSrc == undefined && <View
+                style={{
+                    alignItems: "center",
+                    backgroundColor: COLOURS.darkGrey,
+                    aspectRatio: 1,
+                    width: "30%",
+                    justifyContent: "center",
+                    alignSelf: "center",
+                    borderRadius: 100
+                }}
+            >
+              <Text
+                style={{
+                  color: COLOURS.white,
+                  fontSize: FONT_SIZES.heading
+                }}
+              >{user.name.charAt(0)}</Text>
+            </View>}
             <View
               style={{
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                 flex: 1,
-                alignItems: "center",
+                flexDirection:"column",
+                paddingHorizontal:SPACING.medium,
                 justifyContent: "center",
-              }}>
-              <Text style={{color: (isDarkMode)?COLOURS.white: COLOURS.black }}>This is Profile page</Text>
+              }}
+            >
+              <Text
+                style={{
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                  fontSize: FONT_SIZES.body
+                }}
+              >{user.name}</Text>
+              <Text
+                style={{
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                  fontSize: FONT_SIZES.small
+                }}
+              >Saving food since {user.dateOfReg.toLocaleDateString()}</Text>
             </View>
-          </ScrollView>
-        </View>
-        
+          </View>
+        </ScrollView> 
       </View>
     </SafeAreaView>
   );

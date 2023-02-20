@@ -255,7 +255,7 @@ export function Account(): JSX.Element{
                             alignSelf: "flex-start",
                             color: isDarkMode ? Colors.white : Colors.black,
                         }}
-                    >Diet Requirements</Text>
+                    >Dietary Requirements</Text>
                     <TouchableOpacity
                         onPress={()=>{
                             const key = InputTextRowCount
