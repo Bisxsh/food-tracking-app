@@ -1,6 +1,8 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import { RADIUS, COLOURS, SPACING } from "../util/GlobalStyles";
+import { UserContext } from "../backends/User";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
   required?: boolean;
@@ -13,9 +15,11 @@ type Props = {
 };
 
 const InputField = (props: Props) => {
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
   return (
     <View style={{ position: "relative", flex: 1 }}>
-      <Text>
+      <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>

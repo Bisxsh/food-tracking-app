@@ -5,12 +5,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import RNDateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
+import { UserContext } from "../backends/User";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
   required?: boolean;
@@ -27,6 +29,9 @@ const DateField = (props: Props) => {
     props.defaultValue?.toString().substring(0, 15) ||
       new Date().toString().substring(0, 15)
   );
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
+
   const setDateNew = (event: DateTimePickerEvent, date?: Date | undefined) => {
     const {
       type,
@@ -44,7 +49,7 @@ const DateField = (props: Props) => {
       style={{ position: "relative" }}
       onPress={() => setShowCalendar(true)}
     >
-      <Text>
+      <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>

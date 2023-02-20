@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { UserContext } from "../../backends/User";
 import { UserDataContext } from "../../classes/UserData";
 import AddButton from "../../components/AddButton";
 import { SPACING } from "../../util/GlobalStyles";
@@ -14,7 +15,8 @@ import {
 } from "./components/Menu/HomeSortingFilters";
 
 export function Home(): JSX.Element {
-  const isDarkMode = false;
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
@@ -66,7 +68,7 @@ export function Home(): JSX.Element {
     <>
       <View
         style={{
-          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
