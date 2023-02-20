@@ -12,6 +12,8 @@ import ManualIngredient from "./ManualIngredient";
 import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import { useNavigation } from "@react-navigation/native";
 import { HomeContext } from "../HomeContextProvider";
+import { UserContext } from "../../../../backends/User";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
   showModal: boolean;
@@ -20,6 +22,8 @@ type Props = {
 
 const AddMenu = (props: Props) => {
   const { homeContext, setHomeContext } = useContext(HomeContext);
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
 
   const navigation = useNavigation<any>();
 
@@ -38,7 +42,12 @@ const AddMenu = (props: Props) => {
           bottom: 40,
         }}
       >
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: isDarkMode ? COLOURS.grey : Colors.white },
+          ]}
+        >
           <TouchableOpacity style={[styles.button, styles.primary]}>
             <MaterialCommunityIcons
               name="barcode-scan"
@@ -54,7 +63,13 @@ const AddMenu = (props: Props) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.button, styles.secondary]}
+            style={[
+              styles.button,
+              styles.secondary,
+              {
+                backgroundColor: isDarkMode ? Colors.grey : Colors.white,
+              },
+            ]}
             onPress={() => {
               setHomeContext({
                 ...homeContext,
@@ -89,7 +104,6 @@ export default AddMenu;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    backgroundColor: COLOURS.white,
     borderRadius: 10,
     padding: SPACING.medium,
     alignItems: "center",

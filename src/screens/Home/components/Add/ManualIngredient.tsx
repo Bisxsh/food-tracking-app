@@ -26,6 +26,8 @@ import NumberInputRow from "./NumberInputRow";
 import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
+import { UserContext } from "../../../../backends/User";
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {};
 
@@ -33,6 +35,8 @@ const ManualIngredient = (props: Props) => {
   const { homeContext, setHomeContext } = useContext(HomeContext);
   const { userData, setUserData } = useContext(UserDataContext);
   const [showNutrition, setShowNutrition] = useState(false);
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
 
   const navigation = useNavigation<any>();
   const ingredientBuilder =
@@ -91,17 +95,30 @@ const ManualIngredient = (props: Props) => {
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+        },
+      ]}
+    >
       <View style={styles.menu}>
         <TouchableOpacity style={styles.button} onPress={closeManual}>
-          <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
+          <MaterialCommunityIcons
+            name="arrow-left"
+            size={24}
+            color={isDarkMode ? "white" : "black"}
+          />
         </TouchableOpacity>
-        <Text>Add an ingredient</Text>
+        <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+          Add an ingredient
+        </Text>
         <TouchableOpacity style={styles.button}>
           <MaterialCommunityIcons
             name="check"
             size={24}
-            color="black"
+            color={isDarkMode ? "white" : "black"}
             onPress={saveIngredient}
           />
         </TouchableOpacity>
@@ -180,9 +197,11 @@ const ManualIngredient = (props: Props) => {
           <MaterialCommunityIcons
             name={showNutrition ? "chevron-down" : "chevron-right"}
             size={24}
-            color="black"
+            color={isDarkMode ? "white" : "black"}
           />
-          <Text>Nutritional information</Text>
+          <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+            Nutritional information
+          </Text>
         </TouchableOpacity>
         {getSeperator()}
         {showNutrition && (

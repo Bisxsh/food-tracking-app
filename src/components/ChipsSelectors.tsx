@@ -1,9 +1,11 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Chips from "./Chips";
 import { Category } from "../classes/Categories";
 import IngredientsFilter from "./IngredientsFilter";
-import { SPACING } from "../util/GlobalStyles";
+import { COLOURS, SPACING } from "../util/GlobalStyles";
+import { Colors } from "react-native/Libraries/NewAppScreen";
+import { UserContext } from "../backends/User";
 
 type Props = {
   fieldName: string;
@@ -22,9 +24,19 @@ const ChipsSelectors = (props: Props) => {
     setSelectedFilters(props.categories.filter((cat) => cat.active));
   }, [props.categories]);
 
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
+
   return (
     <>
-      <Text style={{ marginBottom: SPACING.small }}>{props.fieldName}</Text>
+      <Text
+        style={{
+          marginBottom: SPACING.small,
+          color: isDarkMode ? Colors.white : COLOURS.black,
+        }}
+      >
+        {props.fieldName}
+      </Text>
       <View style={styles.container}>
         {selectedFilters.map((category, index) => (
           <Chips
