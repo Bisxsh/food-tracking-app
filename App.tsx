@@ -15,6 +15,7 @@ import RecipeNavigator from "./src/screens/Recipe/RecipeNavigator";
 import { DEFAULT_USER, UserContext } from "./src/backends/User";
 import * as DB from './src/backends/Database';
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,70 +31,72 @@ function App(): JSX.Element {
   const isDarkMode = user.setting.isDark()
 
   return (
-    <MenuProvider>
-      <UserContext.Provider value={{user, setUser}}>
-        <UserDataContext.Provider value={{ userData, setUserData }}>
-          <NavigationContainer>
-            <Tab.Navigator
-              initialRouteName="HomeNavigator"
-              screenOptions={{
-                tabBarActiveTintColor: COLOURS.primary,
-                headerShown: false,
-                tabBarStyle: {
-                  backgroundColor: isDarkMode ? Colors.darker : Colors.white
-                }
-              }}
-            >
-              <Tab.Screen
-                name="HomeNavigator"
-                component={HomeNavigator}
-                options={{
-                  tabBarShowLabel: false,
-                  tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons
-                      name="home"
-                      color={color}
-                      size={size}
-                    />
-                  ),
-                  unmountOnBlur: true
+    <ActionSheetProvider>
+      <MenuProvider>
+        <UserContext.Provider value={{user, setUser}}>
+          <UserDataContext.Provider value={{ userData, setUserData }}>
+            <NavigationContainer>
+              <Tab.Navigator
+                initialRouteName="HomeNavigator"
+                screenOptions={{
+                  tabBarActiveTintColor: COLOURS.primary,
+                  headerShown: false,
+                  tabBarStyle: {
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white
+                  }
                 }}
-              />
-              <Tab.Screen
-                name="Recipe"
-                component={RecipeNavigator}
-                options={{
-                  tabBarShowLabel: false,
-                  tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons
-                      name="food"
-                      color={color}
-                      size={size}
-                    />
-                  ),
-                  unmountOnBlur: true
-                }}
-              />
-              <Tab.Screen
-                name="ProfileNavigator"
-                component={ProfileNavigator}
-                options={{
-                  tabBarShowLabel: false,
-                  tabBarIcon: ({ color, size }) => (
-                    <MaterialCommunityIcons
-                      name="account"
-                      color={color}
-                      size={size}
-                    />
-                  ),
-                  unmountOnBlur: true
-                }}
-              />
-            </Tab.Navigator>
-          </NavigationContainer>
-        </UserDataContext.Provider>
-      </UserContext.Provider>
-    </MenuProvider>
+              >
+                <Tab.Screen
+                  name="HomeNavigator"
+                  component={HomeNavigator}
+                  options={{
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="home"
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                    unmountOnBlur: true
+                  }}
+                />
+                <Tab.Screen
+                  name="Recipe"
+                  component={RecipeNavigator}
+                  options={{
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="food"
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                    unmountOnBlur: true
+                  }}
+                />
+                <Tab.Screen
+                  name="ProfileNavigator"
+                  component={ProfileNavigator}
+                  options={{
+                    tabBarShowLabel: false,
+                    tabBarIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons
+                        name="account"
+                        color={color}
+                        size={size}
+                      />
+                    ),
+                    unmountOnBlur: true
+                  }}
+                />
+              </Tab.Navigator>
+            </NavigationContainer>
+          </UserDataContext.Provider>
+        </UserContext.Provider>
+      </MenuProvider>
+    </ActionSheetProvider>
   );
 }
 

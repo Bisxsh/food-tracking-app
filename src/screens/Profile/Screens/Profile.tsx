@@ -14,11 +14,15 @@ import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark())
+  const [name, setName] = useState(user.name)
+  const [img, setImg] = useState(user.imgSrc)
 
   useEffect(
     ()=>{
       const unsubscribe = navigation.addListener("focus", ()=>{
         setIsDarkMode(user.setting.isDark())
+        setName(user.name)
+        setImg(user.imgSrc)
       })
       return unsubscribe
     }, 
@@ -74,7 +78,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               paddingHorizontal: SPACING.medium,
             }}
           >
-            {user.imgSrc != undefined && <Image
+            {img != undefined && <Image
                 style={{
                     alignItems: "center",
                     aspectRatio: 1,
@@ -83,9 +87,9 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     alignSelf: "center",
                     borderRadius: 100
                 }}
-                source={{uri: user.imgSrc}}
+                source={{uri: img}}
             />}
-            {user.imgSrc == undefined && <View
+            {img == undefined && <View
                 style={{
                     alignItems: "center",
                     backgroundColor: COLOURS.darkGrey,
@@ -116,7 +120,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                   color: isDarkMode ? COLOURS.white : COLOURS.black,
                   fontSize: FONT_SIZES.body
                 }}
-              >{user.name}</Text>
+              >{name}</Text>
               <Text
                 style={{
                   color: isDarkMode ? COLOURS.white : COLOURS.black,

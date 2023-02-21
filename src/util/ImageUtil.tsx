@@ -54,7 +54,11 @@ export function getImageSrc(
             }
             if (result != undefined && !result.canceled){
                 console.log(imgDirectory)
-                await FileSystem.makeDirectoryAsync(imgDirectory)
+                await FileSystem.getInfoAsync(imgDirectory).then(async (info)=>{
+                    if (!info.exists){
+                        await FileSystem.makeDirectoryAsync(imgDirectory)
+                    }
+                })
                 await FileSystem.copyAsync({
                     from: result.assets[0].uri,
                     to: imgDirectory + result.assets[0].fileName
