@@ -44,11 +44,16 @@ export function ProfileNavigator(): JSX.Element{
     const { user, setUser } = useContext(UserContext);
     const [ tabNavi, setTabNavi ] = useState<BottomTabNavigationProp<any, any, any>>(useNavigation())
     const isDarkMode = user.setting.isDark()
-    tabNavi?.setOptions({
-        tabBarStyle: {
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white
-        }
-    })
+    try {
+        tabNavi?.setOptions({
+            tabBarStyle: {
+            backgroundColor: isDarkMode ? Colors.darker : Colors.white
+            }
+        })
+    } catch (error) {
+        console.warn(error)
+    }
+    
 
     return (
         <TabNaviContext.Provider value={{tabNavi, setTabNavi}}>

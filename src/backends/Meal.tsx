@@ -22,8 +22,8 @@ export class Meal{
             this.name,
             this.url,
             this.imgSrc,
-            this.categoryId,
-            this.instruction,
+            ","+this.categoryId.toString()+",",
+            this.instruction.toString(),
         ];
     }
 
