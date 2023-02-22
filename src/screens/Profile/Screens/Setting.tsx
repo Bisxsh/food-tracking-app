@@ -45,8 +45,8 @@ const NavigateRow = (
         flexDirection: "row",
         justifyContent: "space-between",
         alignSelf: "flex-start",
-        paddingTop: SPACING.small,
-        paddingBottom: SPACING.small,
+        paddingTop: SPACING.tiny,
+        paddingBottom: SPACING.tiny,
       }}
       onPress={async () => {
         navigation.navigate(destination);
@@ -118,8 +118,8 @@ const TouchableRow = (text: string, func: Function) => {
         flexDirection: "row",
         justifyContent: "space-between",
         alignSelf: "flex-start",
-        paddingTop: SPACING.small,
-        paddingBottom: SPACING.small,
+        paddingTop: SPACING.tiny,
+        paddingBottom: SPACING.tiny,
       }}
       onPress={func()}
     >
