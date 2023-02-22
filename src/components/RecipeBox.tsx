@@ -1,23 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import {StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, StatusBar, Text, View, Button, Image} from 'react-native';
-import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
-import { getRecipes } from '../util/GetRecipe';
-import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  View,
+  Button,
+  Image,
+} from "react-native";
+import { Colors, Header } from "react-native/Libraries/NewAppScreen";
+import { getRecipes } from "../util/GetRecipe";
+import {
+  COLOURS,
+  DROP_SHADOW,
+  FONT_SIZES,
+  RADIUS,
+  SPACING,
+} from "../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { requestMicrophonePermissionsAsync } from 'expo-camera';
-
+import { requestMicrophonePermissionsAsync } from "expo-camera";
+import CardDetail, {
+  RecipeCardIcon,
+} from "../screens/Recipe/components/CardDetail";
 
 type Props = {
-    recipeName: string,
-    recipeImage: string,
-    recipeCalories: string,
-    recipeServings: string,
-    recipeCautions: string,
-    recipeIngredients: string,
-  };
+  recipeName: string;
+  recipeImage: string;
+  recipeCalories: string;
+  recipeServings: string;
+  recipeCautions: any;
+  recipeIngredients: string;
+};
 
 const RecipeBox = (props: Props) => {
-
   const isDarkMode = false;
 
   const backgroundStyle = {
@@ -25,51 +42,80 @@ const RecipeBox = (props: Props) => {
   };
 
   return (
-      <>
-          <View style={styles.container}>
-            <Image source={{uri: props.recipeImage}} style={styles.foodImage}/>
-            <Text style={styles.textHeading}>{props.recipeName}</Text>
-            <Text style={styles.textSmall}>{parseInt(props.recipeCalories)/parseInt(props.recipeServings)} Calories</Text>
-            <Text style={styles.textSmall}>Contains {props.recipeCautions}</Text>
-            <Text style={styles.textSmall}>Contains {props.recipeIngredients.length}</Text>
+    <View style={{ flex: 1, width: "100%" }}>
+      <View style={styles.container}>
+        <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+        <View style={styles.textContainer}>
+          <Text style={styles.textHeading} numberOfLines={1}>
+            {props.recipeName}
+          </Text>
+          <View
+            style={{
+              flexDirection: "column",
+              justifyContent: "space-around",
+              flex: 1,
+              paddingTop: SPACING.small,
+            }}
+          >
+            <CardDetail
+              icon={RecipeCardIcon.CALORIES}
+              text={`${Math.round(
+                parseInt(props.recipeCalories) / parseInt(props.recipeServings)
+              )} Calories`}
+            />
+            <CardDetail
+              icon={RecipeCardIcon.ALLERGENS}
+              text={`Contains ${props.recipeCautions.join(", ")}`}
+            />
+            <CardDetail
+              icon={RecipeCardIcon.INGREDIENTS}
+              text={`${props.recipeIngredients.length} ingredients`}
+            />
           </View>
-      </>
+        </View>
+      </View>
+    </View>
   );
-}
-export default RecipeBox
+};
+export default RecipeBox;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: "3%",
-    width: "90%",
-    height: 125,
-    flexDirection: "column",
+    marginTop: SPACING.small,
+    flex: 1,
+    height: 128,
+    flexDirection: "row",
     backgroundColor: COLOURS.grey,
     borderRadius: 10,
-    alignItems: "flex-start",
-    justifyContent: "space-around",
+    alignItems: "center",
+    justifyContent: "flex-start",
   },
 
   foodImage: {
     borderRadius: RADIUS.small,
-    width: 124, 
-    height: 124,
-    marginRight: 'auto',
-    marginBottom: 'auto',
+    width: 128,
+    aspectRatio: 1,
+  },
+
+  textContainer: {
+    padding: SPACING.medium,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+    flex: 1,
   },
 
   textHeading: {
-    left: '35%',
-    bottom: "35%",
-    fontSize: 16,
+    // left: "35%",
+    // bottom: "35%",
+    // fontSize: 16,
+    fontSize: FONT_SIZES.medium,
   },
 
   textSmall: {
-    left: '40%',
-    bottom: "40%",
-    fontSize: 14,
-    // position: 'absolute',
+    // left: "40%",
+    // bottom: "40%",
+    // fontSize: 14,
   },
-
 });
-
