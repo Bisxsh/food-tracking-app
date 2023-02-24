@@ -71,7 +71,7 @@ const HistorySchema: Schema = {
         _id: "int primary key not null",
         userId: "int not null",
         date: "date not null",
-        waste: "real not null",
+        mass: "real not null",
         cost: "real not null"
     }
 }
@@ -170,6 +170,7 @@ export async function init(){
     await createTable(UserSchema);
     await createTable(IngredientSchema);
     await createTable(MealSchema);
+    await createTable(HistorySchema);
 }
 
 // ======== Create records ==============================================================
