@@ -5,7 +5,11 @@ import IngredientCard from "./IngredientCard";
 import { SPACING } from "../../../../util/GlobalStyles";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
-import { IngredientBuilder } from "../../../../classes/IngredientClass";
+import {
+  Ingredient,
+  IngredientBuilder,
+} from "../../../../classes/IngredientClass";
+import IngredientPopup from "../IngredientPopup";
 
 type Props = {};
 
@@ -13,6 +17,9 @@ const IndgredientView = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
   const { homeContext, setHomeContext } = useContext(HomeContext);
   const navigation = useNavigation<any>();
+  const [ingredientShown, setIngredientShown] = useState<Ingredient | null>(
+    null
+  );
 
   return (
     <View
@@ -26,18 +33,20 @@ const IndgredientView = (props: Props) => {
       {userData.storedIngredients.map((ingredient) => (
         <TouchableOpacity
           onPress={() => {
-            setHomeContext({
-              ...homeContext,
-              ingredientBeingEdited:
-                IngredientBuilder.fromIngredient(ingredient),
-            });
-            navigation.navigate("ManualIngredient");
+            setIngredientShown(ingredient);
           }}
           key={`${ingredient.getId} - ${ingredient.getName}`}
         >
           <IngredientCard ingredient={ingredient} />
         </TouchableOpacity>
       ))}
+      {ingredientShown && (
+        <IngredientPopup
+          showModal={true}
+          setShowModal={(show) => setIngredientShown(null)}
+          ingredient={ingredientShown}
+        />
+      )}
     </View>
   );
 };

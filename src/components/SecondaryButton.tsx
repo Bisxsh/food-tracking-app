@@ -4,16 +4,17 @@ import { COLOURS, FONT_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 
 type Props = {
   text: string;
+  width?: number;
   onPress: () => void;
 };
 
-const PrimaryButton = (props: Props) => {
+const SecondaryButton = (props: Props) => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={props.onPress}>
       <Text
         style={{
           textAlign: "center",
-          color: COLOURS.white,
+          color: COLOURS.primary,
           fontSize: FONT_SIZES.small,
         }}
       >
@@ -23,11 +24,13 @@ const PrimaryButton = (props: Props) => {
   );
 };
 
-export default PrimaryButton;
+export default SecondaryButton;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLOURS.primary,
+    backgroundColor: COLOURS.white,
+    borderColor: COLOURS.primary,
+    borderWidth: 1,
     borderRadius: RADIUS.standard,
     padding: SPACING.medium,
     flex: 1,
