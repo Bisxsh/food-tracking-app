@@ -3,9 +3,9 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Home } from "../../screens/Home/Home";
-import ManualIngredient from "./ManualIngredient";
+import ManualIngredient from "./ManualMeal";
 import BarcodeScanner from "../Home/components/Add/BarcodeScanner";
-import { DEFAULT_HOME_DATA, HomeContext } from "./RecipeContextProvider";
+import { DEFAULT_RECIPE_DATA, RecipeContext } from "./RecipeContextProvider";
 import { Recipe } from "./Recipe";
 
 type Props = {};
@@ -17,9 +17,9 @@ const HomeNavigator = (props: Props) => {
     "Non-serializable values were found in the navigation state",
   ]);
   const isDarkMode = false;
-  const [homeContext, setHomeContext] = React.useState(DEFAULT_HOME_DATA);
+  const [recipeContext, setRecipeContext] = React.useState(DEFAULT_RECIPE_DATA);
   return (
-    <HomeContext.Provider value={{ homeContext, setHomeContext }}>
+    <RecipeContext.Provider value={{ recipeContext, setRecipeContext }}>
       <Stack.Navigator
         initialRouteName="Profile"
         screenOptions={({ route, navigation }) => ({
@@ -43,7 +43,7 @@ const HomeNavigator = (props: Props) => {
         />
         <Stack.Screen name="BarcodeScanner" component={BarcodeScanner} />
       </Stack.Navigator>
-    </HomeContext.Provider>
+    </RecipeContext.Provider>
   );
 };
 

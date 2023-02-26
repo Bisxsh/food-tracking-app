@@ -15,6 +15,8 @@ import {
   IngredientBuilder,
   weightUnit,
 } from "../../classes/IngredientClass";
+import { MealBuilder } from "../../classes/MealClass";
+
 import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
 import { Category } from "../../classes/Categories";
@@ -26,61 +28,67 @@ import NumberInputRow from "../Home/components/Add/NumberInputRow";
 import RecipeBox from "../../components/RecipeBox";
 import RecipeIngredientList from "../../components/RecipeIngredientList";
 import PrimaryButton from "../../components/PrimaryButton";
-import { HomeContext } from "../Home/components/HomeContextProvider";
+import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import IngredientsList from "../../components/IngredientsList";
-
+import { Meal } from "../../backends/Meal";
+import { create } from "../../backends/Database";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
-  setIngredient?: (ingredient: IngredientBuilder | null) => void;
-  ingredientBuilder?: IngredientBuilder;
+  setMeal?: (meal: MealBuilder | null) => void;
+  mealBuilder?: MealBuilder;
 };
 
-const ManualIngredient = (props: Props) => {
-  const { homeContext, setHomeContext } = useContext(HomeContext);
+const ManualMeal = (props: Props) => {
+  const { recipeContext, setRecipeContext } = useContext(RecipeContext);
   const { userData, setUserData } = useContext(UserDataContext);
   const [categories, setCategories] = useState<Category[]>(
     userData.ingredientCategories
   );
   const navigation = useNavigation<any>();
-  const ingredientBuilder =
-    homeContext.ingredientBeingEdited || new IngredientBuilder();
+  const mealBuilder =
+  recipeContext.recipeBeingEdited || new MealBuilder();
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
 
-  function saveIngredient() {
-    if (!ingredientBuilder.allRequiredFieldsSet()) {
+  function saveRecipe() {
+    if (!mealBuilder.allRequiredFieldsSet()) {
       alert("All required fields must be set");
       return;
     }
-    ingredientBuilder.setCategories(categories);
+    
+    mealBuilder.setCategoryId([1]);
     if (
-      ingredientBuilder.getId() == 0 &&
-      userData.storedIngredients.length > 0
+      mealBuilder.getId() == 0 &&
+      userData.savedRecipes.length > 0
     ) {
-      ingredientBuilder.setId(userData.storedIngredients.length);
+      mealBuilder.setId(userData.savedRecipes.length); //change to meal id
     }
-    console.log("ID: ", ingredientBuilder.getId());
-    if (
-      userData.storedIngredients.find(
-        (ing) => ing.id === ingredientBuilder.getId()
-      )
-    ) {
-      setUserData({
-        ...userData,
-        storedIngredients: userData.storedIngredients.map((ing) =>
-          ing.id === ingredientBuilder.getId() ? ingredientBuilder.build() : ing
-        ),
-      });
-    } else userData.storedIngredients.push(ingredientBuilder.build());
+    console.log("ID: ", mealBuilder.getId());
+    // if (
+    //   userData.storedIngredients.find(
+    //     (ing) => ing.id === mealBuilder.getId()
+    //   )
+    // ) {
+    //   setUserData({
+    //     ...userData,
+    //     storedIngredients: userData.storedIngredients.map((ing) =>
+    //       ing.id === ingredientBuilder.getId() ? ingredientBuilder.build() : ing
+    //     ),
+    //   });
+    // } else 
+    // userData.storedIngredients.push(mealBuilder.build());
+    userData.savedRecipes.push(mealBuilder.build());
+    // create(mealBuilder.build());
+    //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
 
   function closeManual() {
-    props.setIngredient && props.setIngredient(null);
-    setHomeContext({ ...homeContext, ingredientBeingEdited: null });
+    // props.setIngredient && props.setIngredient(null);
+    setRecipeContext({ ...recipeContext, recipeBeingEdited: null });
     navigation.reset({
       index: 0,
       routes: [{ name: "Recipe" }],
@@ -99,17 +107,17 @@ const ManualIngredient = (props: Props) => {
             name="check"
             size={24}
             color="black"
-            onPress={saveIngredient}
+            onPress={saveRecipe}
           />
         </TouchableOpacity>
       </View>
 
       <ScrollView >
         <NameAndImage
-          onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
-          onNameChange={(str) => ingredientBuilder.setName(str)}
-          imgStr={ingredientBuilder.getImgSrc()}
-          nameStr={ingredientBuilder.getName()}
+          onImgChange={(str) => mealBuilder.setImgSrc(str)}
+          onNameChange={(str) => mealBuilder.setName(str)}
+          imgStr={mealBuilder.getImgSrc()}
+          nameStr={mealBuilder.getName()}
         />
         {getSeperator()}
         <ChipsSelectors
@@ -131,14 +139,14 @@ const ManualIngredient = (props: Props) => {
         <Text>Instructions</Text>
         {getSeperator()}
         <IngredientsList></IngredientsList>
-        <PrimaryButton text="Save" onPress={saveIngredient} />
+        <PrimaryButton text="Save" onPress={saveRecipe} />
         <View style={{ height: SPACING.medium }} />
       </ScrollView>
     </View>
   );
 };
 
-export default ManualIngredient;
+export default ManualMeal;
 
 const styles = StyleSheet.create({
   container: {

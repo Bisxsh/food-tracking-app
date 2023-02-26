@@ -8,7 +8,7 @@ import {
   RADIUS,
   SPACING,
 } from "../../util/GlobalStyles";
-import ManualIngredient from "./ManualIngredient";
+import ManualIngredient from "./ManualMeal";
 import { IngredientBuilder } from "../../classes/IngredientClass";
 import { useNavigation } from "@react-navigation/native";
 
