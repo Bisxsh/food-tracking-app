@@ -3,16 +3,17 @@ import React, { useContext, useState } from 'react';
 import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, AlertButton, Image} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-import { User, UserContext } from '../../../backends/User';
+import { User, UserContext, DietReqs } from '../../../backends/User';
 import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING} from '../../../util/GlobalStyles';
 import * as DB from '../../../backends/Database'
 import { getImageSrc } from '../../../util/ImageUtil';
 import { ActionSheetOptions, useActionSheet } from '@expo/react-native-action-sheet';
+import Checkbox from '../../../components/Checkbox';
 
-type inputTextProp = {
-    defaultText: string
+type selectRowProp = {
+    text: string
+    initialVal: boolean
     onChange: Function
-    onDelete: Function
 }
 
 type alertProp = {
@@ -32,7 +33,6 @@ const HorizontalLine = (
     />
 );
 
-var InputTextRowCount = 0
 
 function createAlert(prop: alertProp){
     Alert.alert(
@@ -56,93 +56,63 @@ async function getPhoto(
     })
 }
 
-function InputTextRow(prop: inputTextProp): JSX.Element{
-    const [value, setValue] = useState<string>(prop.defaultText)
+function SelectRow(prop: selectRowProp): JSX.Element{
+    const [value, setValue] = useState<boolean>(prop.initialVal)
     return (
         <View
             style={{
                 flexDirection: "row",
                 paddingVertical: SPACING.small,
                 paddingHorizontal: SPACING.medium,
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
             }}
         >
-            <TextInput
-                style={{
-                    fontSize: FONT_SIZES.medium,
-                    width: "75%"
+            <Checkbox
+                onPress={(arg)=>{
+                    setValue(arg)
+                    prop.onChange(arg)
                 }}
-                value={value}
-                onChangeText={setValue}
-                onSubmitEditing={(e)=>{
-                    prop.onChange(e.nativeEvent.text, value)
-                }}
+                initialVal={value}
+                size={ICON_SIZES.medium}
             />
-            <TouchableOpacity
-                onPress={()=>{
-                    prop.onDelete(value)
-                }}
-            >
-                <MaterialIcons 
-                    name="close" 
-                    color={Colors.black} 
-                    size={ICON_SIZES.medium} 
-                    style={{
-                        textAlign: 'center'
-                    }}
-                />
-            </TouchableOpacity>
+            <Text
+            style={{
+                paddingLeft: SPACING.tiny,
+                fontSize: FONT_SIZES.medium,
+                width: "75%"
+            }}>
+                {prop.text}
+            </Text>
     </View>
     );
 }
 
-function inputTextRowOnChange(newValue:string, previousValue:string, user: User, setUser: React.Dispatch<React.SetStateAction<User>>){
-    if (newValue != ""){
-        if (user.dietReq.findIndex((v)=>v==previousValue) == -1){
-            user.dietReq.push(newValue)
-        }else{
-            user.dietReq = user.dietReq.map((v,i,a)=>{
-                if (v=previousValue){
-                    return newValue
-                }
-                return v
-            })
-        }
-        setUser(user)
-        DB.updateUser(user)
-    }else{
-        createAlert({
-            title: "Empty Error",
-            desc: "Text cannot be empty",
-            buttons: [{text: "OK"}]
-        })
+
+function selectRowOnChange(newValue:boolean, text:string, user: User, setUser: React.Dispatch<React.SetStateAction<User>>){
+    const index = DietReqs.findIndex((value)=>value==text)
+    if (index != -1){
+        user.dietReq[index][1] = newValue
     }
+    setUser(user)
+    DB.updateUser(user)
 }
 
 export function Account(): JSX.Element{
     const { user, setUser } = useContext(UserContext);
     const [ name, setName ] = useState(user.name)
     const [ img, setImg] = useState(user.imgSrc)
-    const [ dietReqRows, setDietReqRows] = useState<JSX.Element[]>(
-        user.dietReq.map((value, index)=>{
+    const dietReqRows: JSX.Element[] = user.dietReq.map((value, index)=>{
             const key = index
-            return <InputTextRow
+            return <SelectRow
                 key={key}
-                defaultText={value}
-                onChange={(newValue:string, previousValue:string)=>inputTextRowOnChange(newValue,previousValue,user,setUser)}
-                onDelete={(value: string)=>{
-                    setDietReqRows((current)=>current.filter((value)=>value.key!=key))
-                    user.dietReq = user.dietReq.filter((v)=>v!=value)
-                    setUser(user)
-                    DB.updateUser(user)
-                }}
+                text={value[0]}
+                initialVal={value[1]}
+                onChange={(newValue:boolean)=>selectRowOnChange(newValue, value[0], user, setUser)}
             />
         }
-    ))
+    )
     const isDarkMode = user.setting.isDark()
     const { showActionSheetWithOptions } = useActionSheet();
-
-    InputTextRowCount = user.dietReq.length
 
     return (
         <ScrollView
@@ -256,36 +226,6 @@ export function Account(): JSX.Element{
                             color: isDarkMode ? Colors.white : Colors.black,
                         }}
                     >Dietary Requirements</Text>
-                    <TouchableOpacity
-                        onPress={()=>{
-                            const key = InputTextRowCount
-                            InputTextRowCount ++
-                            setDietReqRows(
-                                [
-                                    <InputTextRow
-                                        key={key}
-                                        defaultText={""}
-                                        onChange={(newValue:string, previousValue:string)=>inputTextRowOnChange(newValue,previousValue,user,setUser)}
-                                        onDelete={(value: string)=>{
-                                            setDietReqRows((current)=>current.filter((value)=>value.key!=key))
-                                            user.dietReq = user.dietReq.filter((v)=>v!=value)
-                                            setUser(user)
-                                            DB.updateUser(user)
-                                        }}
-                                    />
-                                ].concat(dietReqRows)
-                            )
-                        }}
-                    >
-                        <MaterialIcons 
-                            name="add" 
-                            color={isDarkMode ? Colors.white : Colors.black} 
-                            size={ICON_SIZES.medium} 
-                            style={{
-                                textAlign: 'center'
-                            }}
-                        />
-                    </TouchableOpacity>
                 </View>
                 <View
                     style={{
