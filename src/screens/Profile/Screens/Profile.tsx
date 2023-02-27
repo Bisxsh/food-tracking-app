@@ -8,7 +8,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/GlobalStyles';
 import { UserContext } from '../../../backends/User';
-import { ScreenProp } from '../ProfileNavigator';
+import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 import { DataSize, getMonthlyData, getMonthlyDataSet } from '../../../backends/Histories'
 
 type Months = {
@@ -41,6 +41,7 @@ var init = true
 
 export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
+  const { tabNavi, setTabNavi } = useContext(TabNaviContext)
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark())
   const [name, setName] = useState(user.name)
   const [img, setImg] = useState(user.imgSrc)
@@ -73,6 +74,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
   useEffect(
     ()=>{
       const unsubscribe = navigation.addListener("focus", ()=>{
+        init = true
         setIsDarkMode(user.setting.isDark())
         setName(user.name)
         setImg(user.imgSrc)
@@ -80,7 +82,17 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
       return unsubscribe
     }, 
     [navigation]
-  ) 
+  )
+  
+  useEffect(
+    ()=>{
+      const unsubscribe = (tabNavi != undefined)? tabNavi.addListener("focus", ()=>{
+        initLoad()
+      }): ()=>{}
+      return unsubscribe
+    }, 
+    [tabNavi]
+  )
 
   return (
     <SafeAreaView
