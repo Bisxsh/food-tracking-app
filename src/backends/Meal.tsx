@@ -39,5 +39,9 @@ export class Meal{
             properties[3],  // imgSrc
         );
     }
+
+    static reset(){
+        Meal.count = 0
+    }
     
 }

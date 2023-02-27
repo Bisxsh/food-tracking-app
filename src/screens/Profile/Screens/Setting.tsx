@@ -26,6 +26,11 @@ import * as DB from "../../../backends/Database";
 import { UserSetting } from "../../../backends/UserSetting";
 import { ScreenProp, StackParams } from "../ProfileNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Category } from "../../../backends/Category";
+import { History } from "../../../backends/Histories";
+import { Ingredient } from "../../../backends/Ingredient";
+import { Meal } from "../../../backends/Meal";
+import { Nutrition } from "../../../backends/Nutrition";
 
 
 type alertProp = {
@@ -204,6 +209,12 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
                 style: "destructive",
                 onPress: ()=>{
                   if (UserSetting.reloadApp != undefined){
+                    Category.reset()
+                    History.reset()
+                    Ingredient.reset()
+                    Meal.reset()
+                    Nutrition.reset()
+                    User.reset()
                     DB.deleteFile().then(()=>{
                       UserSetting.reloadApp!()
                     })

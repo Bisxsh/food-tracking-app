@@ -29,8 +29,17 @@ export class User{
         this.dateOfReg = (dateOfReq != undefined)? dateOfReq: new Date()
         this.dietReq = (dietReq != undefined)? dietReq: DietReqs.map((value)=>[value, false])
         this.setting = (setting != undefined)? setting: new UserSetting()
-        this.dietReq.map((value)=>value.join("&"))
         this.consent = (consent != undefined)? consent: false
+    }
+
+    reset(){
+        this._id = User.count ++
+        this.name = ""
+        this.imgSrc = undefined
+        this.dateOfReg = new Date()
+        this.dietReq = DietReqs.map((value)=>[value, false])
+        this.setting = new UserSetting()
+        this.consent = false
     }
 
     toList(): any[]{
@@ -41,7 +50,7 @@ export class User{
             this.dateOfReg.toISOString().replace("T", " ").replace("Z", ""), 
             this.dietReq.map((value)=>value.join("&")).toString(), 
             JSON.stringify(this.setting),
-            this.consent,
+            this.consent?1:0,
         ];
     }
 
@@ -53,10 +62,14 @@ export class User{
             properties[0],  // _id
             properties[2],  // imgSrc
             new Date((properties[3] as string).replace(" ", "T")+"Z"),  // dateOfReg
-            (properties[4] as string).split(",").map((value)=>[value.split("&")[0], value.split("&")[0]=="true"]),  // dietReq
+            (properties[4] as string).split(",").map((value)=>[value.split("&")[0], value.split("&")[1]=="true"]),  // dietReq
             UserSetting.fromList(Object.values(JSON.parse(properties[5]))),  // setting
-            properties[6],
+            properties[6]==1,
         );
+    }
+
+    static reset(){
+        User.count = 0
     }
     
 }

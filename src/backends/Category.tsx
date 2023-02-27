@@ -21,5 +21,8 @@ export class Category{
     static fromList(properties:any[]):Category{
         return new Category(properties[1], properties[2], properties[0], properties[3]);
     }
-    
+
+    static reset(){
+        Category.count = 0
+    }
 }

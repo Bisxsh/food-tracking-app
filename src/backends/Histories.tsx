@@ -36,6 +36,10 @@ export class History{
             properties[0]   // _id
         );
     }
+
+    static reset(){
+        History.count = 0
+    }
 }
 
 export async function getMonthlyData(year: number, month: number):Promise<[number, number]>{

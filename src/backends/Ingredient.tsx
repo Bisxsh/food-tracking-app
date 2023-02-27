@@ -111,20 +111,24 @@ export class Ingredient {
 
   static count: number = 0;
 
-    static fromList(properties:any[]): Ingredient{
-        return new Ingredient(
-            properties[1],  // name
-            properties[2],  // quantity
-            properties[4],  // weightUnit
-            Nutrition.fromList(Object.values(JSON.parse(properties[8]))),  // Nutrition
-            (properties[9] as string).substring(1,(properties[9] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
-            properties[0],  // _id
-            properties[3],  // weight
-            properties[5],  // imgSrc
-            (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined,  // useDate
-            (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined,  // expiryDate
-            properties[8],  // barcode
-            properties[9],  // memo
-        )
-    }
+  static fromList(properties:any[]): Ingredient{
+      return new Ingredient(
+          properties[1],  // name
+          properties[2],  // quantity
+          properties[4],  // weightUnit
+          Nutrition.fromList(Object.values(JSON.parse(properties[8]))),  // Nutrition
+          (properties[9] as string).substring(1,(properties[9] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
+          properties[0],  // _id
+          properties[3],  // weight
+          properties[5],  // imgSrc
+          (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined,  // useDate
+          (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined,  // expiryDate
+          properties[8],  // barcode
+          properties[9],  // memo
+      )
+  }
+  
+  static reset(){
+    Ingredient.count = 0
+  }
 }

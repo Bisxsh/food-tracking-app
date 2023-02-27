@@ -83,4 +83,8 @@ export class Nutrition{
             properties[16],
         );
     }
+
+    static reset(){
+        Nutrition.count = 0
+    }
 }

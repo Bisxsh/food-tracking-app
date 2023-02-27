@@ -49,6 +49,7 @@ function App(): JSX.Element {
     await DB.init()
     const stored = await DB.readUser(0)
     if (stored == undefined){
+      user.reset()
       DB.create(user)
       setConsent(false)
     }else{
@@ -56,6 +57,7 @@ function App(): JSX.Element {
       setConsent(stored.consent)
     }
   }
+
   if (firstTime){
     firstTime = false
     init()

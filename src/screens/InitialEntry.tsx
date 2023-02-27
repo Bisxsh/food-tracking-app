@@ -273,6 +273,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element{
                             if (prop.user.consent){
                                 DB.updateUser(prop.user)
                                 prop.setConsent(true) 
+                                prop.setUser(prop.user)
                             }else{
                                 createAlert({
                                     title: "User Consent Missing",

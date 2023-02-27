@@ -51,7 +51,7 @@ const UserSchema: Schema = {
         dateOfReg: "date",
         dietReq: "ntext not null",
         setting: "ntext not null",
-        consent: "boolean not null"
+        consent: "int not null",
     }
 }
 
@@ -458,53 +458,53 @@ export async function readAllHistory():Promise<History[]>{
 // ======== Update records ==============================================================
 
 export function updateIngredient(ingredient: Ingredient){
-    const arg = ingredient.toList().slice(1, -1)
+    const arg = ingredient.toList().slice(1)
     var sql: string = "update " + IngredientSchema.name + " set "
-    for (const key of Object.keys(IngredientSchema.properties).slice(1,-1)){
+    for (const key of Object.keys(IngredientSchema.properties).slice(1)){
         sql = sql + key + " = ?, "
     }
-    sql = sql.substring(0, sql.length -2) + ";"
-    transaction(sql, arg, "Update record")
+    sql = sql.substring(0, sql.length -2) + " where _id=?;"
+    transaction(sql, arg.concat([ingredient._id]), "Update record")
 }
 
-export function updateCategory(Category: Category){
-    const arg = Category.toList().slice(1, -1)
+export function updateCategory(category: Category){
+    const arg = category.toList().slice(1)
     var sql: string = "update " + CategorySchema.name + " set "
-    for (const key of Object.keys(CategorySchema.properties).slice(1,-1)){
+    for (const key of Object.keys(CategorySchema.properties).slice(1)){
         sql = sql + key + " = ?, "
     }
-    sql = sql.substring(0, sql.length -2) + ";"
-    transaction(sql, arg, "Update record")
+    sql = sql.substring(0, sql.length -2) + " where _id=?;"
+    transaction(sql, arg.concat([category._id]), "Update record")
 }
 
-export function updateUser(User: User){
-    const arg = User.toList().slice(1, -1)
+export function updateUser(user: User){
+    const arg = user.toList().slice(1)
     var sql: string = "update " + UserSchema.name + " set "
-    for (const key of Object.keys(UserSchema.properties).slice(1,-1)){
+    for (const key of Object.keys(UserSchema.properties).slice(1)){
         sql = sql + key + " = ?, "
     }
-    sql = sql.substring(0, sql.length -2) + ";"
-    transaction(sql, arg, "Update record")
+    sql = sql.substring(0, sql.length -2) + " where _id=?;"
+    transaction(sql, arg.concat([user._id]), "Update record")
 }
 
-export function updateMeal(Meal: Meal){
-    const arg = Meal.toList().slice(1, -1)
+export function updateMeal(meal: Meal){
+    const arg = meal.toList().slice(1)
     var sql: string = "update " + MealSchema.name + " set "
-    for (const key of Object.keys(MealSchema.properties).slice(1,-1)){
+    for (const key of Object.keys(MealSchema.properties).slice(1)){
         sql = sql + key + " = ?, "
     }
-    sql = sql.substring(0, sql.length -2) + ";"
-    transaction(sql, arg, "Update record")
+    sql = sql.substring(0, sql.length -2) + " where _id=?;"
+    transaction(sql, arg.concat([meal._id]), "Update record")
 }
 
-export function updateHistory(History: History){
-    const arg = History.toList().slice(1, -1)
+export function updateHistory(history: History){
+    const arg = history.toList().slice(1)
     var sql: string = "update " + HistorySchema.name + " set "
-    for (const key of Object.keys(HistorySchema.properties).slice(1,-1)){
+    for (const key of Object.keys(HistorySchema.properties).slice(1)){
         sql = sql + key + " = ?, "
     }
-    sql = sql.substring(0, sql.length -2) + ";"
-    transaction(sql, arg, "Update record")
+    sql = sql.substring(0, sql.length -2) + " where _id=?;"
+    transaction(sql, arg.concat([history._id]), "Update record")
 }
 
 // ======== Delete records ==============================================================

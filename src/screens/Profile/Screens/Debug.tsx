@@ -286,7 +286,7 @@ export function Debug(): JSX.Element{
                     </Pressable>
                     <Pressable
                         style={styles.pressable}
-                        onPress={()=>{
+                        onPress={async ()=>{
                             switch(selectedTable){
                                 case "Ingredient":
                                     if (ing != undefined){
@@ -305,7 +305,14 @@ export function Debug(): JSX.Element{
                                 case "History":
                                     break;
                                 case "User":
-
+                                    const u = await DB.readUser(0)
+                                    if (u != undefined){
+                                        u.consent = !u.consent
+                                        u.name += "#"
+                                        console.log(u)
+                                        setLog(JSON.stringify(u))
+                                        DB.updateUser(u)
+                                    }
                                     break;
                                 default:
                                     break;
