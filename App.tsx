@@ -3,10 +3,10 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import * as ScreenOrientation from 'expo-screen-orientation';
+import { View, Text } from 'react-native'
 
 import { Recipe } from "./src/screens/Recipe/Recipe";
-import { COLOURS } from "./src/util/GlobalStyles";
+import { COLOURS, FONT_SIZES, SPACING } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
 import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
@@ -16,26 +16,67 @@ import { DEFAULT_USER, UserContext } from "./src/backends/User";
 import * as DB from './src/backends/Database';
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
+import { UserSetting } from "./src/backends/UserSetting";
+import { InitialEntry } from "./src/screens/InitialEntry"
 
 const Tab = createBottomTabNavigator();
 
+var firstTime = true
+
 function App(): JSX.Element {
+  const [loading, setLoading] = useState(true)
+  const [consent, setConsent] = useState(true)
+
   //TODO load user data from database and set it here
   const [userData, setUserData] = useState(DEFAULT_USER_DATA);
   
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER)
-  DB.init().then(()=>{
-    DB.create(user)
-  })
+  const init= async ()=>{
+    await DB.init()
+    const stored = await DB.readUser(0)
+    if (stored == undefined){
+      DB.create(user)
+      setConsent(false)
+    }else{
+      setUser(stored)
+      setConsent(stored.consent)
+    }
+    setLoading(false)
+  }
+
+  UserSetting.reloadApp = async ()=>{
+    await DB.init()
+    const stored = await DB.readUser(0)
+    if (stored == undefined){
+      DB.create(user)
+      setConsent(false)
+    }else{
+      setUser(stored)
+      setConsent(stored.consent)
+    }
+  }
+  if (firstTime){
+    firstTime = false
+    init()
+  }
   const isDarkMode = user.setting.isDark()
+  
 
   return (
     <ActionSheetProvider>
       <MenuProvider>
         <UserContext.Provider value={{user, setUser}}>
           <UserDataContext.Provider value={{ userData, setUserData }}>
-            <NavigationContainer>
+            {loading && <View style={{flex: 1, alignItems:"center", justifyContent: "center"}}>
+              <Text style={{fontSize: FONT_SIZES.heading}}>Welcome</Text>
+            </View>}
+            { !loading && !consent && <InitialEntry
+              user={user}
+              setUser={setUser}
+              setConsent={setConsent}
+            />}
+            {!loading && consent && <NavigationContainer>
               <Tab.Navigator
                 initialRouteName="HomeNavigator"
                 screenOptions={{
@@ -92,7 +133,7 @@ function App(): JSX.Element {
                   }}
                 />
               </Tab.Navigator>
-            </NavigationContainer>
+            </NavigationContainer>}
           </UserDataContext.Provider>
         </UserContext.Provider>
       </MenuProvider>

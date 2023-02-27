@@ -30,5 +30,7 @@ export class UserSetting{
     static fromList(properties:any[]):UserSetting{
         return new UserSetting(properties[0], properties[1], properties[2]);
     }
+
+    static reloadApp?: ()=>void
     
 }

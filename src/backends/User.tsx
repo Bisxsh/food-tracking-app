@@ -20,8 +20,9 @@ export class User{
     dateOfReg: Date
     dietReq: [string, boolean][]
     setting: UserSetting
+    consent: boolean
 
-    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting){
+    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean){
         this._id = (_id != undefined)? _id: User.count ++
         this.name = name
         this.imgSrc = imgSrc
@@ -29,6 +30,7 @@ export class User{
         this.dietReq = (dietReq != undefined)? dietReq: DietReqs.map((value)=>[value, false])
         this.setting = (setting != undefined)? setting: new UserSetting()
         this.dietReq.map((value)=>value.join("&"))
+        this.consent = (consent != undefined)? consent: false
     }
 
     toList(): any[]{
@@ -38,7 +40,9 @@ export class User{
             this.imgSrc, 
             this.dateOfReg.toISOString().replace("T", " ").replace("Z", ""), 
             this.dietReq.map((value)=>value.join("&")).toString(), 
-            JSON.stringify(this.setting)];
+            JSON.stringify(this.setting),
+            this.consent,
+        ];
     }
 
     static count = 0;
@@ -50,7 +54,8 @@ export class User{
             properties[2],  // imgSrc
             new Date((properties[3] as string).replace(" ", "T")+"Z"),  // dateOfReg
             (properties[4] as string).split(",").map((value)=>[value.split("&")[0], value.split("&")[0]=="true"]),  // dietReq
-            UserSetting.fromList(Object.values(JSON.parse(properties[5])))  // setting
+            UserSetting.fromList(Object.values(JSON.parse(properties[5]))),  // setting
+            properties[6],
         );
     }
     

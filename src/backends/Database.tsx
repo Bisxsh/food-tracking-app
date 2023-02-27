@@ -51,6 +51,7 @@ const UserSchema: Schema = {
         dateOfReg: "date",
         dietReq: "ntext not null",
         setting: "ntext not null",
+        consent: "boolean not null"
     }
 }
 
@@ -116,7 +117,7 @@ const MealSchema: Schema = {
 // ======== Basic Operation on DB ==============================================================
 
 function openDB(): sq.WebSQLDatabase{
-    const db = sq.openDatabase("DB.db", "v6")
+    const db = sq.openDatabase("DB.db", "v7")
     db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () =>{});
     return db
 }

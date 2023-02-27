@@ -7,9 +7,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert, 
+  AlertButton,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import * as Updates from 'expo-updates';
 
 import {
   COLOURS,
@@ -23,6 +26,23 @@ import * as DB from "../../../backends/Database";
 import { UserSetting } from "../../../backends/UserSetting";
 import { ScreenProp, StackParams } from "../ProfileNavigator";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
+
+type alertProp = {
+  title: string
+  desc: string
+  buttons: AlertButton[]
+  user: User
+}
+
+function createAlert(prop: alertProp){
+  Alert.alert(
+      prop.title,
+      prop.desc,
+      prop.buttons,
+      {cancelable:true, userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
+  )
+}
 
 const HorizontalLine = (
   <View
@@ -121,7 +141,7 @@ const TouchableRow = (text: string, func: Function) => {
         paddingTop: SPACING.tiny,
         paddingBottom: SPACING.tiny,
       }}
-      onPress={func()}
+      onPress={()=>{func()}}
     >
       <Text
         style={{
@@ -137,6 +157,8 @@ const TouchableRow = (text: string, func: Function) => {
     </TouchableOpacity>
   );
 };
+
+
 
 export function Setting({ navigation }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -168,7 +190,30 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
         {SwitchRow("Debug Mode", "debug")}
         {user.setting.debug && NavigateRow("Debug Window", "Debug", navigation)}
         {HorizontalLine}
-        {TouchableRow("Reset", () => {})}
+        {TouchableRow("Reset", ()=>{
+          createAlert({
+            title:"Reset This App", 
+            desc:"You can reset all settings and delete all data on this app.\n\nThis action cannot be undone.", 
+            buttons:[
+              {
+                text: "Cancel",
+                style: "cancel"
+              },
+              {
+                text: "Reset",
+                style: "destructive",
+                onPress: ()=>{
+                  if (UserSetting.reloadApp != undefined){
+                    DB.deleteFile().then(()=>{
+                      UserSetting.reloadApp!()
+                    })
+                  }
+                }
+              }
+            ],
+            user: user
+          })
+        })}
         {HorizontalLine}
         {NavigateRow("Help", "Help", navigation)}
         {HorizontalLine}

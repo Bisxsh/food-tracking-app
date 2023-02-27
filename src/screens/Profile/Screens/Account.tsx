@@ -19,7 +19,8 @@ type selectRowProp = {
 type alertProp = {
     title: string
     desc: string
-    buttons: AlertButton[]
+    buttons: AlertButton[],
+    user: User
 }
 
 
@@ -38,7 +39,8 @@ function createAlert(prop: alertProp){
     Alert.alert(
         prop.title,
         prop.desc,
-        prop.buttons
+        prop.buttons,
+        {userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
     )
 }
 
@@ -198,9 +200,10 @@ export function Account(): JSX.Element{
                             DB.updateUser(user) 
                         }else{
                             createAlert({
-                                title: "Empty Error",
-                                desc: "Text cannot be empty",
-                                buttons: [{text: "OK"}]
+                                title: "Name missing",
+                                desc: "Name cannot be empty",
+                                buttons: [{text: "OK"}],
+                                user: user
                             })
                         }
                     }}
