@@ -42,6 +42,7 @@ const ChipsSelectors = (props: Props) => {
           <Chips
             key={`category.name-${index}`}
             text={category.name}
+            colour={category.colour}
             onClose={() => {
               setSelectedFilters((prev) =>
                 prev.filter((cat) => cat.name !== category.name)

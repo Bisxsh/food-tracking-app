@@ -24,14 +24,10 @@ import { requestMicrophonePermissionsAsync } from "expo-camera";
 import CardDetail, {
   RecipeCardIcon,
 } from "../screens/Recipe/components/CardDetail";
+import { Meal } from "../classes/MealClass";
 
 type Props = {
-  recipeName: string;
-  recipeImage: string;
-  recipeCalories: string;
-  recipeServings: string;
-  recipeCautions: any;
-  recipeIngredients: string;
+  recipe: Meal;
 };
 
 const RecipeBox = (props: Props) => {
@@ -44,10 +40,10 @@ const RecipeBox = (props: Props) => {
   return (
     <View style={{ flex: 1, width: "100%" }}>
       <View style={styles.container}>
-        <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+        <Image source={{ uri: props.recipe.getImgSrc }} style={styles.foodImage} />
         <View style={styles.textContainer}>
           <Text style={styles.textHeading} numberOfLines={1}>
-            {props.recipeName}
+            {props.recipe.getName}
           </Text>
           <View
             style={{
@@ -59,18 +55,19 @@ const RecipeBox = (props: Props) => {
           >
             <CardDetail
               icon={RecipeCardIcon.CALORIES}
-              text={`${Math.round(
-                parseInt(props.recipeCalories) / parseInt(props.recipeServings)
-              )} Calories`}
+              text={"temp"}
+              //   `${Math.round(
+              //   // parseInt(props.recipeCalories) / parseInt(props.recipeServings) //need to add calorie to class
+              // )} Calories`}
             />
-            <CardDetail
+            {/* <CardDetail
               icon={RecipeCardIcon.ALLERGENS}
               text={`Contains ${props.recipeCautions.join(", ")}`}
             />
             <CardDetail
               icon={RecipeCardIcon.INGREDIENTS}
               text={`${props.recipeIngredients.length} ingredients`}
-            />
+            /> */}
           </View>
         </View>
       </View>

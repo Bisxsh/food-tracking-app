@@ -6,11 +6,18 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 type Props = {
   text: string;
   onClose?: () => void;
+  colour?: string;
 };
 
 const Chips = (props: Props) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={props.onClose}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        { backgroundColor: props.colour || COLOURS.grey },
+      ]}
+      onPress={props.onClose}
+    >
       <Text>{props.text}</Text>
 
       <MaterialCommunityIcons

@@ -56,7 +56,7 @@ export function Recipe(): JSX.Element {
   }
 
   async function genSaved() {
-    const recipeList = await getSaved();
+    const recipeList = userData.savedRecipes;
     setSaved(recipeList);
   }
 
@@ -118,18 +118,14 @@ export function Recipe(): JSX.Element {
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
-          if (
-            [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
-          ) {
+          // if (
+          //   [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
+          // ) temporary fix for health labels
+          {
             return (
               <RecipeBox
                 key={key}
-                recipeImage={recipe["recipe"]["image"]}
-                recipeName={recipe["recipe"]["label"]}
-                recipeCalories={recipe["recipe"]["calories"]}
-                recipeServings={recipe["recipe"]["yield"]}
-                recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]}
+                recipe = {recipe}
               />
             );
           }
