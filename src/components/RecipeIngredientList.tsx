@@ -5,7 +5,7 @@ import CustomSearchBar from "./CustomSearchBar";
 import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 import { getRecipes } from '../util/GetRecipe';
 import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
-import IngredientsList from "./IngredientsList";
+import IngredientsList from "./InstructionsList";
 
 
 function RecipeIngredientList() {
@@ -53,7 +53,7 @@ export default RecipeIngredientList
 
 const styles = StyleSheet.create({
     container: {
-        height: "40%",
+      height: 250,
       flexDirection: "column",
       backgroundColor: COLOURS.white,
       borderWidth: 2,

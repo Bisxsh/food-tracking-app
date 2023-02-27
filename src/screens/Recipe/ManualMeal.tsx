@@ -30,7 +30,7 @@ import RecipeIngredientList from "../../components/RecipeIngredientList";
 import PrimaryButton from "../../components/PrimaryButton";
 import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
-import IngredientsList from "../../components/IngredientsList";
+import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
 import { create } from "../../backends/Database";
 type Props = {
@@ -80,8 +80,10 @@ const ManualMeal = (props: Props) => {
     //   });
     // } else 
     // userData.storedIngredients.push(mealBuilder.build());
-    userData.savedRecipes.push(mealBuilder.build());
-    // create(mealBuilder.build());
+    let builtMeal = mealBuilder.build();
+    userData.savedRecipes.push(builtMeal);
+    let meal = new Meal(builtMeal.getName, builtMeal.getCategoryId, builtMeal.getInstruction, builtMeal.getId, builtMeal.getUrl, builtMeal.getImgSrc);
+    create(meal);
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
@@ -111,8 +113,11 @@ const ManualMeal = (props: Props) => {
           />
         </TouchableOpacity>
       </View>
-
-      <ScrollView >
+      <View style={{flex: 1}}>
+      <ScrollView style={{ width: "100%", height: "100%" }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 60}}>
+          
+        
         <NameAndImage
           onImgChange={(str) => mealBuilder.setImgSrc(str)}
           onNameChange={(str) => mealBuilder.setName(str)}
@@ -138,10 +143,13 @@ const ManualMeal = (props: Props) => {
         <RecipeIngredientList />
         <Text>Instructions</Text>
         {getSeperator()}
-        <IngredientsList></IngredientsList>
+        <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
+        {getSeperator()}
         <PrimaryButton text="Save" onPress={saveRecipe} />
         <View style={{ height: SPACING.medium }} />
+        
       </ScrollView>
+      </View>
     </View>
   );
 };
@@ -159,7 +167,9 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     paddingTop: SPACING.large + 16,
+    flex: 1,
   },
+  
 
   menu: {
     flexDirection: "row",
@@ -169,6 +179,7 @@ const styles = StyleSheet.create({
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
     paddingBottom: SPACING.large,
+    
   },
 
   button: {
@@ -180,4 +191,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+
 });

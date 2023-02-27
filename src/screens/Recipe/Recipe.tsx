@@ -21,7 +21,7 @@ import { UserDataContext } from "../../classes/UserData";
 import { UserContext } from "../../backends/User";
 import { HomeSortingFilter, HomeSortingFilters } from "./HomeSortingFilters";
 import AddButton from "../../components/AddButton";
-import AddMenu from "./AddMenu";
+
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -132,7 +132,7 @@ export function Recipe(): JSX.Element {
         })}
       </ScrollView>
       <AddButton onPress={() => navigation.navigate("ManualIngredient")} />
-      <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
+
     </View>
   );
 }
