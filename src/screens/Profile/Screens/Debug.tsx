@@ -11,17 +11,21 @@ import { Category } from "../../../backends/Category";
 import { User, UserContext } from '../../../backends/User';
 import { COLOURS, RADIUS, SPACING } from '../../../util/GlobalStyles';
 import { Meal } from '../../../backends/Meal';
+import { History } from '../../../backends/Histories';
 
 
 export function Debug(): JSX.Element{
     const [ing, setIng] = useState<Ingredient>();
     const [cat, setCat] = useState<Category>();
     const [meal, setMeal] = useState<Meal>();
+    const [history, setHistory] = useState<History>()
     const [userLocal, setUserLocal] = useState<User>();
     const { user, setUser } = useContext(UserContext);
     const [selectedTable, setSelectedTable] = useState<string>("Ingredient");
     const [log, setLog] = useState<string>("");
+    const [monthCount, setMonthCount] = useState(1)
     const isDarkMode = user.setting.isDark()
+
 
     return (
         <ScrollView
@@ -63,6 +67,7 @@ export function Debug(): JSX.Element{
                         <Picker.Item label="Ingredient" value="Ingredient" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
                         <Picker.Item label="Category" value="Category" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
                         <Picker.Item label="Meal" value="Meal" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                        <Picker.Item label="History" value="History" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
                         <Picker.Item label="User" value="User" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
                     </Picker>
                     <View
@@ -124,6 +129,17 @@ export function Debug(): JSX.Element{
                                     setLog(JSON.stringify(newMeal))
                                     console.log(newMeal)
                                     break;
+                                case "History":
+                                    const date = new Date()
+                                    date.setMonth(Math.floor(monthCount/2) % 12)
+                                    date.setFullYear(date.getFullYear() - Math.floor(Math.floor(monthCount/2)/12))
+                                    const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
+                                    setHistory(newHistory)
+                                    setLog(JSON.stringify(newHistory))
+                                    console.log(newHistory )
+                                    setMonthCount(monthCount + 1)
+                                    console.log(monthCount)
+                                    break;
                                 case "User":
                                     const newUser = new User("Hello Welcome")
                                     setUserLocal(newUser)
@@ -149,6 +165,9 @@ export function Debug(): JSX.Element{
                                     break;
                                 case "Meal":
                                     if (meal){ DB.create(meal) }
+                                    break;
+                                case "History":
+                                    if (history){ DB.create(history) }
                                     break;
                                 case "User":
                                     if (userLocal){ DB.create(userLocal) }
@@ -177,6 +196,11 @@ export function Debug(): JSX.Element{
                                     break;
                                 case "Meal":
                                     out = await DB.readMeal(0)
+                                    setLog(JSON.stringify(out))
+                                    console.log(out)
+                                    break;
+                                case "History":
+                                    out = await DB.readHistory(0)
                                     setLog(JSON.stringify(out))
                                     console.log(out)
                                     break;
@@ -243,6 +267,11 @@ export function Debug(): JSX.Element{
                                     setLog(JSON.stringify(out))
                                     console.log(out)
                                     break;
+                                case "History":
+                                    out = await DB.readAllHistory()
+                                    setLog(JSON.stringify(out))
+                                    console.log(out)
+                                    break;
                                 case "User":
                                     out = await DB.readAllUser()
                                     setLog(JSON.stringify(out))
@@ -273,6 +302,8 @@ export function Debug(): JSX.Element{
                                 case "Meal":
 
                                     break;
+                                case "History":
+                                    break;
                                 case "User":
 
                                     break;
@@ -296,6 +327,9 @@ export function Debug(): JSX.Element{
                                     break;
                                 case "Meal":
                                     DB.deleteMeal(0)
+                                    break;
+                                case "History":
+                                    DB.deleteHistory(0)
                                     break;
                                 case "User":
                                     DB.deleteUser(0)
@@ -341,6 +375,9 @@ export function Debug(): JSX.Element{
                                     break;
                                 case "Meal":
                                     DB.deleteAllMeal();
+                                    break;
+                                case "History":
+                                    DB.deleteAllHistory();
                                     break;
                                 case "User":
                                     DB.deleteAllUser();

@@ -5,6 +5,7 @@ import { Ingredient } from "./Ingredient";
 import { Category } from "./Category";
 import { User } from "./User";
 import { Meal } from "./Meal";
+import { History } from "./Histories";
 
 
 interface Schema {
@@ -183,6 +184,8 @@ export function create(user: User): any
 
 export function create(meal: Meal): any
 
+export function create(history: History): any
+
 export function create(value: any){
     var sql: string;
     if (value instanceof  Ingredient){
@@ -201,6 +204,10 @@ export function create(value: any){
         const arg = value.toList()
         sql = "insert or ignore into " + MealSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
         transaction(sql, arg, "Insert record")
+    }else if (value instanceof History){
+        const arg = value.toList()
+        sql = "insert or ignore into " + HistorySchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
+        transaction(sql, arg, "Insert record")
     }
 }
 
@@ -211,7 +218,6 @@ async function readAll(schema: Schema, property?:string, arg?: any, partial=fals
     var result
     if (property != undefined && arg != undefined){
         sql = sql + " where "+ property + ((partial)? " like '%"+arg+"%';": " = ?;")
-        console.log(sql)
         result = await transaction(sql, (partial)? []: [arg], "Select record")
     }else{
         sql += ";"
@@ -400,6 +406,54 @@ export async function readAllMeal():Promise<Meal[]>{
     return cats;
 }
 
+export async function readHistory(id: number):Promise<History|undefined>
+
+//export async function readHistory(name: string):Promise<History[]|[]>
+
+export async function readHistory(year_month: [number, number]):Promise<History[]|[]>
+
+export async function readHistory(value: any): Promise<any>{
+
+    switch(typeof(value)){
+        case "number":
+            const row = await read(HistorySchema, "_id", value);
+            if (row != undefined){
+                return History.fromList(Object.values(row));
+            }
+            break;
+        case "string":
+            const rows = await readAll(HistorySchema, "name", value);
+            const Historys: History[] = [];
+            for (const row of rows){
+                Historys.push(History.fromList(Object.values(row)));
+            }
+            return Historys;
+        default:
+            if (value instanceof Array){
+                const rows = await readAll(HistorySchema, "date", (value[0] as number).toString().padStart(4, '0') + '-' + (value[1] as number).toString().padStart(2, '0'), true);
+                const Historys: History[] = [];
+                for (const row of rows){
+                    Historys.push(History.fromList(Object.values(row)));
+                }
+                return Historys;
+            }
+            break;
+    }
+
+    return;
+}
+
+export async function readAllHistory():Promise<History[]>{
+    const rows: Object[] = await readAll(HistorySchema);
+    const Historys: History[] = [];
+
+    for (const row of rows){
+        Historys.push(History.fromList(Object.values(row)));
+    }
+    
+    return Historys;
+}
+
 // ======== Update records ==============================================================
 
 export function updateIngredient(ingredient: Ingredient){
@@ -436,6 +490,16 @@ export function updateMeal(Meal: Meal){
     const arg = Meal.toList().slice(1, -1)
     var sql: string = "update " + MealSchema.name + " set "
     for (const key of Object.keys(MealSchema.properties).slice(1,-1)){
+        sql = sql + key + " = ?, "
+    }
+    sql = sql.substring(0, sql.length -2) + ";"
+    transaction(sql, arg, "Update record")
+}
+
+export function updateHistory(History: History){
+    const arg = History.toList().slice(1, -1)
+    var sql: string = "update " + HistorySchema.name + " set "
+    for (const key of Object.keys(HistorySchema.properties).slice(1,-1)){
         sql = sql + key + " = ?, "
     }
     sql = sql.substring(0, sql.length -2) + ";"
@@ -541,6 +605,31 @@ export function deleteMeal(value: any){
 
 export function deleteAllMeal(){
     const sql: string = "delete from " + MealSchema.name
+    transaction(sql, [], "Delete all record")
+}
+
+export function deleteHistory(_id: number):any
+
+//export function deleteHistory(name: string):any
+
+export function deleteHistory(value: any){
+    var sql: string = "delete from " + HistorySchema.name + " where "
+    switch(typeof(value)){
+        case "number":
+            sql = sql + "_id = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        case "string":
+            sql = sql + "name = ?;"
+            transaction(sql, [value], "Delete record")
+            break;
+        default:
+            break;
+    }
+}
+
+export function deleteAllHistory(){
+    const sql: string = "delete from " + HistorySchema.name
     transaction(sql, [], "Delete all record")
 }
 

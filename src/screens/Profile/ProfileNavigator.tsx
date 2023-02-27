@@ -51,7 +51,7 @@ export function ProfileNavigator(): JSX.Element{
             }
         })
     } catch (error) {
-        console.warn(error)
+        console.log(error)
     }
     
 
