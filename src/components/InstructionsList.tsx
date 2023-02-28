@@ -20,7 +20,9 @@ const InstructionsList = (props: Props) => {
 
     function addInstruction(instruction: any){
       let num = instructionList.length + 1
+      // console.log(instruction)
       setInstructionList([...instructionList, num + ". " + instruction])
+      // console.log(instructionList)
       props.mealBuilder.setInstruction(instruction)
       onChangeText("")
 
@@ -43,7 +45,8 @@ const InstructionsList = (props: Props) => {
     </View>
     <View style={styles.container}>
       {instructionList.map((item: string)=>{
-        <Instruction instructionList={instructionList} setInstructionList={setInstructionList} text={item}/>
+
+        return <Instruction instructionList={instructionList} setInstructionList={setInstructionList} text={item}/>
       })}
     </View>
     </>
