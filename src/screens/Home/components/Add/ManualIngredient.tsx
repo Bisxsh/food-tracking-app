@@ -140,12 +140,12 @@ const ManualIngredient = (props: Props) => {
           defaultValue={ingredientBuilder.getExpiryDate()}
         />
         {getSeperator()}
-        <DateField
+        {/* <DateField
           fieldName="Use-by Date"
           width={Dimensions.get("screen").width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setUseDate(date)}
           defaultValue={ingredientBuilder.getUseDate()}
-        />
+        /> */}
         {getSeperator()}
         <ChipsSelectors
           fieldName="Categories"
