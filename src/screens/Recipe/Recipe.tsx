@@ -70,8 +70,16 @@ export function Recipe(): JSX.Element {
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
-    console.log(recipeList)
-    setSaved(recipeList);
+    var temp:any[] = [] 
+    recipeList.map((recipe) => {
+      temp.push({
+      recipe: {id: recipe.getId, label: recipe.getName, image: recipe.getImgSrc, servings: 2, calories: 1000.0, ingredients: ["Cheesse"], cautions: ["None"] }})
+    })
+    console.log("this is temp")
+    console.log(temp)
+    console.log("this is explore")
+    console.log(explore)
+    setSaved(temp);
   }
 
   function switchList() {
@@ -132,14 +140,19 @@ export function Recipe(): JSX.Element {
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
-          // if (
-          //   [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
-          // ) temporary fix for health labels
+          if (
+            [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
+          )
           {
             return (
               <RecipeBox
-                key={key}
-                recipe = {recipe}
+              key={key}
+              recipeImage={recipe["recipe"]["image"]}
+              recipeName={recipe["recipe"]["label"]}
+              recipeCalories={recipe["recipe"]["calories"]}
+              recipeServings={recipe["recipe"]["yield"]}
+              recipeCautions={recipe["recipe"]["cautions"]}
+              recipeIngredients={recipe["recipe"]["ingredients"]}
               />
             );
           }
