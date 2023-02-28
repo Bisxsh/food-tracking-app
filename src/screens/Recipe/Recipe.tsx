@@ -21,10 +21,12 @@ import { UserDataContext } from "../../classes/UserData";
 import { UserContext } from "../../backends/User";
 import { HomeSortingFilter, HomeSortingFilters } from "./HomeSortingFilters";
 import AddButton from "../../components/AddButton";
-
+import { readAllMeal } from "../../backends/Database";
+import { Meal } from "../../classes/MealClass";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
+
   const isDarkMode = user.setting.isDark();
 
   useNavigation()?.setOptions({
@@ -43,10 +45,21 @@ export function Recipe(): JSX.Element {
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
 
+
+  async function readMeals() {
+    await readAllMeal().then((meals) => {
+      let temp: Meal[] = [];
+      meals.map((meal) => {
+        temp.push(new Meal(meal.name, meal.categoryId, meal.instruction, meal._id, meal.url, meal.imgSrc));
+      });
+      setUserData({ ...userData, savedRecipes: temp });
+    }).then(() => genSaved());
+  }
+
   useEffect(() => {
+    readMeals();
     genRecipe();
     getDietReq();
-    genSaved();
   }, []);
 
   async function genRecipe() {
@@ -57,6 +70,7 @@ export function Recipe(): JSX.Element {
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
+    console.log(recipeList)
     setSaved(recipeList);
   }
 

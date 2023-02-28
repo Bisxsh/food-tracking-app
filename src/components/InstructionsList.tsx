@@ -42,13 +42,9 @@ const InstructionsList = (props: Props) => {
     </View>
     </View>
     <View style={styles.container}>
-      <FlatList
-        keyExtractor={(index) => index.toString() + Math.floor(Math.random() * 100) + 1}
-        data={instructionList}
-        renderItem={({ item }) => ( <Instruction instructionList={instructionList} setInstructionList={setInstructionList} text={item}/>
-        
-        )}
-      />
+      {instructionList.map((item: string)=>{
+        <Instruction instructionList={instructionList} setInstructionList={setInstructionList} text={item}/>
+      })}
     </View>
     </>
   );
