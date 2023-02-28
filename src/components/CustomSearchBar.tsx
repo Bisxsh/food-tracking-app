@@ -41,7 +41,7 @@ const styles = (props: Props) =>
       alignSelf: "stretch",
       height: props.height ? props.height : "auto",
       marginLeft: SPACING.small,
-      marginRight: SPACING.medium,
+      marginRight: SPACING.small,
       padding: SPACING.small,
       paddingLeft: SPACING.medium,
       paddingRight: SPACING.medium,

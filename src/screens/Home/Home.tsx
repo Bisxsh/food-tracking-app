@@ -9,11 +9,12 @@ import { SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";
 import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
-import ExpiringButton from "../../components/ExpiringButton";
+import ExpiringButton from "./components/Main/ExpiringButton";
 import {
   HomeSortingFilter,
   HomeSortingFilters,
 } from "./components/Menu/HomeSortingFilters";
+import { differenceInDays, isSameDay } from "date-fns";
 
 export function Home(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -84,6 +85,9 @@ export function Home(): JSX.Element {
           sort={HomeSortingFilters.indexOf(selectedSort)}
           setIngredientsSearch={setIngredientsSearch}
           setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
+          showExpiringButton={userData.storedIngredients.some(
+            (i) => differenceInDays(i.expiryDate, new Date()) <= 1
+          )}
         />
         <View
           style={{
@@ -96,9 +100,6 @@ export function Home(): JSX.Element {
           <IndgredientView />
         </View>
         <View style={{ flex: 1 }} />
-      </View>
-      <View>
-        <ExpiringButton label = "Expiring Soon"/>
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />

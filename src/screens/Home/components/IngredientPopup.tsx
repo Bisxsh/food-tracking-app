@@ -129,6 +129,7 @@ const IngredientPopup = (props: Props) => {
                     backgroundColor: category.colour,
                   },
                 ]}
+                key={category.name}
               >
                 <Text>{category.name}</Text>
               </View>

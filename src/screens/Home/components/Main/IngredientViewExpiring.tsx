@@ -5,8 +5,12 @@ import IngredientCard from "./IngredientCard";
 import { SPACING } from "../../../../util/GlobalStyles";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
-import { IngredientBuilder } from "../../../../classes/IngredientClass";
-import {getTimeLeft, getDaysUntilExpiry} from "../../../../util/ExpiryCalc"
+import {
+  Ingredient,
+  IngredientBuilder,
+} from "../../../../classes/IngredientClass";
+import { getTimeLeft, getDaysUntilExpiry } from "../../../../util/ExpiryCalc";
+import IngredientPopup from "../IngredientPopup";
 
 type Props = {};
 
@@ -14,6 +18,9 @@ const IngredientViewExpiring = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
   const { homeContext, setHomeContext } = useContext(HomeContext);
   const navigation = useNavigation<any>();
+  const [ingredientShown, setIngredientShown] = useState<Ingredient | null>(
+    null
+  );
 
   // Filter the stored ingredients array based on getTimeLeft value
   const filteredIngredients = userData.storedIngredients.filter(
@@ -31,18 +38,20 @@ const IngredientViewExpiring = (props: Props) => {
       {filteredIngredients.map((ingredient) => (
         <TouchableOpacity
           onPress={() => {
-            setHomeContext({
-              ...homeContext,
-              ingredientBeingEdited:
-                IngredientBuilder.fromIngredient(ingredient),
-            });
-            navigation.navigate("ManualIngredient");
+            setIngredientShown(ingredient);
           }}
           key={`${ingredient.getId} - ${ingredient.getName}`}
         >
           <IngredientCard ingredient={ingredient} />
         </TouchableOpacity>
       ))}
+      {ingredientShown && (
+        <IngredientPopup
+          showModal={true}
+          setShowModal={(show) => setIngredientShown(null)}
+          ingredient={ingredientShown}
+        />
+      )}
     </View>
   );
 };
