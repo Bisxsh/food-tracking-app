@@ -154,7 +154,18 @@ const IngredientPopup = (props: Props) => {
           <PrimaryButton
             text="Mark as used"
             onPress={() => {
-              //TODO implement
+              setUserData({
+                ...userData,
+                storedIngredients: userData.storedIngredients.map((p) => {
+                  if (p.id === props.ingredient.id) {
+                    return IngredientBuilder.fromIngredient(props.ingredient)
+                      .setQuantity(0)
+                      .build();
+                  }
+                  return p;
+                }),
+              });
+              props.setShowModal(false);
             }}
           />
         </View>

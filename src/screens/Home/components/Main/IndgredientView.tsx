@@ -25,21 +25,23 @@ const IndgredientView = (props: Props) => {
     <View
       style={[
         styles.container,
-        userData.storedIngredients.length > 2
+        userData.storedIngredients.filter((i) => i.quantity > 0).length > 2
           ? { justifyContent: "center" }
           : {},
       ]}
     >
-      {userData.storedIngredients.map((ingredient) => (
-        <TouchableOpacity
-          onPress={() => {
-            setIngredientShown(ingredient);
-          }}
-          key={`${ingredient.getId} - ${ingredient.getName}`}
-        >
-          <IngredientCard ingredient={ingredient} />
-        </TouchableOpacity>
-      ))}
+      {userData.storedIngredients
+        .filter((i) => i.quantity > 0)
+        .map((ingredient) => (
+          <TouchableOpacity
+            onPress={() => {
+              setIngredientShown(ingredient);
+            }}
+            key={`${ingredient.getId} - ${ingredient.getName}`}
+          >
+            <IngredientCard ingredient={ingredient} />
+          </TouchableOpacity>
+        ))}
       {ingredientShown && (
         <IngredientPopup
           showModal={true}
