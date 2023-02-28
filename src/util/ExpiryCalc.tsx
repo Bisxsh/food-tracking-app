@@ -7,3 +7,12 @@ export function getTimeLeft(ingredient: Ingredient) {
   );
   return timeLeft > 0 ? timeLeft + " days" : "Today";
 }
+
+export const getDaysUntilExpiry = (ingredient: Ingredient) => {
+  const expiryDate = ingredient.expiryDate
+  const currentDate = new Date();
+  const timeLeft = Math.floor(
+    (expiryDate.getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24
+  );
+  return parseInt(timeLeft.toString())
+};

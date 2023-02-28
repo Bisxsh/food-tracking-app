@@ -9,6 +9,7 @@ import { SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";
 import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
+import ExpiringButton from "../../components/ExpiringButton";
 import {
   HomeSortingFilter,
   HomeSortingFilters,
@@ -95,6 +96,9 @@ export function Home(): JSX.Element {
           <IndgredientView />
         </View>
         <View style={{ flex: 1 }} />
+      </View>
+      <View>
+        <ExpiringButton label = "Expiring Soon"/>
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />

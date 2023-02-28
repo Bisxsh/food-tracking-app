@@ -18,12 +18,17 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { UserSetting } from "./src/backends/UserSetting";
 import { InitialEntry } from "./src/screens/InitialEntry"
+import registerNNPushToken from 'native-notify';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
 
 const Tab = createBottomTabNavigator();
 
 var firstTime = true
 
 function App(): JSX.Element {
+  registerNNPushToken(6535, 'xdrqfHr09cuuEeUjH1MATl');
   const [loading, setLoading] = useState(true)
   const [consent, setConsent] = useState(true)
 
@@ -63,6 +68,25 @@ function App(): JSX.Element {
     init()
   }
   const isDarkMode = user.setting.isDark()
+
+  useEffect(() => {
+    // Send push notification at 10pm GMT every day
+    const trigger = {
+      hour: 22, // 10pm GMT
+      minute: 0,
+      second: 0,
+      repeats: true // Send notification every day
+    };
+
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Check your food",
+        body: "You need to check your food that are expiring soon!",
+      },
+      trigger,
+    });
+  }, []);
+
   
 
   return (
