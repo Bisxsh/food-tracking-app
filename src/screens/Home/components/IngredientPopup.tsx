@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext } from "react";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -8,6 +8,7 @@ import {
 import IngredientTile from "./Main/IngredientCard";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import {
+  COLOURS,
   DROP_SHADOW,
   FONT_SIZES,
   RADIUS,
@@ -139,20 +140,7 @@ const IngredientPopup = (props: Props) => {
         {Nutrition(props.ingredient.nutrition)}
         <View style={{ flexDirection: "row", marginTop: SPACING.medium }}>
           <SecondaryButton
-            text="Edit"
-            onPress={() => {
-              setHomeContext({
-                ...homeContext,
-                ingredientBeingEdited: IngredientBuilder.fromIngredient(
-                  props.ingredient
-                ),
-              });
-              navigation.navigate("ManualIngredient");
-            }}
-          />
-          <View style={{ width: SPACING.medium }} />
-          <PrimaryButton
-            text="Mark as used"
+            text="Mark all as used"
             onPress={() => {
               setUserData({
                 ...userData,
@@ -165,10 +153,42 @@ const IngredientPopup = (props: Props) => {
                   return p;
                 }),
               });
+            }}
+          />
+          <View style={{ width: SPACING.medium }} />
+          <PrimaryButton
+            text="Mark one as used"
+            onPress={() => {
+              setUserData({
+                ...userData,
+                storedIngredients: userData.storedIngredients.map((p) => {
+                  if (p.id === props.ingredient.id) {
+                    return IngredientBuilder.fromIngredient(props.ingredient)
+                      .setQuantity(p.quantity - 1)
+                      .build();
+                  }
+                  return p;
+                }),
+              });
               props.setShowModal(false);
             }}
           />
         </View>
+
+        <TouchableOpacity
+          style={styles.edit}
+          onPress={() => {
+            setHomeContext({
+              ...homeContext,
+              ingredientBeingEdited: IngredientBuilder.fromIngredient(
+                props.ingredient
+              ),
+            });
+            navigation.navigate("ManualIngredient");
+          }}
+        >
+          <MaterialCommunityIcons name="pencil" size={24} color="black" />
+        </TouchableOpacity>
       </View>
     </Modal>
   );
@@ -223,5 +243,15 @@ const styles = StyleSheet.create({
   nutrition: {
     fontSize: FONT_SIZES.small,
     marginTop: SPACING.small,
+  },
+
+  edit: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    margin: SPACING.medium,
+    padding: SPACING.small,
+    backgroundColor: COLOURS.grey,
+    borderRadius: RADIUS.circle,
   },
 });
