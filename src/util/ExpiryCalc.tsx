@@ -5,14 +5,15 @@ export function getTimeLeft(ingredient: Ingredient) {
   const timeLeft = Math.floor(
     (expiryDate.getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24
   );
-  return timeLeft > 0 ? timeLeft + " days" : "Today";
+  if (timeLeft < 0) return "Expired";
+  if (timeLeft == 0) return "Today";
+  return timeLeft + " day" + (timeLeft > 1 ? "s" : "");
 }
 
 export const getDaysUntilExpiry = (ingredient: Ingredient) => {
-  const expiryDate = ingredient.expiryDate
-  const currentDate = new Date();
+  const expiryDate = ingredient.expiryDate;
   const timeLeft = Math.floor(
     (expiryDate.getTime() - new Date().getTime()) / 1000 / 60 / 60 / 24
   );
-  return parseInt(timeLeft.toString())
+  return parseInt(timeLeft.toString());
 };
