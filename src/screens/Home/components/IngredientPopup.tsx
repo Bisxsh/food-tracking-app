@@ -153,6 +153,7 @@ const IngredientPopup = (props: Props) => {
                   return p;
                 }),
               });
+              props.setShowModal(false);
             }}
           />
           <View style={{ width: SPACING.medium }} />
@@ -170,7 +171,6 @@ const IngredientPopup = (props: Props) => {
                   return p;
                 }),
               });
-              props.setShowModal(false);
             }}
           />
         </View>
