@@ -14,9 +14,17 @@ export function getIngredientBuilder(ingredientJSON: any) {
   ingredientBuilder.setCategories([]);
   ingredientBuilder.setExpiryDate(new Date());
   ingredientBuilder.setUseDate(new Date());
-  ingredientBuilder.setWeight(product.serving_quantity);
-  ingredientBuilder.setWeightType(
+  ingredientBuilder.setServingSize(product.serving_quantity);
+  ingredientBuilder.setServingSizeType(
     product.serving_size.replace(/\d/g, "") == "g"
+      ? weightUnit.grams
+      : weightUnit.kg
+  );
+  ingredientBuilder.setWeight(
+    ingredientJSON.product.packagings[0].quantity_per_unit_value
+  );
+  ingredientBuilder.setWeightType(
+    ingredientJSON.product.packagings[0].quantity_per_unit_unit == "g"
       ? weightUnit.grams
       : weightUnit.kg
   );
