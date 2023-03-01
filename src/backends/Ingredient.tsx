@@ -6,6 +6,8 @@ export class Ingredient {
   quantity: number;
   weight?: number;
   weightUnit: string;
+  servingSize?: number;
+  servingSizeUnit: string;
   imgSrc?: string;
   useDate?: Date;
   expiryDate?: Date;
@@ -18,10 +20,12 @@ export class Ingredient {
     name: string,
     quantity: number,
     weightUnit: string,
+    servingSizeUnit: string,
     nutrition: Nutrition,
     categoryId: number[],
     _id?: number,
     weight?: number,
+    servingSize?: number,
     imgSrc?: string,
     useDate?: Date,
     expiryDate?: Date,
@@ -32,6 +36,8 @@ export class Ingredient {
         this.quantity = quantity
         this.weight = weight
         this.weightUnit = weightUnit
+        this.servingSize = servingSize
+        this.servingSizeUnit = servingSizeUnit
         this.imgSrc = imgSrc
         this.useDate = useDate
         this.expiryDate = expiryDate
@@ -48,6 +54,8 @@ export class Ingredient {
             this.quantity, 
             this.weight, 
             this.weightUnit, 
+            this.servingSize,
+            this.servingSizeUnit,
             this.imgSrc, 
             (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
             (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
@@ -116,15 +124,17 @@ export class Ingredient {
           properties[1],  // name
           properties[2],  // quantity
           properties[4],  // weightUnit
-          Nutrition.fromList(Object.values(JSON.parse(properties[8]))),  // Nutrition
-          (properties[9] as string).substring(1,(properties[9] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
+          properties[6],  // servingSizeUnit
+          Nutrition.fromList(Object.values(JSON.parse(properties[10]))),  // Nutrition
+          (properties[11] as string).substring(1,(properties[11] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
           properties[0],  // _id
           properties[3],  // weight
-          properties[5],  // imgSrc
-          (properties[6] != undefined)? new Date(properties[6].replace(" ", "T")+"Z"): undefined,  // useDate
-          (properties[7] != undefined)? new Date(properties[7].replace(" ", "T")+"Z"): undefined,  // expiryDate
-          properties[8],  // barcode
-          properties[9],  // memo
+          properties[5],  // servingSize
+          properties[7],  // imgSrc
+          (properties[8] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // useDate
+          (properties[9] != undefined)? new Date(properties[9].replace(" ", "T")+"Z"): undefined,  // expiryDate
+          properties[12],  // barcode
+          properties[13],  // memo
       )
   }
   

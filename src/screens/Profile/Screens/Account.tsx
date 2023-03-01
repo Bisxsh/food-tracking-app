@@ -91,7 +91,7 @@ function SelectRow(prop: selectRowProp): JSX.Element{
 
 
 function selectRowOnChange(newValue:boolean, text:string, user: User, setUser: React.Dispatch<React.SetStateAction<User>>){
-    const index = DietReqs.findIndex((value)=>value==text)
+    const index = Object.values(DietReqs).findIndex((value)=>value==text)
     if (index != -1){
         user.dietReq[index][1] = newValue
     }

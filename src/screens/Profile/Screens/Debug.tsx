@@ -112,7 +112,7 @@ export function Debug(): JSX.Element{
                         onPress={()=>{
                             switch(selectedTable){
                                 case "Ingredient":
-                                    const newIng = new Ingredient("Food", 1, "g", new Nutrition(), []);
+                                    const newIng = new Ingredient("Food", 1, "g", "g", new Nutrition(), []);
                                     setIng(newIng)
                                     setLog(JSON.stringify(newIng))
                                     console.log(newIng)
@@ -124,7 +124,7 @@ export function Debug(): JSX.Element{
                                     console.log(newCat)
                                     break;
                                 case "Meal":
-                                    const newMeal = new Meal("Pizza", [], ["Heat for 20 mins in 200℃ oven"])
+                                    const newMeal = new Meal("Pizza", [], ["Heat for 20 mins in 200℃ oven"], (ing != undefined)? [ing]: [])
                                     setMeal(newMeal)
                                     setLog(JSON.stringify(newMeal))
                                     console.log(newMeal)

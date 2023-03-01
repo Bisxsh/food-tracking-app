@@ -53,6 +53,8 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const [waste, setWaste] = useState<number>()
   const [dataSet, setDataSet] = useState<number[]>([])
 
+  const today = new Date()
+
   if (init){
     init = false
     initLoad()
@@ -298,14 +300,20 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     }
                     setLoading(true)
                     getMonthlyDataSet(date.getFullYear(), newHalf).then((value)=>{
-                      if (dataType == "mass"){
-                        setDataSet(value[0])
-                        date.setMonth((newHalf-1)*6+value[0].length-1)
-                        setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
-                        console.log()
-                      }else if (dataType == "cost"){
-                        setDataSet(value[1])
-                        setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
+                      if (value[0].length != 0){
+                        if (dataType == "mass"){
+                          setDataSet(value[0])
+                          date.setMonth((newHalf-1)*6+value[0].length-1)
+                          setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
+                          console.log()
+                        }else if (dataType == "cost"){
+                          setDataSet(value[1])
+                          setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
+                          date.setMonth((newHalf-1)*6+value[1].length-1)
+                        }
+                      }else{
+                        setDataSet([])
+                        setWaste(0)
                         date.setMonth((newHalf-1)*6+value[1].length-1)
                       }
                       setLoading(false)
@@ -371,13 +379,19 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     }
                     setLoading(true)
                     getMonthlyDataSet(date.getFullYear(), newHalf).then((value)=>{
-                      if (dataType == "mass"){
-                        setDataSet(value[0])
-                        setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
-                        date.setMonth((newHalf-1)*6+value[0].length-1)
-                      }else if (dataType == "cost"){
-                        setDataSet(value[1])
-                        setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
+                      if (value[0].length != 0){
+                        if (dataType == "mass"){
+                          setDataSet(value[0])
+                          setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
+                          date.setMonth((newHalf-1)*6+value[0].length-1)
+                        }else if (dataType == "cost"){
+                          setDataSet(value[1])
+                          setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
+                          date.setMonth((newHalf-1)*6+value[1].length-1)
+                        }
+                      }else{
+                        setDataSet([])
+                        setWaste(0)
                         date.setMonth((newHalf-1)*6+value[1].length-1)
                       }
                       setLoading(false)
