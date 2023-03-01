@@ -24,7 +24,10 @@ const IngredientViewExpiring = (props: Props) => {
 
   // Filter the stored ingredients array based on getTimeLeft value
   const filteredIngredients = userData.storedIngredients.filter(
-    (ingredient) => getDaysUntilExpiry(ingredient) <= 2
+    (ingredient) =>
+      getDaysUntilExpiry(ingredient) <= 2 &&
+      ingredient.quantity > 0 &&
+      ingredient.expiryDate > new Date()
   );
 
   return (

@@ -16,6 +16,7 @@ type Props = {
 };
 
 const IngredientTile = ({ ingredient }: Props) => {
+  const expired = ingredient.expiryDate < new Date();
   function getCardContent(showText?: boolean) {
     return (
       <>
@@ -24,7 +25,7 @@ const IngredientTile = ({ ingredient }: Props) => {
             {ingredient.name}
           </Text>
         )}
-        <View style={styles.timeContainer}>
+        <View style={[styles.timeContainer]}>
           <MaterialCommunityIcons
             name="clock-outline"
             size={16}
@@ -35,7 +36,7 @@ const IngredientTile = ({ ingredient }: Props) => {
           </Text>
         </View>
         {ingredient.quantity > 1 && (
-          <View style={styles.bubble}>
+          <View style={[styles.bubble]}>
             <Text style={{ fontWeight: "600" }}>x{ingredient.quantity}</Text>
           </View>
         )}
@@ -95,10 +96,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: -5,
     top: -5,
-    backgroundColor: COLOURS.grey,
     padding: SPACING.small,
     borderRadius: RADIUS.standard,
     aspectRatio: 1,
+    backgroundColor: COLOURS.grey,
     // ...DROP_SHADOW,
   },
 });

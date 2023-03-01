@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../../../classes/UserData";
 import IngredientCard from "./IngredientCard";
-import { SPACING } from "../../../../util/GlobalStyles";
+import { COLOURS, FONT_SIZES, SPACING } from "../../../../util/GlobalStyles";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -21,18 +21,78 @@ const IndgredientView = (props: Props) => {
     null
   );
 
+  const expiredIngredients = userData.storedIngredients.filter(
+    (i) => i.expiryDate < new Date() && i.quantity > 0
+  );
+
+  const activeIngredients = userData.storedIngredients.filter(
+    (i) => i.expiryDate > new Date() && i.quantity > 0
+  );
+
   return (
     <View
-      style={[
-        styles.container,
-        userData.storedIngredients.filter((i) => i.quantity > 0).length > 2
-          ? { justifyContent: "center" }
-          : {},
-      ]}
+      style={{
+        flexDirection: "column",
+        alignItems: "flex-start",
+        flex: 1,
+        paddingTop: SPACING.medium,
+      }}
     >
-      {userData.storedIngredients
-        .filter((i) => i.quantity > 0)
-        .map((ingredient) => (
+      {expiredIngredients.length > 0 && (
+        <>
+          <View
+            style={{
+              marginTop: SPACING.small,
+              width: "100%",
+            }}
+          >
+            {/* <Text
+              style={{
+                marginLeft: SPACING.small,
+                fontSize: FONT_SIZES.medium,
+                marginBottom: SPACING.small,
+              }}
+            >
+              Expired Items
+            </Text> */}
+            <View
+              style={[
+                styles.container,
+                expiredIngredients.length > 2
+                  ? { justifyContent: "center" }
+                  : {},
+              ]}
+            >
+              {expiredIngredients.map((ingredient) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIngredientShown(ingredient);
+                  }}
+                  key={`${ingredient.getId} - ${ingredient.getName}`}
+                >
+                  <IngredientCard ingredient={ingredient} />
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View
+              style={{
+                borderBottomColor: COLOURS.darkGrey,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                alignSelf: "stretch",
+                marginVertical: SPACING.medium,
+              }}
+            />
+          </View>
+        </>
+      )}
+
+      <View
+        style={[
+          styles.container,
+          activeIngredients.length > 2 ? { justifyContent: "center" } : {},
+        ]}
+      >
+        {activeIngredients.map((ingredient) => (
           <TouchableOpacity
             onPress={() => {
               setIngredientShown(ingredient);
@@ -42,6 +102,7 @@ const IndgredientView = (props: Props) => {
             <IngredientCard ingredient={ingredient} />
           </TouchableOpacity>
         ))}
+      </View>
       {ingredientShown && (
         <IngredientPopup
           showModal={true}
@@ -57,10 +118,8 @@ export default IndgredientView;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "flex-start",
-    marginTop: SPACING.small,
   },
 });
