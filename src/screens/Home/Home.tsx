@@ -102,7 +102,6 @@ export function Home(): JSX.Element {
         >
           <IndgredientView ingredientsSearch={ingredientsSearch} />
         </View>
-        {/* <View style={{ flex: 1 }} /> */}
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />

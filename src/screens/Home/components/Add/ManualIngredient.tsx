@@ -230,7 +230,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getProtein()
                       ?.toString() || undefined
               }
             />
@@ -251,7 +251,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getFat()
                       ?.toString() || undefined
               }
               defaultValueRight={
@@ -259,7 +259,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getSaturatedFat()
                       ?.toString() || undefined
               }
             />
@@ -280,7 +280,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getCarbs()
                       ?.toString() || undefined
               }
               defaultValueRight={
@@ -288,7 +288,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getSugar()
                       ?.toString() || undefined
               }
             />
@@ -309,7 +309,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getFibre()
                       ?.toString() || undefined
               }
               defaultValueRight={
@@ -317,7 +317,7 @@ const ManualIngredient = (props: Props) => {
                   ? undefined
                   : ingredientBuilder
                       .getNutritionBuilder()
-                      .getEnergy()
+                      .getSalt()
                       ?.toString() || undefined
               }
             />

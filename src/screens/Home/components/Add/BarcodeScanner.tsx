@@ -24,6 +24,10 @@ const BarcodeScanner = (props: Props) => {
     }
     setScanning(true);
     navigation.goBack();
+    console.log(
+      `https://world.openfoodfacts.org/api/v0/product/${info.data}.json`
+    );
+
     fetch(`https://world.openfoodfacts.org/api/v0/product/${info.data}.json`)
       .then((response) => response.json())
       .then((responseJson) => {
