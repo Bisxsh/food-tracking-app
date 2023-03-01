@@ -17,7 +17,7 @@ export const FONT_SIZES = {
   body: 24,
   medium: 20,
   small: 16,
-  tiny: 8,
+  tiny: 12,
 };
 
 export const ICON_SIZES = {

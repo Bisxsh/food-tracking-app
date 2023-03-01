@@ -1,6 +1,6 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useContext, useState } from 'react';
-import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, AlertButton, Image} from 'react-native';
+import {StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, Alert, AlertButton, Image, useWindowDimensions} from 'react-native';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import { User, UserContext, DietReqs } from '../../../backends/User';
@@ -9,6 +9,7 @@ import * as DB from '../../../backends/Database'
 import { getImageSrc } from '../../../util/ImageUtil';
 import { ActionSheetOptions, useActionSheet } from '@expo/react-native-action-sheet';
 import Checkbox from '../../../components/Checkbox';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type selectRowProp = {
     text: string
@@ -115,134 +116,143 @@ export function Account(): JSX.Element{
     )
     const isDarkMode = user.setting.isDark()
     const { showActionSheetWithOptions } = useActionSheet();
+    const {height, width} = useWindowDimensions()
 
     return (
-        <ScrollView
+        <SafeAreaView
             style={{
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                 flex: 1,
+                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
             }}
+            edges={['left', 'right']}
         >
-            {img != undefined && <TouchableOpacity onPress={()=>{getPhoto(showActionSheetWithOptions, user,setUser,setImg)}}>
-                <Image
+            <ScrollView
+                style={{
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                    flex: 1,
+                }}
+            >
+                {img != undefined && <TouchableOpacity onPress={()=>{getPhoto(showActionSheetWithOptions, user,setUser,setImg)}}>
+                    <Image
+                        style={{
+                            alignItems: "center",
+                            aspectRatio: 1,
+                            width: Math.min(height, width)*0.3,
+                            justifyContent: "center",
+                            alignSelf: "center",
+                            borderRadius: 100
+                        }}
+                        source={{uri: img}}
+                    />
+                </TouchableOpacity>}
+                {img == undefined && <View
                     style={{
                         alignItems: "center",
+                        backgroundColor: COLOURS.darkGrey,
                         aspectRatio: 1,
-                        width: "30%",
+                        width: Math.min(height, width)*0.3,
                         justifyContent: "center",
                         alignSelf: "center",
                         borderRadius: 100
                     }}
-                    source={{uri: img}}
-                />
-            </TouchableOpacity>}
-            {img == undefined && <View
-                style={{
-                    alignItems: "center",
-                    backgroundColor: COLOURS.darkGrey,
-                    aspectRatio: 1,
-                    width: "30%",
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    borderRadius: 100
-                }}
-            >
-                <TouchableOpacity
-                    onPress={()=>{
-                        getImageSrc(showActionSheetWithOptions, (uri:string)=>{
-                            setImg(uri)
-                            user.imgSrc = uri
-                            setUser(user)
-                            DB.updateUser(user)
-                        })
-                    }}
                 >
-                    <MaterialIcons 
-                        name="photo-camera" 
-                        color={COLOURS.white} 
-                        size={ICON_SIZES.large} 
-                        style={{
-                            textAlign: 'center'
-                        }}
-                    />
-                </TouchableOpacity>
-                
-            </View>}
-            <View style={{
-                flexDirection: "column",
-                paddingHorizontal: SPACING.medium,
-            }}>
-                <Text 
-                    style={{
-                        fontSize: FONT_SIZES.medium,
-                        alignSelf: "flex-start",
-                        marginTop: SPACING.small,
-                        marginHorizontal: SPACING.medium,
-                        color: isDarkMode ? Colors.white : Colors.black,
-                    }}
-                >Name</Text>
-                <TextInput
-                    style={{
-                        backgroundColor: COLOURS.grey,
-                        fontSize: FONT_SIZES.medium,
-                        marginVertical: SPACING.small,
-                        paddingVertical: SPACING.small,
-                        paddingHorizontal: SPACING.medium,
-                        borderRadius: RADIUS.standard,
-                        width: "100%"
-                    }}
-                    onChangeText={setName}
-                    value={name}
-                    onSubmitEditing={(e)=>{
-                        if (e.nativeEvent.text != ""){
-                           user.name = e.nativeEvent.text
-                            setUser(user)
-                            DB.updateUser(user) 
-                        }else{
-                            createAlert({
-                                title: "Name missing",
-                                desc: "Name cannot be empty",
-                                buttons: [{text: "OK"}],
-                                user: user
+                    <TouchableOpacity
+                        onPress={()=>{
+                            getImageSrc(showActionSheetWithOptions, (uri:string)=>{
+                                setImg(uri)
+                                user.imgSrc = uri
+                                setUser(user)
+                                DB.updateUser(user)
                             })
-                        }
-                    }}
-                />
-            </View>
-            <View style={{
-                flexDirection: "column",
-                paddingHorizontal: SPACING.medium,
-            }}>
-                <View
-                    style={{
-                        alignSelf: "stretch",
-                        marginTop: SPACING.small,
-                        marginHorizontal: SPACING.medium,
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                    }}
-                >
+                        }}
+                    >
+                        <MaterialIcons 
+                            name="photo-camera" 
+                            color={COLOURS.white} 
+                            size={ICON_SIZES.large} 
+                            style={{
+                                textAlign: 'center'
+                            }}
+                        />
+                    </TouchableOpacity>
+                    
+                </View>}
+                <View style={{
+                    flexDirection: "column",
+                    paddingHorizontal: SPACING.medium,
+                }}>
                     <Text 
                         style={{
                             fontSize: FONT_SIZES.medium,
                             alignSelf: "flex-start",
+                            marginTop: SPACING.small,
+                            marginHorizontal: SPACING.medium,
                             color: isDarkMode ? Colors.white : Colors.black,
                         }}
-                    >Dietary Requirements</Text>
+                    >Name</Text>
+                    <TextInput
+                        style={{
+                            backgroundColor: COLOURS.grey,
+                            fontSize: FONT_SIZES.medium,
+                            marginVertical: SPACING.small,
+                            paddingVertical: SPACING.small,
+                            paddingHorizontal: SPACING.medium,
+                            borderRadius: RADIUS.standard,
+                            width: "100%"
+                        }}
+                        onChangeText={setName}
+                        value={name}
+                        onSubmitEditing={(e)=>{
+                            if (e.nativeEvent.text != ""){
+                            user.name = e.nativeEvent.text
+                                setUser(user)
+                                DB.updateUser(user) 
+                            }else{
+                                createAlert({
+                                    title: "Name missing",
+                                    desc: "Name cannot be empty",
+                                    buttons: [{text: "OK"}],
+                                    user: user
+                                })
+                            }
+                        }}
+                    />
                 </View>
-                <View
-                    style={{
-                        backgroundColor: COLOURS.grey,
-                        flexDirection: "column",
-                        borderRadius: RADIUS.standard,
-                        marginVertical: SPACING.small,
-                    }}
-                >
-                    {dietReqRows}
+                <View style={{
+                    flexDirection: "column",
+                    paddingHorizontal: SPACING.medium,
+                }}>
+                    <View
+                        style={{
+                            alignSelf: "stretch",
+                            marginTop: SPACING.small,
+                            marginHorizontal: SPACING.medium,
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Text 
+                            style={{
+                                fontSize: FONT_SIZES.medium,
+                                alignSelf: "flex-start",
+                                color: isDarkMode ? Colors.white : Colors.black,
+                            }}
+                        >Dietary Requirements</Text>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: COLOURS.grey,
+                            flexDirection: "column",
+                            borderRadius: RADIUS.standard,
+                            marginVertical: SPACING.small,
+                        }}
+                    >
+                        {dietReqRows}
+                    </View>
+                    
                 </View>
-                
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 

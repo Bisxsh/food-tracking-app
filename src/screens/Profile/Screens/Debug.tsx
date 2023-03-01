@@ -12,6 +12,7 @@ import { User, UserContext } from '../../../backends/User';
 import { COLOURS, RADIUS, SPACING } from '../../../util/GlobalStyles';
 import { Meal } from '../../../backends/Meal';
 import { History } from '../../../backends/Histories';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 export function Debug(): JSX.Element{
@@ -28,385 +29,393 @@ export function Debug(): JSX.Element{
 
 
     return (
-        <ScrollView
+        <SafeAreaView
             style={{
-                flexDirection: "column"
+                flex: 1,
+                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
             }}
+            edges={['left', 'right']}
         >
-            <View 
+            <ScrollView
                 style={{
-                    flexDirection: "row",
-                    backgroundColor: "red",
+                    flexDirection: "column"
                 }}
             >
-                <View
+                <View 
                     style={{
-                        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-                        flex: 1,
-                        flexDirection: "column",
-                        alignItems: "flex-start",
-                        alignContent: "flex-start",
+                        flexDirection: "row",
+                        backgroundColor: "red",
                     }}
                 >
-                    <Text
-                        style={{
-                            color: isDarkMode ? COLOURS.white : COLOURS.black,
-                            margin: SPACING.small,
-                        }}
-                    >
-                        Select table
-                    </Text>
-                    <Picker
-                        selectedValue={selectedTable}
-                        onValueChange={(value, index)=>{setSelectedTable(value)}}
-                        style={{
-                            alignSelf:"stretch",
-                            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-                        }}
-                    >
-                        <Picker.Item label="Ingredient" value="Ingredient" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
-                        <Picker.Item label="Category" value="Category" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
-                        <Picker.Item label="Meal" value="Meal" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
-                        <Picker.Item label="History" value="History" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
-                        <Picker.Item label="User" value="User" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
-                    </Picker>
                     <View
                         style={{
-                            backgroundColor: COLOURS.grey,
+                            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                             flex: 1,
-                            margin: SPACING.small,
-                            borderRadius: RADIUS.standard,
-                            borderColor: COLOURS.darkGrey,
-                            borderWidth: 1,
-                            flexDirection: "row"
+                            flexDirection: "column",
+                            alignItems: "flex-start",
+                            alignContent: "flex-start",
                         }}
                     >
                         <Text
                             style={{
+                                color: isDarkMode ? COLOURS.white : COLOURS.black,
                                 margin: SPACING.small,
-                                flex: 1,
                             }}
                         >
-                            {log}
-                        </Text> 
+                            Select table
+                        </Text>
+                        <Picker
+                            selectedValue={selectedTable}
+                            onValueChange={(value, index)=>{setSelectedTable(value)}}
+                            style={{
+                                alignSelf:"stretch",
+                                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                            }}
+                        >
+                            <Picker.Item label="Ingredient" value="Ingredient" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                            <Picker.Item label="Category" value="Category" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                            <Picker.Item label="Meal" value="Meal" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                            <Picker.Item label="History" value="History" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                            <Picker.Item label="User" value="User" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
+                        </Picker>
+                        <View
+                            style={{
+                                backgroundColor: COLOURS.grey,
+                                flex: 1,
+                                margin: SPACING.small,
+                                borderRadius: RADIUS.standard,
+                                borderColor: COLOURS.darkGrey,
+                                borderWidth: 1,
+                                flexDirection: "row"
+                            }}
+                        >
+                            <Text
+                                style={{
+                                    margin: SPACING.small,
+                                    flex: 1,
+                                }}
+                            >
+                                {log}
+                            </Text> 
+                        </View>
+                    </View>
+                    <View
+                        style={{
+                            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                            justifyContent: "space-around",
+                            alignItems: "flex-start",
+                            alignContent: "flex-start",
+                        }}
+                    >
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                DB.init();
+                            }}
+                        >
+                            <Text>Open DB</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        const newIng = new Ingredient("Food", 1, "g", "g", new Nutrition(), []);
+                                        setIng(newIng)
+                                        setLog(JSON.stringify(newIng))
+                                        console.log(newIng)
+                                        break;
+                                    case "Category":
+                                        const newCat = new Category("Vegitable", "#00FF00");
+                                        setCat(newCat)
+                                        setLog(JSON.stringify(newCat))
+                                        console.log(newCat)
+                                        break;
+                                    case "Meal":
+                                        const newMeal = new Meal("Pizza", [], ["Heat for 20 mins in 200℃ oven"], (ing != undefined)? [ing]: [])
+                                        setMeal(newMeal)
+                                        setLog(JSON.stringify(newMeal))
+                                        console.log(newMeal)
+                                        break;
+                                    case "History":
+                                        const date = new Date()
+                                        date.setMonth(Math.floor(monthCount/2) % 12)
+                                        date.setFullYear(date.getFullYear() - Math.floor(Math.floor(monthCount/2)/12))
+                                        const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
+                                        setHistory(newHistory)
+                                        setLog(JSON.stringify(newHistory))
+                                        console.log(newHistory )
+                                        setMonthCount(monthCount + 1)
+                                        console.log(monthCount)
+                                        break;
+                                    case "User":
+                                        const newUser = new User("Hello Welcome")
+                                        setUserLocal(newUser)
+                                        setLog(JSON.stringify(newUser))
+                                        console.log(newUser)
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Instantiate</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        if (ing){ DB.create(ing) }
+                                        break;
+                                    case "Category":
+                                        if (cat){ DB.create(cat) }
+                                        break;
+                                    case "Meal":
+                                        if (meal){ DB.create(meal) }
+                                        break;
+                                    case "History":
+                                        if (history){ DB.create(history) }
+                                        break;
+                                    case "User":
+                                        if (userLocal){ DB.create(userLocal) }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Create</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={async ()=>{
+                                var out
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        out = await DB.readIngredient(0)
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Category":
+                                        out = await DB.readCategory(0)
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Meal":
+                                        out = await DB.readMeal(0)
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "History":
+                                        out = await DB.readHistory(0)
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "User":
+                                        out = await DB.readUser(0)
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Read by id</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={async ()=>{
+                                var out
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        out = await DB.readIngredient("Food")
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Category":
+                                        out = await DB.readCategory("Vegitable")
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Meal":
+                                        out = await DB.readMeal("Pizza")
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "User":
+
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            
+                            }}
+                        >
+                            <Text>Read by name</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={async ()=>{
+                                var out
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        out = await DB.readAllIngredient()
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Category":
+                                        out = await DB.readAllCategory()
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "Meal":
+                                        out = await DB.readAllMeal()
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "History":
+                                        out = await DB.readAllHistory()
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    case "User":
+                                        out = await DB.readAllUser()
+                                        setLog(JSON.stringify(out))
+                                        console.log(out)
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Read all</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={async ()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        if (ing != undefined){
+                                            ing.quantity ++;
+                                            console.log(ing)
+                                            setLog(JSON.stringify(ing))
+                                            DB.updateIngredient(ing)
+                                        }
+                                        break;
+                                    case "Category":
+
+                                        break;
+                                    case "Meal":
+
+                                        break;
+                                    case "History":
+                                        break;
+                                    case "User":
+                                        const u = await DB.readUser(0)
+                                        if (u != undefined){
+                                            u.consent = !u.consent
+                                            u.name += "#"
+                                            console.log(u)
+                                            setLog(JSON.stringify(u))
+                                            DB.updateUser(u)
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            
+                            }}
+                        >
+                            <Text>Update</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        DB.deleteIngredient(0)
+                                        break;
+                                    case "Category":
+                                        DB.deleteCategory(0)
+                                        break;
+                                    case "Meal":
+                                        DB.deleteMeal(0)
+                                        break;
+                                    case "History":
+                                        DB.deleteHistory(0)
+                                        break;
+                                    case "User":
+                                        DB.deleteUser(0)
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Delete by id</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        DB.deleteIngredient("Food")
+                                        break;
+                                    case "Category":
+                                        DB.deleteCategory("Vegitable")
+                                        break;
+                                    case "Meal":
+                                        DB.deleteMeal("Pizza")
+                                        break;
+                                    case "User":
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Delete by name</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                switch(selectedTable){
+                                    case "Ingredient":
+                                        DB.deleteAllIngredient();
+                                        break;
+                                    case "Category":
+                                        DB.deleteAllCategory();
+                                        break;
+                                    case "Meal":
+                                        DB.deleteAllMeal();
+                                        break;
+                                    case "History":
+                                        DB.deleteAllHistory();
+                                        break;
+                                    case "User":
+                                        DB.deleteAllUser();
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }}
+                        >
+                            <Text>Delete all</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                DB.deleteFile(true);
+                            }}
+                        >
+                            <Text>Delete file</Text>
+                        </Pressable>
                     </View>
                 </View>
-                <View
-                    style={{
-                        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-                        justifyContent: "space-around",
-                        alignItems: "flex-start",
-                        alignContent: "flex-start",
-                    }}
-                >
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            DB.init();
-                        }}
-                    >
-                        <Text>Open DB</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    const newIng = new Ingredient("Food", 1, "g", "g", new Nutrition(), []);
-                                    setIng(newIng)
-                                    setLog(JSON.stringify(newIng))
-                                    console.log(newIng)
-                                    break;
-                                case "Category":
-                                    const newCat = new Category("Vegitable", "#00FF00");
-                                    setCat(newCat)
-                                    setLog(JSON.stringify(newCat))
-                                    console.log(newCat)
-                                    break;
-                                case "Meal":
-                                    const newMeal = new Meal("Pizza", [], ["Heat for 20 mins in 200℃ oven"], (ing != undefined)? [ing]: [])
-                                    setMeal(newMeal)
-                                    setLog(JSON.stringify(newMeal))
-                                    console.log(newMeal)
-                                    break;
-                                case "History":
-                                    const date = new Date()
-                                    date.setMonth(Math.floor(monthCount/2) % 12)
-                                    date.setFullYear(date.getFullYear() - Math.floor(Math.floor(monthCount/2)/12))
-                                    const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
-                                    setHistory(newHistory)
-                                    setLog(JSON.stringify(newHistory))
-                                    console.log(newHistory )
-                                    setMonthCount(monthCount + 1)
-                                    console.log(monthCount)
-                                    break;
-                                case "User":
-                                    const newUser = new User("Hello Welcome")
-                                    setUserLocal(newUser)
-                                    setLog(JSON.stringify(newUser))
-                                    console.log(newUser)
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Instantiate</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    if (ing){ DB.create(ing) }
-                                    break;
-                                case "Category":
-                                    if (cat){ DB.create(cat) }
-                                    break;
-                                case "Meal":
-                                    if (meal){ DB.create(meal) }
-                                    break;
-                                case "History":
-                                    if (history){ DB.create(history) }
-                                    break;
-                                case "User":
-                                    if (userLocal){ DB.create(userLocal) }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Create</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={async ()=>{
-                            var out
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    out = await DB.readIngredient(0)
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Category":
-                                    out = await DB.readCategory(0)
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Meal":
-                                    out = await DB.readMeal(0)
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "History":
-                                    out = await DB.readHistory(0)
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "User":
-                                    out = await DB.readUser(0)
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Read by id</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={async ()=>{
-                            var out
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    out = await DB.readIngredient("Food")
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Category":
-                                    out = await DB.readCategory("Vegitable")
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Meal":
-                                    out = await DB.readMeal("Pizza")
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "User":
-
-                                    break;
-                                default:
-                                    break;
-                            }
-                        
-                        }}
-                    >
-                        <Text>Read by name</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={async ()=>{
-                            var out
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    out = await DB.readAllIngredient()
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Category":
-                                    out = await DB.readAllCategory()
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "Meal":
-                                    out = await DB.readAllMeal()
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "History":
-                                    out = await DB.readAllHistory()
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                case "User":
-                                    out = await DB.readAllUser()
-                                    setLog(JSON.stringify(out))
-                                    console.log(out)
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Read all</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={async ()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    if (ing != undefined){
-                                        ing.quantity ++;
-                                        console.log(ing)
-                                        setLog(JSON.stringify(ing))
-                                        DB.updateIngredient(ing)
-                                    }
-                                    break;
-                                case "Category":
-
-                                    break;
-                                case "Meal":
-
-                                    break;
-                                case "History":
-                                    break;
-                                case "User":
-                                    const u = await DB.readUser(0)
-                                    if (u != undefined){
-                                        u.consent = !u.consent
-                                        u.name += "#"
-                                        console.log(u)
-                                        setLog(JSON.stringify(u))
-                                        DB.updateUser(u)
-                                    }
-                                    break;
-                                default:
-                                    break;
-                            }
-                        
-                        }}
-                    >
-                        <Text>Update</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    DB.deleteIngredient(0)
-                                    break;
-                                case "Category":
-                                    DB.deleteCategory(0)
-                                    break;
-                                case "Meal":
-                                    DB.deleteMeal(0)
-                                    break;
-                                case "History":
-                                    DB.deleteHistory(0)
-                                    break;
-                                case "User":
-                                    DB.deleteUser(0)
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Delete by id</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    DB.deleteIngredient("Food")
-                                    break;
-                                case "Category":
-                                    DB.deleteCategory("Vegitable")
-                                    break;
-                                case "Meal":
-                                    DB.deleteMeal("Pizza")
-                                    break;
-                                case "User":
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Delete by name</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            switch(selectedTable){
-                                case "Ingredient":
-                                    DB.deleteAllIngredient();
-                                    break;
-                                case "Category":
-                                    DB.deleteAllCategory();
-                                    break;
-                                case "Meal":
-                                    DB.deleteAllMeal();
-                                    break;
-                                case "History":
-                                    DB.deleteAllHistory();
-                                    break;
-                                case "User":
-                                    DB.deleteAllUser();
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }}
-                    >
-                        <Text>Delete all</Text>
-                    </Pressable>
-                    <Pressable
-                        style={styles.pressable}
-                        onPress={()=>{
-                            DB.deleteFile(true);
-                        }}
-                    >
-                        <Text>Delete file</Text>
-                    </Pressable>
-                </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 

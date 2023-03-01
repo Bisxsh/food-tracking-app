@@ -40,7 +40,7 @@ const styles = (props: Props) =>
       width: props.width ? props.width : "auto",
       alignSelf: "stretch",
       height: props.height ? props.height : "auto",
-      marginLeft: SPACING.small,
+      //marginLeft: SPACING.small,
       marginRight: SPACING.small,
       padding: SPACING.small,
       paddingLeft: SPACING.medium,

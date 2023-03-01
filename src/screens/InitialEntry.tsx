@@ -12,6 +12,7 @@ import {
   Image,
   Button,
   Pressable,
+  useWindowDimensions,
 } from "react-native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
@@ -30,6 +31,7 @@ import {
   useActionSheet,
 } from "@expo/react-native-action-sheet";
 import Checkbox from "../components/Checkbox";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type selectRowProp = {
   text: string;
@@ -135,226 +137,241 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
   });
   const isDarkMode = prop.user.setting.isDark();
   const { showActionSheetWithOptions } = useActionSheet();
+  const {height, width} = useWindowDimensions()
 
   return (
-    <View
+    <SafeAreaView
       style={{
-        flex: 1,
-        flexDirection: "column",
-        marginTop: SPACING.large,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: FONT_SIZES.heading,
-          margin: SPACING.medium,
-          color: isDarkMode ? Colors.white : Colors.black,
-          textAlign: "center",
-        }}
-      >
-        Welcome
-      </Text>
-      <ScrollView
-        style={{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
           flex: 1,
-          alignSelf: "stretch",
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+      }}
+      edges={['left', 'right']}
+    >
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "column",
+          marginTop: SPACING.large,
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
         }}
       >
-        {img != undefined && (
-          <TouchableOpacity
-            onPress={() => {
-              getPhoto(
-                showActionSheetWithOptions,
-                prop.user,
-                prop.setUser,
-                setImg
-              );
-            }}
-          >
-            <Image
+        <Text
+          style={{
+            fontSize: FONT_SIZES.heading,
+            margin: SPACING.medium,
+            color: isDarkMode ? Colors.white : Colors.black,
+            textAlign: "center",
+          }}
+        >
+          Welcome
+        </Text>
+        <ScrollView
+          style={{
+            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+            flex: 1,
+            alignSelf: "stretch",
+          }}
+        >
+          {img != undefined && (
+            <TouchableOpacity
+              onPress={() => {
+                getPhoto(
+                  showActionSheetWithOptions,
+                  prop.user,
+                  prop.setUser,
+                  setImg
+                );
+              }}
+            >
+              <Image
+                style={{
+                  alignItems: "center",
+                  aspectRatio: 1,
+                  width: Math.min(height, width)*0.3,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  borderRadius: 100,
+                }}
+                source={{ uri: img }}
+              />
+            </TouchableOpacity>
+          )}
+          {img == undefined && (
+            <View
               style={{
                 alignItems: "center",
+                backgroundColor: COLOURS.darkGrey,
                 aspectRatio: 1,
-                width: "30%",
+                width: Math.min(height, width)*0.3,
                 justifyContent: "center",
                 alignSelf: "center",
                 borderRadius: 100,
               }}
-              source={{ uri: img }}
-            />
-          </TouchableOpacity>
-        )}
-        {img == undefined && (
-          <View
-            style={{
-              alignItems: "center",
-              backgroundColor: COLOURS.darkGrey,
-              aspectRatio: 1,
-              width: "30%",
-              justifyContent: "center",
-              alignSelf: "center",
-              borderRadius: 100,
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                getImageSrc(showActionSheetWithOptions, (uri: string) => {
-                  setImg(uri);
-                  prop.user.imgSrc = uri;
-                  prop.setUser(prop.user);
-                });
-              }}
             >
-              <MaterialIcons
-                name="photo-camera"
-                color={COLOURS.white}
-                size={ICON_SIZES.large}
-                style={{
-                  textAlign: "center",
+              <TouchableOpacity
+                onPress={() => {
+                  getImageSrc(showActionSheetWithOptions, (uri: string) => {
+                    setImg(uri);
+                    prop.user.imgSrc = uri;
+                    prop.setUser(prop.user);
+                  });
                 }}
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-        <View
-          style={{
-            flexDirection: "column",
-            paddingHorizontal: SPACING.medium,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONT_SIZES.medium,
-              alignSelf: "flex-start",
-              marginTop: SPACING.small,
-              marginHorizontal: SPACING.medium,
-              color: isDarkMode ? Colors.white : Colors.black,
-            }}
-          >
-            Name
-          </Text>
-          <TextInput
-            style={{
-              backgroundColor: COLOURS.grey,
-              fontSize: FONT_SIZES.medium,
-              marginVertical: SPACING.small,
-              paddingVertical: SPACING.small,
-              paddingHorizontal: SPACING.medium,
-              borderRadius: RADIUS.standard,
-              width: "100%",
-            }}
-            placeholder="Name"
-            onChangeText={setName}
-            value={name}
-            onSubmitEditing={(e) => {
-              if (e.nativeEvent.text != "") {
-                prop.user.name = e.nativeEvent.text;
-                prop.setUser(prop.user);
-              } else {
-                createAlert({
-                  title: "Empty Error",
-                  desc: "Name cannot be empty",
-                  buttons: [{ text: "OK" }],
-                  user: prop.user,
-                });
-              }
-            }}
-          />
-        </View>
-        <View
-          style={{
-            flexDirection: "column",
-            paddingHorizontal: SPACING.medium,
-          }}
-        >
+              >
+                <MaterialIcons
+                  name="photo-camera"
+                  color={COLOURS.white}
+                  size={ICON_SIZES.large}
+                  style={{
+                    textAlign: "center",
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
           <View
             style={{
-              alignSelf: "stretch",
-              marginTop: SPACING.small,
-              marginHorizontal: SPACING.medium,
-              flexDirection: "row",
-              justifyContent: "space-between",
+              flexDirection: "column",
+              paddingHorizontal: SPACING.medium,
             }}
           >
             <Text
               style={{
                 fontSize: FONT_SIZES.medium,
                 alignSelf: "flex-start",
+                marginTop: SPACING.small,
+                marginHorizontal: SPACING.medium,
                 color: isDarkMode ? Colors.white : Colors.black,
               }}
             >
-              Dietary Requirements
+              Name
             </Text>
+            <TextInput
+              style={{
+                backgroundColor: COLOURS.grey,
+                fontSize: FONT_SIZES.medium,
+                marginVertical: SPACING.small,
+                paddingVertical: SPACING.small,
+                paddingHorizontal: SPACING.medium,
+                borderRadius: RADIUS.standard,
+                width: "100%",
+              }}
+              placeholder="Name"
+              onChangeText={setName}
+              value={name}
+              onSubmitEditing={(e) => {
+                if (e.nativeEvent.text != "") {
+                  prop.user.name = e.nativeEvent.text;
+                  prop.setUser(prop.user);
+                } else {
+                  createAlert({
+                    title: "Empty Error",
+                    desc: "Name cannot be empty",
+                    buttons: [{ text: "OK" }],
+                    user: prop.user,
+                  });
+                }
+              }}
+            />
           </View>
           <View
             style={{
-              backgroundColor: COLOURS.grey,
               flexDirection: "column",
-              borderRadius: RADIUS.standard,
-              marginVertical: SPACING.small,
-              paddingVertical: SPACING.small,
+              paddingHorizontal: SPACING.medium,
             }}
           >
-            {dietReqRows}
+            <View
+              style={{
+                alignSelf: "stretch",
+                marginTop: SPACING.small,
+                marginHorizontal: SPACING.medium,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.medium,
+                  alignSelf: "flex-start",
+                  color: isDarkMode ? Colors.white : Colors.black,
+                }}
+              >
+                Dietary Requirements
+              </Text>
+            </View>
+            <View
+              style={{
+                backgroundColor: COLOURS.grey,
+                flexDirection: "column",
+                borderRadius: RADIUS.standard,
+                marginVertical: SPACING.small,
+                paddingVertical: SPACING.small,
+              }}
+            >
+              {dietReqRows}
+            </View>
           </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            marginHorizontal: SPACING.medium,
-            marginVertical: SPACING.small,
-          }}
-        >
-          <Checkbox
-            onPress={(value) => {
-              prop.user.consent = value;
+          <View
+            style={{
+              flexDirection: "row",
+              marginHorizontal: SPACING.medium,
+              marginVertical: SPACING.small,
             }}
-            initialVal={prop.user.consent}
-            size={ICON_SIZES.medium}
-          />
-          <Text style={{ flexShrink: 1 }}>
-            By check this, you are comfirming that your information is stored in
-            this app securely, and used only for improving your experience.
-          </Text>
-        </View>
-        <Pressable
-          style={styles.pressable}
-          onPress={() => {
-            if (name.length != 0) {
-              if (prop.user.consent) {
-                DB.updateUser(prop.user);
-                prop.setConsent(true);
-                prop.setUser(prop.user);
+          >
+            <Checkbox
+              onPress={(value) => {
+                prop.user.consent = value;
+              }}
+              initialVal={prop.user.consent}
+              size={ICON_SIZES.medium}
+            />
+            <Text 
+              style={{ 
+                flexShrink: 1,
+                color: isDarkMode? COLOURS.white: COLOURS.black
+              }}
+            >
+              By check this, you are comfirming that your information is stored in
+              this app securely, and used only for improving your experience.
+            </Text>
+          </View>
+          <Pressable
+            style={styles.pressable}
+            onPress={() => {
+              if (name.length != 0) {
+                if (prop.user.consent) {
+                  DB.updateUser(prop.user);
+                  prop.setConsent(true);
+                  prop.setUser(prop.user);
+                } else {
+                  createAlert({
+                    title: "User Consent Missing",
+                    desc: "Please confirm and check the box",
+                    buttons: [{ text: "OK" }],
+                    user: prop.user,
+                  });
+                }
               } else {
                 createAlert({
-                  title: "User Consent Missing",
-                  desc: "Please confirm and check the box",
+                  title: "Name missing",
+                  desc: "Name cannot be empty",
                   buttons: [{ text: "OK" }],
                   user: prop.user,
                 });
               }
-            } else {
-              createAlert({
-                title: "Name missing",
-                desc: "Name cannot be empty",
-                buttons: [{ text: "OK" }],
-                user: prop.user,
-              });
-            }
-          }}
-        >
-          <Text
-            style={{
-              fontSize: FONT_SIZES.small,
-              color: COLOURS.white,
             }}
           >
-            Create Account
-          </Text>
-        </Pressable>
-      </ScrollView>
-    </View>
+            <Text
+              style={{
+                fontSize: FONT_SIZES.small,
+                color: COLOURS.white,
+              }}
+            >
+              Create Account
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -375,7 +392,8 @@ const styles = StyleSheet.create({
   },
   pressable: {
     marginHorizontal: SPACING.medium,
-    marginVertical: SPACING.small,
+    marginTop: SPACING.small,
+    marginBottom: SPACING.large,
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: SPACING.medium,

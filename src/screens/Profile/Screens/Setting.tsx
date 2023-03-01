@@ -31,6 +31,7 @@ import { History } from "../../../backends/Histories";
 import { Ingredient } from "../../../backends/Ingredient";
 import { Meal } from "../../../backends/Meal";
 import { Nutrition } from "../../../backends/Nutrition";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 type alertProp = {
@@ -177,60 +178,68 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
   }, [navigation]);
 
   return (
-    <ScrollView
+    <SafeAreaView
       style={{
-        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-        flex: 1,
+          flex: 1,
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
       }}
+      edges={['left', 'right']}
     >
-      <View style={styles.container}>
-        {NavigateRow("Edit Account", "Account", navigation)}
-      </View>
-      <View style={styles.container}>
-        {SwitchRow("Notification", "notification")}
-        {HorizontalLine}
-        {NavigateRow("Theme", "Theme", navigation)}
-      </View>
-      <View style={styles.container}>
-        {SwitchRow("Debug Mode", "debug")}
-        {user.setting.debug && NavigateRow("Debug Window", "Debug", navigation)}
-        {HorizontalLine}
-        {TouchableRow("Reset", ()=>{
-          createAlert({
-            title:"Reset This App", 
-            desc:"You can reset all settings and delete all data on this app.\n\nThis action cannot be undone.", 
-            buttons:[
-              {
-                text: "Cancel",
-                style: "cancel"
-              },
-              {
-                text: "Reset",
-                style: "destructive",
-                onPress: ()=>{
-                  if (UserSetting.reloadApp != undefined){
-                    Category.reset()
-                    History.reset()
-                    Ingredient.reset()
-                    Meal.reset()
-                    Nutrition.reset()
-                    User.reset()
-                    DB.deleteFile().then(()=>{
-                      UserSetting.reloadApp!()
-                    })
+      <ScrollView
+        style={{
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          flex: 1,
+        }}
+      >
+        <View style={styles.container}>
+          {NavigateRow("Edit Account", "Account", navigation)}
+        </View>
+        <View style={styles.container}>
+          {SwitchRow("Notification", "notification")}
+          {HorizontalLine}
+          {NavigateRow("Theme", "Theme", navigation)}
+        </View>
+        <View style={styles.container}>
+          {SwitchRow("Debug Mode", "debug")}
+          {user.setting.debug && NavigateRow("Debug Window", "Debug", navigation)}
+          {HorizontalLine}
+          {TouchableRow("Reset", ()=>{
+            createAlert({
+              title:"Reset This App", 
+              desc:"You can reset all settings and delete all data on this app.\n\nThis action cannot be undone.", 
+              buttons:[
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                {
+                  text: "Reset",
+                  style: "destructive",
+                  onPress: ()=>{
+                    if (UserSetting.reloadApp != undefined){
+                      Category.reset()
+                      History.reset()
+                      Ingredient.reset()
+                      Meal.reset()
+                      Nutrition.reset()
+                      User.reset()
+                      DB.deleteFile().then(()=>{
+                        UserSetting.reloadApp!()
+                      })
+                    }
                   }
                 }
-              }
-            ],
-            user: user
-          })
-        })}
-        {HorizontalLine}
-        {NavigateRow("Help", "Help", navigation)}
-        {HorizontalLine}
-        {NavigateRow("About", "About", navigation)}
-      </View>
-    </ScrollView>
+              ],
+              user: user
+            })
+          })}
+          {HorizontalLine}
+          {NavigateRow("Help", "Help", navigation)}
+          {HorizontalLine}
+          {NavigateRow("About", "About", navigation)}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

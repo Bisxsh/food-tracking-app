@@ -1,7 +1,7 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Text, View, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {Text, View, ScrollView, TouchableOpacity, Image, Dimensions, ActivityIndicator, useWindowDimensions} from 'react-native';
+import { SafeAreaView, initialWindowMetrics, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LineChart } from 'react-native-chart-kit';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -10,6 +10,7 @@ import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/
 import { UserContext } from '../../../backends/User';
 import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
 import { DataSize, getMonthlyData, getMonthlyDataSet } from '../../../backends/Histories'
+import HomeMenu from '../../Home/components/Menu/HomeMenu';
 
 type Months = {
   short: {
@@ -37,6 +38,70 @@ const months: Months = {
   }
 }
 
+type ingredientRowProp = {
+  name: string
+  imgSrc?: string
+  usedDate: Date
+  onPress: ()=>void
+}
+
+function IngredientRow(prop: ingredientRowProp): JSX.Element{
+  return (
+    <TouchableOpacity
+      style={{
+        backgroundColor: COLOURS.grey,
+        borderRadius: RADIUS.standard,
+        flexDirection: "row",
+        marginVertical: SPACING.small,
+      }}
+      onPress={prop.onPress}
+    >
+      {prop.imgSrc != undefined && <Image
+        style={{
+          alignItems: "center",
+          aspectRatio: 1,
+          justifyContent: "center",
+          borderRadius: RADIUS.standard,
+        }}
+        source={{uri: prop.imgSrc}}
+      />}
+      {prop.imgSrc == undefined && <View
+        style={{
+          alignItems: "center",
+          backgroundColor: COLOURS.darkGrey,
+          aspectRatio: 1,
+          justifyContent: "center",
+          borderRadius: RADIUS.standard,
+        }}
+      >
+        <MaterialIcons 
+          name="image-not-supported" 
+          color={COLOURS.white} 
+          size={ICON_SIZES.medium} 
+          style={{
+              textAlign: 'center'
+          }}
+        />
+      </View>}
+      <View
+        style={{
+          flex:1,
+          flexDirection: "column",
+          padding: SPACING.small,
+          alignItems: "flex-start",
+        }}
+      >
+        <Text style={{fontSize: FONT_SIZES.small}}>
+          {prop.name}
+        </Text>
+        <Text style={{fontSize: FONT_SIZES.tiny}}>
+          {"Used on "+prop.usedDate.toLocaleDateString()}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
 var init = true
 
 export function Profile({navigation, route}:ScreenProp): JSX.Element {
@@ -52,6 +117,25 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const [halfYear, setHalfYear] = useState<keyof Months["short"]>((date.getMonth() < 6)? 1 :2)
   const [waste, setWaste] = useState<number>()
   const [dataSet, setDataSet] = useState<number[]>([])
+
+  const [sort, setSort] = useState<number>(0)
+  const [searchText, setSearchText] = useState<string>("")
+  const [ingredients, setIngredients] = useState<JSX.Element[]>([
+    <IngredientRow
+      key={0}
+      name={"Tomato"}
+      usedDate={new Date()}
+      onPress={()=>{}}
+    />,
+    <IngredientRow
+      key={1}
+      name={"Tomato"}
+      usedDate={new Date()}
+      onPress={()=>{}}
+    />
+  ])
+
+  const {height, width} = useWindowDimensions()
 
   const today = new Date()
 
@@ -102,6 +186,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
         flex: 1,
         backgroundColor: isDarkMode ? Colors.darker : Colors.white,
       }}
+      edges={['left', 'right', "top"]}
     >
       <View
         style={{
@@ -149,7 +234,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 style={{
                     alignItems: "center",
                     aspectRatio: 1,
-                    width: "30%",
+                    width: Math.min(height, width)*0.3,
                     justifyContent: "center",
                     alignSelf: "center",
                     borderRadius: 100
@@ -161,7 +246,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     alignItems: "center",
                     backgroundColor: COLOURS.darkGrey,
                     aspectRatio: 1,
-                    width: "30%",
+                    width: Math.min(height, width)*0.3,
                     justifyContent: "center",
                     alignSelf: "center",
                     borderRadius: 100
@@ -225,7 +310,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 </Text>
                 {"wasted in "+months.long[0][date.getMonth()]}
               </Text>
-              <Text
+              {/* <Text
                 style={{
                   color: isDarkMode ? COLOURS.white : COLOURS.black,
                   fontSize: FONT_SIZES.medium,
@@ -233,7 +318,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 }}
               >
                 {date.getFullYear()}
-              </Text>
+              </Text> */}
               <LineChart
                 data={{
                   labels: months.short[halfYear],
@@ -249,8 +334,8 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     
                   ],
                 }}
-                width={Dimensions.get("window").width - SPACING.medium*2 - SPACING.small*2}
-                height={Dimensions.get("window").width/2}
+                width={width - SPACING.medium*2 - SPACING.small*2 - useSafeAreaInsets().right - useSafeAreaInsets().left}
+                height={(width - SPACING.medium*2 - SPACING.small*2 - useSafeAreaInsets().right - useSafeAreaInsets().left)/2}
                 yAxisSuffix={(dataType == "mass")?"g":undefined}
                 yAxisLabel={(dataType == "cost")?"£":undefined}
                 yAxisInterval={1}
@@ -326,7 +411,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                     size={ICON_SIZES.large} 
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     backgroundColor: (dataType == "mass")? COLOURS.primary: COLOURS.grey,
                     paddingVertical: SPACING.tiny,
@@ -365,7 +450,16 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                   }}
                 >
                   <Text style={{flex:1, alignSelf:"center"}}>Cost</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
+                <Text
+                  style={{
+                    color: isDarkMode ? COLOURS.white : COLOURS.black,
+                    fontSize: FONT_SIZES.medium,
+                    textAlign: "center",
+                  }}
+                >
+                  {date.getFullYear()}
+                </Text>
                 <TouchableOpacity
                   onPress={()=>{
                     var newHalf: 1|2 = 1 
@@ -407,6 +501,21 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               </View>
             </React.Fragment>
             }
+          </View>
+          <View
+            style={{
+              flexDirection: "column",
+              paddingHorizontal: SPACING.medium
+            }}
+          >
+            <HomeMenu
+              sort={sort}
+              sortFilters={["Date Used: Low to High", "Date Used: High to Low"]}
+              setSort={setSort}
+              ingredientsSearch={searchText}
+              setIngredientsSearch={setSearchText}
+            />
+            {ingredients}
           </View>
         </ScrollView> 
       </View>

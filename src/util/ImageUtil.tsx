@@ -4,8 +4,6 @@ import * as FileSystem from 'expo-file-system';
 
 const imgDirectory = FileSystem.documentDirectory + "Image/"
 
-
-
 export function getImageSrc(
     showActionSheetWithOptions:(options:ActionSheetOptions, callback:(i?: number | undefined) => void | Promise<void>)=>void, 
     func: (uri: string)=>void,
@@ -29,12 +27,18 @@ export function getImageSrc(
                         response = await ImagePicker.requestCameraPermissionsAsync()
                     }
                     if (response.granted){
-                        result = await ImagePicker.launchCameraAsync({
-                            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                            allowsEditing: true,
-                            quality: 1,
-                            aspect: aspect
-                        })
+                        response = await ImagePicker.getMediaLibraryPermissionsAsync()
+                        if (!response.granted){
+                            response = await ImagePicker.requestMediaLibraryPermissionsAsync()
+                        }
+                        if (response.granted){
+                            result = await ImagePicker.launchCameraAsync({
+                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                allowsEditing: true,
+                                quality: 1,
+                                aspect: aspect
+                            })
+                        }
                     }
                 case 1: //Library
                     response = await ImagePicker.getMediaLibraryPermissionsAsync()

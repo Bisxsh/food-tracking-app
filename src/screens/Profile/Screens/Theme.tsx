@@ -9,6 +9,7 @@ import { User, UserContext } from '../../../backends/User';
 import * as DB from '../../../backends/Database';
 import { Appearance, UserSetting } from '../../../backends/UserSetting';
 import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 type ItemProp = {
@@ -89,33 +90,41 @@ export function Theme({navigation}: ScreenProp): JSX.Element {
   var isDarkMode = user.setting.isDark()
 
   return (
-    <ScrollView
+    <SafeAreaView
       style={{
-        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-        flex: 1,
-      }}>
-        {TouchableSelector(
-            Object.values(Appearance), 
-            (index: number)=>{
-                user.setting.appearance = index
-                setUser(user)
-                DB.updateUser(user)
-                isDarkMode = user.setting.isDark()
-                tabNavi?.setOptions({
-                  tabBarStyle: {
-                    backgroundColor: isDarkMode ? Colors.darker : Colors.white
-                  }
-                })
-                navigation.setOptions({
-                  headerStyle: {
-                      backgroundColor: isDarkMode ? Colors.darker : Colors.white,
-                  },
-                  headerTintColor: isDarkMode ? Colors.white : Colors.black,
-                })
-            },
-            user.setting.appearance
-        )}
-    </ScrollView>
+          flex: 1,
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+      }}
+      edges={['left', 'right']}
+    >
+      <ScrollView
+        style={{
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          flex: 1,
+        }}>
+          {TouchableSelector(
+              Object.values(Appearance), 
+              (index: number)=>{
+                  user.setting.appearance = index
+                  setUser(user)
+                  DB.updateUser(user)
+                  isDarkMode = user.setting.isDark()
+                  tabNavi?.setOptions({
+                    tabBarStyle: {
+                      backgroundColor: isDarkMode ? Colors.darker : Colors.white
+                    }
+                  })
+                  navigation.setOptions({
+                    headerStyle: {
+                        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                    },
+                    headerTintColor: isDarkMode ? Colors.white : Colors.black,
+                  })
+              },
+              user.setting.appearance
+          )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

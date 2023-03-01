@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import { UserContext } from '../../../backends/User';
 
@@ -10,14 +11,22 @@ export function About(): JSX.Element{
     const isDarkMode = user.setting.isDark()
 
     return (
-        <View
+        <SafeAreaView
             style={{
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
                 flex: 1,
+                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
             }}
+            edges={['left', 'right']}
         >
-            <Text>This is About page</Text>
-        </View>
+            <View
+                style={{
+                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                    flex: 1,
+                }}
+            >
+                <Text>This is About page</Text>
+            </View>
+        </SafeAreaView>
     );
 }
 
