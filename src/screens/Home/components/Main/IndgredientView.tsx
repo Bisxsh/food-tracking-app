@@ -10,6 +10,7 @@ import {
   IngredientBuilder,
 } from "../../../../classes/IngredientClass";
 import IngredientPopup from "../IngredientPopup";
+import NoDataSvg from "../../../../assets/no_data.svg";
 
 type Props = {
   ingredientsSearch: string;
@@ -45,70 +46,109 @@ const IndgredientView = (props: Props) => {
         .includes(props.ingredientsSearch.toLowerCase());
     });
 
-  return (
-    <View
-      style={{
-        flexDirection: "column",
-        alignItems: "flex-start",
-        flex: 1,
-        paddingTop: SPACING.medium,
-      }}
-    >
-      {expiredIngredients.length > 0 && (
-        <>
-          <View
-            style={{
-              marginTop: SPACING.small,
-              width: "100%",
-            }}
-          >
-            <View
-              style={[
-                styles.container,
-                expiredIngredients.length > 2
-                  ? { justifyContent: "center" }
-                  : {},
-              ]}
+  function getMainIngredients() {
+    if (activeIngredients.length > 0)
+      return (
+        <View
+          style={[
+            styles.container,
+            activeIngredients.length > 2 ? { justifyContent: "center" } : {},
+          ]}
+        >
+          {activeIngredients.map((ingredient) => (
+            <TouchableOpacity
+              onPress={() => {
+                setIngredientShown(ingredient);
+              }}
+              key={`${ingredient.getId} - ${ingredient.getName}`}
             >
-              {expiredIngredients.map((ingredient) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setIngredientShown(ingredient);
-                  }}
-                  key={`${ingredient.getId} - ${ingredient.getName}`}
-                >
-                  <IngredientCard ingredient={ingredient} />
-                </TouchableOpacity>
-              ))}
-            </View>
+              <IngredientCard ingredient={ingredient} />
+            </TouchableOpacity>
+          ))}
+        </View>
+      );
+
+    const message =
+      activeFilters.length === 0 && props.ingredientsSearch === ""
+        ? "You don't have any stored ingredients! \n Add some by clicking the plus button below!"
+        : "You don't have any ingredients that \n match the search criteria 😢";
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <NoDataSvg
+          width={200}
+          height={200}
+          style={{ marginBottom: SPACING.medium }}
+        />
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: FONT_SIZES.small,
+          }}
+        >
+          {message}
+        </Text>
+      </View>
+    );
+  }
+
+  return (
+    <>
+      <View
+        style={{
+          flexDirection: "column",
+          alignItems: "flex-start",
+          flex: 1,
+          paddingTop: SPACING.medium,
+        }}
+      >
+        {expiredIngredients.length > 0 && (
+          <>
             <View
               style={{
-                borderBottomColor: COLOURS.darkGrey,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                alignSelf: "stretch",
-                marginVertical: SPACING.medium,
+                marginTop: SPACING.small,
+                width: "100%",
               }}
-            />
-          </View>
-        </>
-      )}
+            >
+              <View
+                style={[
+                  styles.container,
+                  expiredIngredients.length > 2
+                    ? { justifyContent: "center" }
+                    : {},
+                ]}
+              >
+                {expiredIngredients.map((ingredient) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setIngredientShown(ingredient);
+                    }}
+                    key={`${ingredient.getId} - ${ingredient.getName}`}
+                  >
+                    <IngredientCard ingredient={ingredient} />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View
+                style={{
+                  borderBottomColor: COLOURS.darkGrey,
+                  borderBottomWidth: StyleSheet.hairlineWidth,
+                  alignSelf: "stretch",
+                  marginVertical: SPACING.medium,
+                }}
+              />
+            </View>
+          </>
+        )}
 
-      <View
-        style={[
-          styles.container,
-          activeIngredients.length > 2 ? { justifyContent: "center" } : {},
-        ]}
-      >
-        {activeIngredients.map((ingredient) => (
-          <TouchableOpacity
-            onPress={() => {
-              setIngredientShown(ingredient);
-            }}
-            key={`${ingredient.getId} - ${ingredient.getName}`}
-          >
-            <IngredientCard ingredient={ingredient} />
-          </TouchableOpacity>
-        ))}
+        {getMainIngredients()}
       </View>
       {ingredientShown && (
         <IngredientPopup
@@ -117,7 +157,7 @@ const IndgredientView = (props: Props) => {
           ingredient={ingredientShown}
         />
       )}
-    </View>
+    </>
   );
 };
 

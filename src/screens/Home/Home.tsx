@@ -74,7 +74,7 @@ export function Home(): JSX.Element {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          padding: SPACING.extraLarge,
+          paddingTop: SPACING.extraLarge,
           paddingLeft: SPACING.medium,
           paddingRight: SPACING.medium,
         }}
@@ -86,7 +86,10 @@ export function Home(): JSX.Element {
           setIngredientsSearch={setIngredientsSearch}
           setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
           showExpiringButton={userData.storedIngredients.some(
-            (i) => differenceInDays(i.expiryDate, new Date()) <= 1
+            (i) =>
+              differenceInDays(i.expiryDate, new Date()) <= 1 &&
+              differenceInDays(i.expiryDate, new Date()) > 0 &&
+              i.quantity > 0
           )}
         />
         <View
@@ -99,7 +102,7 @@ export function Home(): JSX.Element {
         >
           <IndgredientView ingredientsSearch={ingredientsSearch} />
         </View>
-        <View style={{ flex: 1 }} />
+        {/* <View style={{ flex: 1 }} /> */}
       </View>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
