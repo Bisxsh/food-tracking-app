@@ -97,7 +97,7 @@ export function Home(): JSX.Element {
             alignContent: "center",
           }}
         >
-          <IndgredientView />
+          <IndgredientView ingredientsSearch={ingredientsSearch} />
         </View>
         <View style={{ flex: 1 }} />
       </View>

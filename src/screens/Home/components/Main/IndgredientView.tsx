@@ -11,7 +11,9 @@ import {
 } from "../../../../classes/IngredientClass";
 import IngredientPopup from "../IngredientPopup";
 
-type Props = {};
+type Props = {
+  ingredientsSearch: string;
+};
 
 const IndgredientView = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
@@ -29,15 +31,19 @@ const IndgredientView = (props: Props) => {
 
   const activeIngredients = userData.storedIngredients
     .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-    .filter(
-      // Check if i.categories contains activeFilters
-      (i) => {
-        for (let filter of activeFilters) {
-          if (!i.categories.includes(filter)) return false;
-        }
-        return true;
+    .filter((i) => {
+      for (let filter of activeFilters) {
+        if (!i.categories.includes(filter)) return false;
       }
-    );
+      return true;
+    })
+    .filter((i) => {
+      if (props.ingredientsSearch === "") return true;
+
+      return i.getName
+        .toLowerCase()
+        .includes(props.ingredientsSearch.toLowerCase());
+    });
 
   return (
     <View
