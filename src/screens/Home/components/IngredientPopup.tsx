@@ -73,36 +73,49 @@ const IngredientPopup = (props: Props) => {
     );
   }
 
-  function Nutrition(nutrition: Nutrition) {
+  function Nutrition(ingredient: Ingredient) {
+    const nutrition = ingredient.getNutrition;
     return (
       <View style={styles.nutritionContainer}>
-        <View style={{ flex: 1 }} />
-        <View style={styles.nutritionColumn}>
-          <Text style={styles.nutrition}>Energy: </Text>
-          <Text style={styles.nutrition}>Fat: </Text>
-          <Text style={styles.nutrition}>Carbs: </Text>
-          <Text style={styles.nutrition}>Fiber: </Text>
+        <Text
+          style={{
+            alignSelf: "center",
+            marginLeft: SPACING.medium,
+            marginTop: SPACING.medium,
+            fontSize: FONT_SIZES.small,
+          }}
+        >
+          Per {ingredient.servingSize} {ingredient.servingSizeType}
+        </Text>
+        <View style={{ flexDirection: "row" }}>
+          <View style={{ flex: 1 }} />
+          <View style={styles.nutritionColumn}>
+            <Text style={styles.nutrition}>Energy: </Text>
+            <Text style={styles.nutrition}>Fat: </Text>
+            <Text style={styles.nutrition}>Carbs: </Text>
+            <Text style={styles.nutrition}>Fiber: </Text>
+          </View>
+          <View style={styles.nutritionColumn}>
+            <Text style={styles.nutrition}>{nutrition.getEnergy}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getFat}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getCarbs}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getFibre}g</Text>
+          </View>
+          <View style={{ flex: 1 }} />
+          <View style={styles.nutritionColumn}>
+            <Text style={styles.nutrition}>Protein: </Text>
+            <Text style={styles.nutrition}>Salt: </Text>
+            <Text style={styles.nutrition}>Sugar: </Text>
+            <Text style={styles.nutrition}>Sat. Fat:</Text>
+          </View>
+          <View style={styles.nutritionColumn}>
+            <Text style={styles.nutrition}>{nutrition.getProtein}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getSalt}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getSugar}g</Text>
+            <Text style={styles.nutrition}>{nutrition.getSaturatedFat}g</Text>
+          </View>
+          <View style={{ flex: 1 }} />
         </View>
-        <View style={styles.nutritionColumn}>
-          <Text style={styles.nutrition}>{nutrition.getEnergy}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getFat}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getCarbs}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getFibre}g</Text>
-        </View>
-        <View style={{ flex: 1 }} />
-        <View style={styles.nutritionColumn}>
-          <Text style={styles.nutrition}>Protein: </Text>
-          <Text style={styles.nutrition}>Salt: </Text>
-          <Text style={styles.nutrition}>Sugar: </Text>
-          <Text style={styles.nutrition}>Sat. Fat:</Text>
-        </View>
-        <View style={styles.nutritionColumn}>
-          <Text style={styles.nutrition}>{nutrition.getProtein}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getSalt}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getSugar}g</Text>
-          <Text style={styles.nutrition}>{nutrition.getSaturatedFat}g</Text>
-        </View>
-        <View style={{ flex: 1 }} />
       </View>
     );
   }
@@ -137,7 +150,7 @@ const IngredientPopup = (props: Props) => {
             );
           })}
         </View>
-        {Nutrition(props.ingredient.nutrition)}
+        {Nutrition(props.ingredient)}
         <View style={{ flexDirection: "row", marginTop: SPACING.medium }}>
           <SecondaryButton
             text="Mark all as used"
@@ -226,7 +239,6 @@ const styles = StyleSheet.create({
   },
 
   nutritionContainer: {
-    flexDirection: "row",
     marginTop: SPACING.medium,
     alignItems: "center",
     justifyContent: "center",
@@ -236,6 +248,7 @@ const styles = StyleSheet.create({
 
   nutritionColumn: {
     margin: SPACING.medium,
+    marginTop: SPACING.small,
     alignItems: "flex-start",
     justifyContent: "center",
   },
