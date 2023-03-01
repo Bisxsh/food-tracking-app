@@ -14,7 +14,7 @@ import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
 import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../../util/GlobalStyles";
-import RecipeBox from "../../components/RecipeBox";
+import RecipeBox from "./RecipeBox";
 import HomeMenu from "./HomeMenu";
 import { useNavigation } from "@react-navigation/native";
 import { UserDataContext } from "../../classes/UserData";
