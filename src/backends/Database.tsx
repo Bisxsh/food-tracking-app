@@ -167,6 +167,9 @@ async function createTable(schema: Schema){
     await transaction(sql, [], "Create table")
 }
 
+/**
+ * Create all tables if they do not exist
+ */
 export async function init(){
     await createTable(CategorySchema);
     await createTable(UserSchema);
@@ -177,14 +180,34 @@ export async function init(){
 
 // ======== Create records ==============================================================
 
+/**
+ * Create a record of the given object in DB
+ * @param ingredient Object to store in DB
+ */
 export function create(ingredient:Ingredient):any
 
+/**
+ * Create a record of the given object in DB
+ * @param category Object to store in DB
+ */
 export function create(category: Category):any
 
+/**
+ * Create a record of the given object in DB
+ * @param user Object to store in DB
+ */
 export function create(user: User): any
 
+/**
+ * Create a record of the given object in DB
+ * @param meal Object to store in DB
+ */
 export function create(meal: Meal): any
 
+/**
+ * Create a record of the given object in DB
+ * @param history Object to store in DB
+ */
 export function create(history: History): any
 
 export function create(value: any){
@@ -636,6 +659,10 @@ export function deleteAllHistory(){
 
 // ======== Delete DB file ==============================================================
 
+/**
+ * Delete all DB related files in Document directory
+ * @param verbose output both success and fail to console
+ */
 export async function deleteFile(verbose=false){
     const dir:string[] = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")
     if (dir.indexOf("DB.db") != -1){

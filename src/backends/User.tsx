@@ -2,15 +2,47 @@ import React, { createContext, Dispatch, SetStateAction } from "react";
 
 import { UserSetting } from "./UserSetting"
 
-export const DietReqs = [
-    "Gluten-free",
-    "Wheat-free",
-    "Egg-free",
-    "Milk-free",
-    "Soya-free",
-    "Nut-free",
-    "Vegan",
-]
+/**
+ * Map API Parameter to Web Label
+ * @type {Object.<string, string>}
+ */
+export const DietReqs = {
+    "alcohol-cocktail": "Alcohol-Cocktail",
+    "alcohol-free": "Alcohol-Free",
+    "celery-free": "Celery-Free",
+    "crustacean-free": "Crustcean-Free",
+    "dairy-free": "Dairy-Free",
+    "DASH": "DASH",
+    "egg-free": "Egg-Free",
+    "fish-free": "Fish-Free",
+    "fodmap-free": "FODMAP-Free",
+    "gluten-free": "Gluten-Free",
+    "immuno-supportive": "Immuno-Supportive",
+    "keto-friendly": "Keto-Friendly",
+    "kidney-friendly": "Kidney-Friendly",
+    "kosher": "Kosher",
+    "low-potassium": "Low Potassium",
+    "low-sugar": "Low Sugar",
+    "lupine-free": "Lupine-Free",
+    "Mediterranean": "Mediterranean",
+    "mollusk-free": "Mollusk-Free",
+    "mustard-free": "Mustard-Free",
+    "No-oil-added": "No oil added",
+    "paleo": "Paleo",
+    "peanut-free": "Peanut-Free",
+    "pecatarian": "Pescatarian",
+    "pork-free": "Pork-Free",
+    "red-meat-free": "Red-Meat-Free",
+    "sesame-free": "Sesame-Free",
+    "shellfish-free": "Shellfish-Free",
+    "soy-free": "Soy-Free",
+    "sugar-conscious": "Sugar-Conscious",
+    "sulfite-free": "Sulfite-Free",
+    "tree-nut-free": "Tree-Nut-Free",
+    "vegan": "Vegan",
+    "vegetarian": "Vegetarian",
+    "wheat-free": "Wheat-Free",
+}
 
 
 export class User{
@@ -27,7 +59,7 @@ export class User{
         this.name = name
         this.imgSrc = imgSrc
         this.dateOfReg = (dateOfReq != undefined)? dateOfReq: new Date()
-        this.dietReq = (dietReq != undefined)? dietReq: DietReqs.map((value)=>[value, false])
+        this.dietReq = (dietReq != undefined)? dietReq: Object.values(DietReqs).map((value)=>[value, false])
         this.setting = (setting != undefined)? setting: new UserSetting()
         this.consent = (consent != undefined)? consent: false
     }
@@ -37,7 +69,7 @@ export class User{
         this.name = ""
         this.imgSrc = undefined
         this.dateOfReg = new Date()
-        this.dietReq = DietReqs.map((value)=>[value, false])
+        this.dietReq = Object.values(DietReqs).map((value)=>[value, false])
         this.setting = new UserSetting()
         this.consent = false
     }

@@ -23,7 +23,7 @@ export class Meal{
             this.url,
             this.imgSrc,
             ","+this.categoryId.toString()+",",
-            this.instruction.toString(),
+            this.instruction.join("<###>"),
         ];
     }
 
@@ -33,7 +33,7 @@ export class Meal{
         return new Meal(
             properties[1],  // name
             (properties[4] as string).substring(1,(properties[4] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // categoryId
-            (properties[5] as string).split(","),  // instruction 
+            (properties[5] as string).split("<###>"),  // instruction 
             properties[0],  // _id
             properties[2],  // url
             properties[3],  // imgSrc
