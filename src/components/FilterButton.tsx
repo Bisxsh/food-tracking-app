@@ -208,7 +208,6 @@ const styles = (props: Props) =>
       alignSelf: "stretch",
       backgroundColor: COLOURS.white,
       width: props.width ? props.width : "auto",
-      direction: "rtl",
       borderRadius: RADIUS.standard,
       ...DROP_SHADOW,
       maxHeight: 350,

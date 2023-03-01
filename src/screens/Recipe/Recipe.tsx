@@ -45,15 +45,25 @@ export function Recipe(): JSX.Element {
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
 
-
   async function readMeals() {
-    await readAllMeal().then((meals) => {
-      let temp: Meal[] = [];
-      meals.map((meal) => {
-        temp.push(new Meal(meal.name, meal.categoryId, meal.instruction, meal._id, meal.url, meal.imgSrc));
-      });
-      setUserData({ ...userData, savedRecipes: temp });
-    }).then(() => genSaved());
+    await readAllMeal()
+      .then((meals) => {
+        let temp: Meal[] = [];
+        meals.map((meal) => {
+          temp.push(
+            new Meal(
+              meal.name,
+              meal.categoryId,
+              meal.instruction,
+              meal._id,
+              meal.url,
+              meal.imgSrc
+            )
+          );
+        });
+        setUserData({ ...userData, savedRecipes: temp });
+      })
+      .then(() => genSaved());
   }
 
   useEffect(() => {
@@ -70,15 +80,24 @@ export function Recipe(): JSX.Element {
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
-    var temp:any[] = [] 
+    var temp: any[] = [];
     recipeList.map((recipe) => {
       temp.push({
-      recipe: {id: recipe.getId, label: recipe.getName, image: recipe.getImgSrc, servings: 2, calories: 1000.0, ingredients: ["Cheesse"], cautions: ["None"] }})
-    })
-    console.log("this is temp")
-    console.log(temp)
-    console.log("this is explore")
-    console.log(explore)
+        recipe: {
+          id: recipe.getId,
+          label: recipe.getName,
+          image: recipe.getImgSrc,
+          servings: 2,
+          calories: 1000.0,
+          ingredients: ["Cheesse"],
+          cautions: ["None"],
+        },
+      });
+    });
+    console.log("this is temp");
+    console.log(temp);
+    console.log("this is explore");
+    console.log(explore);
     setSaved(temp);
   }
 
@@ -94,13 +113,13 @@ export function Recipe(): JSX.Element {
   const [currentButton, setCurrentButton] = useState(false);
 
   return (
-    <View
+    <SafeAreaView
       style={[
         styles.container,
         { backgroundColor: isDarkMode ? Colors.darker : Colors.white },
       ]}
     >
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer]}>
         <TouchableOpacity
           style={[
             {
@@ -128,13 +147,15 @@ export function Recipe(): JSX.Element {
           </Text>
         </TouchableOpacity>
       </View>
-      <HomeMenu
-        sortFilters={HomeSortingFilters}
-        ingredientsSearch={ingredientsSearch}
-        sort={HomeSortingFilters.indexOf(selectedSort)}
-        setIngredientsSearch={setIngredientsSearch}
-        setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
-      />
+      <View style={{ paddingHorizontal: SPACING.medium, width: "100%" }}>
+        <HomeMenu
+          sortFilters={HomeSortingFilters}
+          ingredientsSearch={ingredientsSearch}
+          sort={HomeSortingFilters.indexOf(selectedSort)}
+          setIngredientsSearch={setIngredientsSearch}
+          setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
+        />
+      </View>
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
@@ -142,25 +163,23 @@ export function Recipe(): JSX.Element {
         {recipes.map((recipe, key) => {
           if (
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
-          )
-          {
+          ) {
             return (
               <RecipeBox
-              key={key}
-              recipeImage={recipe["recipe"]["image"]}
-              recipeName={recipe["recipe"]["label"]}
-              recipeCalories={recipe["recipe"]["calories"]}
-              recipeServings={recipe["recipe"]["yield"]}
-              recipeCautions={recipe["recipe"]["cautions"]}
-              recipeIngredients={recipe["recipe"]["ingredients"]}
+                key={key}
+                recipeImage={recipe["recipe"]["image"]}
+                recipeName={recipe["recipe"]["label"]}
+                recipeCalories={recipe["recipe"]["calories"]}
+                recipeServings={recipe["recipe"]["yield"]}
+                recipeCautions={recipe["recipe"]["cautions"]}
+                recipeIngredients={recipe["recipe"]["ingredients"]}
               />
             );
           }
         })}
       </ScrollView>
       <AddButton onPress={() => navigation.navigate("ManualIngredient")} />
-
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -170,8 +189,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: SPACING.extraLarge,
-    paddingLeft: SPACING.medium,
-    paddingRight: SPACING.medium,
     flexDirection: "column",
     borderRadius: 10,
   },
@@ -201,8 +218,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.medium,
     paddingBottom: SPACING.medium,
     borderRadius: RADIUS.circle,
-    marginLeft: SPACING.medium,
-    marginRight: SPACING.medium,
+    marginHorizontal: SPACING.medium,
 
     alignItems: "center",
     justifyContent: "center",

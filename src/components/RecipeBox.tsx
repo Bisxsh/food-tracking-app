@@ -43,7 +43,7 @@ const RecipeBox = (props: Props) => {
   };
 
   return (
-    <View style={{ flex: 1, width: "100%" }}>
+    <View style={{ flex: 1, width: "100%", paddingHorizontal: SPACING.medium }}>
       <View style={styles.container}>
         <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
         <View style={styles.textContainer}>
