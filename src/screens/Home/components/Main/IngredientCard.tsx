@@ -2,7 +2,12 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Ingredient } from "../../../../classes/IngredientClass";
 import { Dimensions, Image } from "react-native";
-import { COLOURS, RADIUS, SPACING } from "../../../../util/GlobalStyles";
+import {
+  COLOURS,
+  DROP_SHADOW,
+  RADIUS,
+  SPACING,
+} from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getTimeLeft } from "../../../../util/ExpiryCalc";
 
@@ -11,6 +16,7 @@ type Props = {
 };
 
 const IngredientTile = ({ ingredient }: Props) => {
+  const expired = ingredient.expiryDate < new Date();
   function getCardContent(showText?: boolean) {
     return (
       <>
@@ -19,7 +25,7 @@ const IngredientTile = ({ ingredient }: Props) => {
             {ingredient.name}
           </Text>
         )}
-        <View style={styles.timeContainer}>
+        <View style={[styles.timeContainer]}>
           <MaterialCommunityIcons
             name="clock-outline"
             size={16}
@@ -29,6 +35,11 @@ const IngredientTile = ({ ingredient }: Props) => {
             {getTimeLeft(ingredient)}
           </Text>
         </View>
+        {ingredient.quantity > 1 && (
+          <View style={[styles.bubble]}>
+            <Text style={{ fontWeight: "600" }}>x{ingredient.quantity}</Text>
+          </View>
+        )}
       </>
     );
   }
@@ -79,5 +90,16 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: RADIUS.standard,
+  },
+
+  bubble: {
+    position: "absolute",
+    left: -5,
+    top: -5,
+    padding: SPACING.small,
+    borderRadius: RADIUS.standard,
+    aspectRatio: 1,
+    backgroundColor: COLOURS.grey,
+    // ...DROP_SHADOW,
   },
 });

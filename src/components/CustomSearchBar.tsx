@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
 
@@ -41,7 +41,7 @@ const styles = (props: Props) =>
       alignSelf: "stretch",
       height: props.height ? props.height : "auto",
       marginLeft: SPACING.small,
-      marginRight: SPACING.medium,
+      marginRight: SPACING.small,
       padding: SPACING.small,
       paddingLeft: SPACING.medium,
       paddingRight: SPACING.medium,

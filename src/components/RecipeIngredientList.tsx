@@ -33,11 +33,12 @@ function RecipeIngredientList() {
     <CustomSearchBar textHint={"Search Ingredient"} text={ingredientsSearch} setText={setIngredientsSearch} width={360} height={40} />
     {
         ingredientList.map((ingredient) => {
+          {console.log(ingredient)}
             return (
                 <TouchableOpacity>
-                <View style={{padding:10}}key={ingredient["_id"]}>
-                    <Text>{ingredient.name}</Text>
-                    <Image source={{uri: ingredient.image}} style={{width: 50, height: 50}} />
+                <View style={{padding:10}} key={ingredient}>
+                    <Text>{ingredient}</Text>
+                    <Image source={{uri: "https://d.newsweek.com/en/full/530445/12-23-lingscars-01.jpg?w=1600&h=1600&q=88&f=526c077afee8b191f79da78615ee562b"}} style={{width: 50, height: 50}} />
                 </View>
                 </TouchableOpacity>
             )

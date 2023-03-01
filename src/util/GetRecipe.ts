@@ -34,14 +34,14 @@ export async function getRecipes(){
             const data = await Axios.get(url);
             recipeList = recipeList.concat(data.data.hits);
             
-            data.data.hits.map( (recipe: any) => {
-                console.log("hit")
-                const newMeal = new Meal(recipe["recipe"]["label"], [1], ["Add this"], 1 , recipe["recipe"]["image"], recipe["recipe"]["image"])
-                mealList.push(newMeal)
+            // data.data.hits.map( (recipe: any) => {
+            //     console.log("hit")
+            //     const newMeal = new Meal(recipe["recipe"]["label"], [1], ["Add this"], 1 , recipe["recipe"]["image"], recipe["recipe"]["image"])
+            //     mealList.push(newMeal)
 
-            })
+            // })
         }))
-        return mealList
+        return recipeList
     }
 }
 

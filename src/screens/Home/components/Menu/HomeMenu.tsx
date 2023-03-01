@@ -4,6 +4,7 @@ import CustomSearchBar from "../../../../components/CustomSearchBar";
 import SortButton from "../../../../components/SortButton";
 import IngredientsFilter from "../../../../components/IngredientsFilter";
 import { UserDataContext } from "../../../../classes/UserData";
+import ExpiringButton from "../Main/ExpiringButton";
 
 type Props = {
   ingredientsSearch: string;
@@ -11,6 +12,7 @@ type Props = {
   sort: number;
   setSort: (sort: number) => void;
   sortFilters: any[];
+  showExpiringButton?: boolean;
 };
 
 const HomeMenu = (props: Props) => {
@@ -21,13 +23,11 @@ const HomeMenu = (props: Props) => {
         textHint="Search stored ingredients"
         text={props.ingredientsSearch}
         setText={props.setIngredientsSearch}
-        // width={250}
       />
       <SortButton
         options={props.sortFilters}
         selectedOption={props.sort}
         setSelectedOption={props.setSort}
-        // width={216}
       />
       <IngredientsFilter
         options={userData.ingredientCategories}
@@ -35,6 +35,7 @@ const HomeMenu = (props: Props) => {
           setUserData({ ...userData, ingredientCategories: options })
         }
       />
+      {props.showExpiringButton && <ExpiringButton label="Expiring Soon" />}
     </View>
   );
 };

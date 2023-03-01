@@ -36,6 +36,8 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
     "Chocapic", //name
     430, //weight
     weightUnit.grams, //weightUnit
+    30, //servingSize
+    weightUnit.grams, //servingSizeType
     1, //quantity
     [DUMMY_CATEGORIES[0]], //categories
     "https://images.openfoodfacts.org/images/products/761/303/462/6844/front_en.268.400.jpg", //imageSrc
@@ -48,6 +50,8 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
     "TUC", //name
     100, //weight
     weightUnit.grams, //weightUnit
+    15, //servingSize
+    weightUnit.grams, //servingSizeType
     2, //quantity
     [DUMMY_CATEGORIES[3], DUMMY_CATEGORIES[4]], //categories
     "https://images.openfoodfacts.org/images/products/541/004/100/1204/front_en.299.400.jpg", //imageSrc
@@ -60,6 +64,8 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
     "Kinder Bueno", //name
     43, //weight
     weightUnit.grams, //weightUnit
+    20, //servingSize
+    weightUnit.grams, //servingSizeType
     69, //quantity
     [DUMMY_CATEGORIES[2], DUMMY_CATEGORIES[4]], //categories
     "https://images.openfoodfacts.org/images/products/800/050/003/7560/front_en.192.400.jpg", //imageSrc
@@ -68,8 +74,21 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
     new Nutrition(0, 0, 0, 0, 0, 0, 0, 0), //nutrition
     2 //id
   ),
+  new Ingredient(
+    "Oreo", //name
+    154, //weight
+    weightUnit.grams, //weightUnit
+    30, //servingSize
+    weightUnit.grams, //servingSizeType
+    2, //quantity
+    [DUMMY_CATEGORIES[2], DUMMY_CATEGORIES[4]], //categories
+    "https://images.openfoodfacts.org/images/products/762/230/033/6738/front_en.145.400.jpg", //imageSrc
+    new Date(new Date().getTime() - 3 * 24 * 60 * 60 * 1000), //expiryDate
+    new Date(new Date().getTime() - 3 * 24 * 60 * 60 * 1000), //useByDate
+    new Nutrition(0, 0, 0, 0, 0, 0, 0, 0), //nutrition
+    3 //id
+  ),
 ];
-
 
 export const DUMMY_MEALS: Meal[] = [
   new Meal(
@@ -97,4 +116,3 @@ export const DUMMY_MEALS: Meal[] = [
     "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
   ),
 ];
-

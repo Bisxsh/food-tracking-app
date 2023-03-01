@@ -21,10 +21,12 @@ import { UserDataContext } from "../../classes/UserData";
 import { UserContext } from "../../backends/User";
 import { HomeSortingFilter, HomeSortingFilters } from "./HomeSortingFilters";
 import AddButton from "../../components/AddButton";
-
+import { readAllMeal } from "../../backends/Database";
+import { Meal } from "../../classes/MealClass";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
+
   const isDarkMode = user.setting.isDark();
 
   useNavigation()?.setOptions({
@@ -43,10 +45,21 @@ export function Recipe(): JSX.Element {
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
 
+
+  async function readMeals() {
+    await readAllMeal().then((meals) => {
+      let temp: Meal[] = [];
+      meals.map((meal) => {
+        temp.push(new Meal(meal.name, meal.categoryId, meal.instruction, meal._id, meal.url, meal.imgSrc));
+      });
+      setUserData({ ...userData, savedRecipes: temp });
+    }).then(() => genSaved());
+  }
+
   useEffect(() => {
+    readMeals();
     genRecipe();
     getDietReq();
-    genSaved();
   }, []);
 
   async function genRecipe() {
@@ -57,7 +70,16 @@ export function Recipe(): JSX.Element {
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
-    setSaved(recipeList);
+    var temp:any[] = [] 
+    recipeList.map((recipe) => {
+      temp.push({
+      recipe: {id: recipe.getId, label: recipe.getName, image: recipe.getImgSrc, servings: 2, calories: 1000.0, ingredients: ["Cheesse"], cautions: ["None"] }})
+    })
+    console.log("this is temp")
+    console.log(temp)
+    console.log("this is explore")
+    console.log(explore)
+    setSaved(temp);
   }
 
   function switchList() {
@@ -118,14 +140,19 @@ export function Recipe(): JSX.Element {
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
-          // if (
-          //   [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
-          // ) temporary fix for health labels
+          if (
+            [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
+          )
           {
             return (
               <RecipeBox
-                key={key}
-                recipe = {recipe}
+              key={key}
+              recipeImage={recipe["recipe"]["image"]}
+              recipeName={recipe["recipe"]["label"]}
+              recipeCalories={recipe["recipe"]["calories"]}
+              recipeServings={recipe["recipe"]["yield"]}
+              recipeCautions={recipe["recipe"]["cautions"]}
+              recipeIngredients={recipe["recipe"]["ingredients"]}
               />
             );
           }

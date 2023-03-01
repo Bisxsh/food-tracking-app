@@ -10,6 +10,8 @@ export class Ingredient {
   name: string;
   weight: number;
   weightType: weightUnit;
+  servingSize: number;
+  servingSizeType: weightUnit;
   quantity: number;
   categories: Category[];
   imgSrc: string;
@@ -22,6 +24,8 @@ export class Ingredient {
     name: string,
     weight: number,
     weightType: weightUnit,
+    servingSize: number,
+    servingSizeType: weightUnit,
     quantity: number,
     categories: Category[],
     imgSrc: string,
@@ -33,6 +37,8 @@ export class Ingredient {
     this.name = name;
     this.weight = weight;
     this.weightType = weightType;
+    this.servingSize = servingSize;
+    this.servingSizeType = servingSizeType;
     this.quantity = quantity;
     this.categories = categories;
     this.imgSrc = imgSrc;
@@ -99,6 +105,8 @@ export class IngredientBuilder {
   private name: string;
   private weight: number;
   private weightType: weightUnit;
+  private servingSize: number;
+  private servingSizeType: weightUnit;
   private quantity: number;
   private categories: Category[];
   private imgSrc: string;
@@ -110,7 +118,9 @@ export class IngredientBuilder {
   constructor() {
     this.name = "";
     this.weight = 0;
-    this.weightType = weightUnit.kg;
+    this.weightType = weightUnit.grams;
+    this.servingSize = 0;
+    this.servingSizeType = weightUnit.grams;
     this.quantity = 0;
     this.categories = [];
     this.imgSrc = "";
@@ -125,6 +135,8 @@ export class IngredientBuilder {
     builder.name = ingredient.name;
     builder.weight = ingredient.weight;
     builder.weightType = ingredient.weightType;
+    builder.servingSize = ingredient.servingSize;
+    builder.servingSizeType = ingredient.servingSizeType;
     builder.quantity = ingredient.quantity;
     builder.categories = ingredient.categories;
     builder.imgSrc = ingredient.imgSrc;
@@ -147,6 +159,16 @@ export class IngredientBuilder {
 
   public setWeightType(weightType: weightUnit): IngredientBuilder {
     this.weightType = weightType;
+    return this;
+  }
+
+  public setServingSize(servingSize: number): IngredientBuilder {
+    this.servingSize = servingSize;
+    return this;
+  }
+
+  public setServingSizeType(servingSizeType: weightUnit): IngredientBuilder {
+    this.servingSizeType = servingSizeType;
     return this;
   }
 
@@ -200,6 +222,14 @@ export class IngredientBuilder {
     return this.weightType;
   }
 
+  public getServingSize(): number {
+    return this.servingSize;
+  }
+
+  public getServingSizeType(): weightUnit {
+    return this.servingSizeType;
+  }
+
   public getQuantity(): number {
     return this.quantity;
   }
@@ -229,6 +259,8 @@ export class IngredientBuilder {
       this.name,
       this.weight,
       this.weightType,
+      this.servingSize,
+      this.servingSizeType,
       this.quantity,
       this.categories,
       this.imgSrc,
