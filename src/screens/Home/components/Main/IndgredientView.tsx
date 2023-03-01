@@ -25,9 +25,19 @@ const IndgredientView = (props: Props) => {
     (i) => i.expiryDate < new Date() && i.quantity > 0
   );
 
-  const activeIngredients = userData.storedIngredients.filter(
-    (i) => i.expiryDate > new Date() && i.quantity > 0
-  );
+  const activeFilters = userData.ingredientCategories.filter((i) => i.active);
+
+  const activeIngredients = userData.storedIngredients
+    .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+    .filter(
+      // Check if i.categories contains activeFilters
+      (i) => {
+        for (let filter of activeFilters) {
+          if (!i.categories.includes(filter)) return false;
+        }
+        return true;
+      }
+    );
 
   return (
     <View
@@ -46,15 +56,6 @@ const IndgredientView = (props: Props) => {
               width: "100%",
             }}
           >
-            {/* <Text
-              style={{
-                marginLeft: SPACING.small,
-                fontSize: FONT_SIZES.medium,
-                marginBottom: SPACING.small,
-              }}
-            >
-              Expired Items
-            </Text> */}
             <View
               style={[
                 styles.container,
