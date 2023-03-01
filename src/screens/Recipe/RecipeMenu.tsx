@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import CustomSearchBar from "../../components/CustomSearchBar";
 import IngredientsFilter from "../../components/IngredientsFilter";
 import { UserDataContext } from "../../classes/UserData";
+import SortButton from "../../components/SortButton";
 
 type Props = {
   ingredientsSearch: string;
@@ -12,8 +13,7 @@ type Props = {
   sortFilters: any[];
 };
 
-const HomeMenu = (props: Props) => {
-  const { userData, setUserData } = useContext(UserDataContext);
+const RecipeMenu = (props: Props) => {
   return (
     <View style={styles.menu}>
       <CustomSearchBar
@@ -22,17 +22,17 @@ const HomeMenu = (props: Props) => {
         setText={props.setIngredientsSearch}
         width={300}
       />
-      <IngredientsFilter
-        options={userData.ingredientCategories}
-        setOptions={(options) =>
-          setUserData({ ...userData, ingredientCategories: options })
-        }
+      <SortButton
+        options={props.sortFilters}
+        selectedOption={props.sort}
+        setSelectedOption={props.setSort}
+        removeMargin
       />
     </View>
   );
 };
 
-export default HomeMenu;
+export default RecipeMenu;
 
 const styles = StyleSheet.create({
   menu: {

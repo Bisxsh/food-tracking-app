@@ -21,6 +21,7 @@ type Props = {
   selectedOption: number; // From useState
   setSelectedOption: (option: number) => void;
   width?: number;
+  removeMargin?: boolean;
 };
 
 const SortButton = (props: Props) => {
@@ -43,7 +44,12 @@ const SortButton = (props: Props) => {
   }, [showModal]);
 
   return (
-    <View style={{ position: "relative", marginRight: SPACING.small }}>
+    <View
+      style={{
+        position: "relative",
+        marginRight: props.removeMargin ? 0 : SPACING.small,
+      }}
+    >
       <TouchableOpacity
         style={styles(props).button}
         onPress={() => setShowModal(true)}

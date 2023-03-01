@@ -15,11 +15,14 @@ import { getRecipes, getSaved } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
 import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../../util/GlobalStyles";
 import RecipeBox from "./RecipeBox";
-import HomeMenu from "./HomeMenu";
+import RecipeMenu from "./RecipeMenu";
 import { useNavigation } from "@react-navigation/native";
 import { UserDataContext } from "../../classes/UserData";
 import { UserContext } from "../../backends/User";
-import { HomeSortingFilter, HomeSortingFilters } from "./HomeSortingFilters";
+import {
+  RecipeSortingFilter,
+  RecipeSortingFilters,
+} from "./RecipeSortingFilters";
 import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
 import { Meal } from "../../classes/MealClass";
@@ -43,7 +46,9 @@ export function Recipe(): JSX.Element {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
+  const [selectedSort, setSelectedSort] = useState(
+    userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
+  );
 
   async function readMeals() {
     await readAllMeal()
@@ -76,6 +81,7 @@ export function Recipe(): JSX.Element {
     const recipeList = await getRecipes();
     setRecipes(recipeList);
     setExplore(recipeList);
+    sortList();
   }
 
   async function genSaved() {
@@ -104,13 +110,100 @@ export function Recipe(): JSX.Element {
   function switchList() {
     if (currentButton === true) {
       setRecipes(explore);
+      sortList();
     } else {
       setRecipes(saved);
+      sortList();
     }
     setCurrentButton(!currentButton);
   }
 
   const [currentButton, setCurrentButton] = useState(false);
+
+  function getCals(recipe: any) {
+    console.log(recipe.calories + " " + recipe.yield);
+    return Math.round(
+      parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
+    );
+  }
+
+  function sortList() {
+    switch (selectedSort) {
+      case RecipeSortingFilter.TimeLowToHigh:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.TimeHighToLow:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.CaloriesLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(b.recipe) - getCals(a.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.CaloriesHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(a.recipe) - getCals(b.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.ingredients.length - a.recipe.ingredients.length;
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.ingredients.length - b.recipe.ingredients.length;
+          })
+        );
+        break;
+    }
+  }
+
+  useEffect(() => {
+    switch (selectedSort) {
+      case RecipeSortingFilter.TimeLowToHigh:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.TimeHighToLow:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.CaloriesLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(b.recipe) - getCals(a.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.CaloriesHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(a.recipe) - getCals(b.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.ingredients.length - a.recipe.ingredients.length;
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.ingredients.length - b.recipe.ingredients.length;
+          })
+        );
+        break;
+    }
+  }, [selectedSort]);
 
   return (
     <SafeAreaView
@@ -148,12 +241,12 @@ export function Recipe(): JSX.Element {
         </TouchableOpacity>
       </View>
       <View style={{ paddingHorizontal: SPACING.medium, width: "100%" }}>
-        <HomeMenu
-          sortFilters={HomeSortingFilters}
+        <RecipeMenu
+          sortFilters={RecipeSortingFilters}
           ingredientsSearch={ingredientsSearch}
-          sort={HomeSortingFilters.indexOf(selectedSort)}
+          sort={RecipeSortingFilters.indexOf(selectedSort)}
           setIngredientsSearch={setIngredientsSearch}
-          setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
+          setSort={(i: number) => setSelectedSort(RecipeSortingFilters[i])}
         />
       </View>
       <ScrollView
