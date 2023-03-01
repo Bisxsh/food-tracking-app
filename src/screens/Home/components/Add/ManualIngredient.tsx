@@ -56,8 +56,6 @@ const ManualIngredient = (props: Props) => {
     })
   );
 
-  console.log(ingredientBuilder);
-
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
@@ -164,7 +162,7 @@ const ManualIngredient = (props: Props) => {
         {getSeperator()}
         <View style={styles.inputRow}>
           <InputFieldWithUnits
-            fieldName="Weight"
+            fieldName="Total weight"
             onTextChange={(weight) => {
               ingredientBuilder.setWeight(weight);
             }}
@@ -206,6 +204,23 @@ const ManualIngredient = (props: Props) => {
         {getSeperator()}
         {showNutrition && (
           <View>
+            <InputFieldWithUnits
+              fieldName="Serving size"
+              onTextChange={(weight) => {
+                ingredientBuilder.setServingSize(weight);
+              }}
+              units={Object.values(weightUnit)}
+              onUnitChange={(unit) =>
+                ingredientBuilder.setServingSizeType(unit)
+              }
+              textWidth={104}
+              maxWidth={180}
+              defaultText={
+                ingredientBuilder.getServingSize()?.toString() || undefined
+              }
+              defaultUnit={ingredientBuilder.getServingSizeType()}
+            />
+            {getSeperator()}
             <NumberInputRow
               fieldNameLeft="Energy"
               fieldNameRight="Protein"
