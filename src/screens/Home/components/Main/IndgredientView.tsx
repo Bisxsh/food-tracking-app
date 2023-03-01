@@ -1,8 +1,19 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserDataContext } from "../../../../classes/UserData";
 import IngredientCard from "./IngredientCard";
-import { COLOURS, FONT_SIZES, SPACING } from "../../../../util/GlobalStyles";
+import {
+  COLOURS,
+  FONT_SIZES,
+  RADIUS,
+  SPACING,
+} from "../../../../util/GlobalStyles";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -46,25 +57,30 @@ const IndgredientView = (props: Props) => {
         .includes(props.ingredientsSearch.toLowerCase());
     });
 
+  function getIngredientCards(ingredients: Ingredient[]) {
+    const cards = ingredients.map((ingredient) => (
+      <TouchableOpacity
+        onPress={() => {
+          setIngredientShown(ingredient);
+        }}
+        key={`${ingredient.getId} - ${ingredient.getName}`}
+      >
+        <IngredientCard ingredient={ingredient} />
+      </TouchableOpacity>
+    ));
+    if (cards.length > 0 && cards.length % 3 !== 0) {
+      for (let i = 0; i < cards.length % 3; i++) {
+        cards.push(<View style={styles.dummyCard} />);
+      }
+    }
+    return cards;
+  }
+
   function getMainIngredients() {
     if (activeIngredients.length > 0)
       return (
-        <View
-          style={[
-            styles.container,
-            activeIngredients.length > 2 ? { justifyContent: "center" } : {},
-          ]}
-        >
-          {activeIngredients.map((ingredient) => (
-            <TouchableOpacity
-              onPress={() => {
-                setIngredientShown(ingredient);
-              }}
-              key={`${ingredient.getId} - ${ingredient.getName}`}
-            >
-              <IngredientCard ingredient={ingredient} />
-            </TouchableOpacity>
-          ))}
+        <View style={[styles.container]}>
+          {getIngredientCards(activeIngredients)}
         </View>
       );
 
@@ -117,24 +133,8 @@ const IndgredientView = (props: Props) => {
                 width: "100%",
               }}
             >
-              <View
-                style={[
-                  styles.container,
-                  expiredIngredients.length > 2
-                    ? { justifyContent: "center" }
-                    : {},
-                ]}
-              >
-                {expiredIngredients.map((ingredient) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setIngredientShown(ingredient);
-                    }}
-                    key={`${ingredient.getId} - ${ingredient.getName}`}
-                  >
-                    <IngredientCard ingredient={ingredient} />
-                  </TouchableOpacity>
-                ))}
+              <View style={[styles.container]}>
+                {getIngredientCards(expiredIngredients)}
               </View>
               <View
                 style={{
@@ -165,8 +165,19 @@ export default IndgredientView;
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "flex-start",
+    justifyContent: "center",
+  },
+
+  dummyCard: {
+    width: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
+    height: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
+    position: "relative",
+    aspectRatio: 1,
+    margin: SPACING.small,
+    justifyContent: "center",
+    borderRadius: RADIUS.standard,
   },
 });

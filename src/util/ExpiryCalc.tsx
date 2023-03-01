@@ -7,6 +7,7 @@ export function getTimeLeft(ingredient: Ingredient) {
   );
   if (timeLeft < 0) return "Expired";
   if (timeLeft == 0) return "Today";
+  if (timeLeft > 365) return "1 year+";
   return timeLeft + " day" + (timeLeft > 1 ? "s" : "");
 }
 
