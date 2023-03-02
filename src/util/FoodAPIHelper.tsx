@@ -8,37 +8,57 @@ export function getIngredientBuilder(ingredientJSON: any) {
   }
   let product = ingredientJSON.product;
   const ingredientBuilder = new IngredientBuilder();
-  ingredientBuilder.setName(product.product_name);
-  ingredientBuilder.setImgSrc(product.image_front_url);
+  ingredientBuilder.setName(product?.product_name || "");
+  ingredientBuilder.setImgSrc(product?.image_front_url || "");
   ingredientBuilder.setQuantity(1);
   ingredientBuilder.setCategories([]);
   ingredientBuilder.setExpiryDate(new Date());
   ingredientBuilder.setUseDate(new Date());
-  ingredientBuilder.setServingSize(product.serving_quantity);
+  ingredientBuilder.setServingSize(product?.serving_quantity || 0);
   ingredientBuilder.setServingSizeType(
-    product.serving_size.replace(/\d/g, "") == "g"
+    product.serving_size?.replace(/\d/g, "") == "g"
       ? weightUnit.grams
-      : weightUnit.kg
+      : weightUnit.kg || weightUnit.grams
   );
   ingredientBuilder.setWeight(
-    ingredientJSON.product.packagings[0].quantity_per_unit_value
+    ingredientJSON.product?.packagings[0]?.quantity_per_unit_value || 0
   );
   ingredientBuilder.setWeightType(
-    ingredientJSON.product.packagings[0].quantity_per_unit_unit == "g"
+    ingredientJSON.product?.packagings[0]?.quantity_per_unit_unit == "g"
       ? weightUnit.grams
-      : weightUnit.kg
+      : weightUnit.kg || weightUnit.grams
   );
 
   let nutritionBuilder = ingredientBuilder.getNutritionBuilder();
-  nutritionBuilder.setCarbs(product.nutriments.carbohydrates_serving);
+  console.log(product.nutriments.carbohydrates);
+
+  nutritionBuilder.setCarbs(
+    product.nutriments.carbohydrates_serving ||
+      product.nutriments.carbohydrates ||
+      0
+  );
   // prettier-ignore
-  nutritionBuilder.setEnergy(product.nutriments["energy-kcal_serving"]);
-  nutritionBuilder.setProtein(product.nutriments.proteins_serving);
-  nutritionBuilder.setFat(product.nutriments.fat_serving);
-  nutritionBuilder.setSaturatedFat(product.nutriments["saturated-fat_serving"]);
-  nutritionBuilder.setFibre(product.nutriments.fiber_serving);
-  nutritionBuilder.setSalt(product.nutriments.salt_serving);
-  nutritionBuilder.setSugar(product.nutriments.sugars_serving);
+  nutritionBuilder.setEnergy(product.nutriments["energy-kcal_serving"] || product.nutriments["energy-kcal"] || 0);
+  nutritionBuilder.setProtein(
+    product.nutriments.proteins_serving || product.nutriments.proteins || 0
+  );
+  nutritionBuilder.setFat(
+    product.nutriments.fat_serving || product.nutriments.fat || 0
+  );
+  nutritionBuilder.setSaturatedFat(
+    product.nutriments["saturated-fat_serving"] ||
+      product.nutriments["saturated-fat"] ||
+      0
+  );
+  nutritionBuilder.setFibre(
+    product.nutriments.fiber_serving || product.nutriments.fiber || 0
+  );
+  nutritionBuilder.setSalt(
+    product.nutriments.salt_serving || product.nutriments.salt || 0
+  );
+  nutritionBuilder.setSugar(
+    product.nutriments.sugars_serving || product.nutriments.sugars || 0
+  );
 
   return ingredientBuilder;
 }
