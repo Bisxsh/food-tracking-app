@@ -1,5 +1,6 @@
 import {
   Animated,
+  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -26,6 +27,7 @@ type Props = {
   onAdd?: (str: string) => void; //Method to run in add section if search returns no results
   setOptions?: (options: Category[]) => void;
   plusSymbol?: boolean;
+  center?: boolean;
 };
 
 const FilterButton = (props: Props) => {
@@ -137,7 +139,7 @@ const FilterButton = (props: Props) => {
   }
 
   return (
-    <View style={{ position: "relative" }}>
+    <>
       <TouchableOpacity
         style={styles(props).button}
         onPress={() => {
@@ -151,40 +153,42 @@ const FilterButton = (props: Props) => {
         />
       </TouchableOpacity>
 
-      <View style={{ backgroundColor: "purple", position: "relative" }}>
-        <Modal
-          isVisible={showModal}
-          onBackdropPress={() => setShowModal(false)}
-          backdropOpacity={0}
-          animationIn="fadeInDown"
-          animationOut="fadeOutUp"
-          style={{
-            position: "absolute",
-            //TODO change to work with device for presentation
-            top: 50,
-            right: 30,
-          }}
+      <Modal
+        isVisible={showModal}
+        onBackdropPress={() => setShowModal(false)}
+        backdropOpacity={props.center ? 0.5 : 0}
+        animationIn="fadeInDown"
+        animationOut="fadeOutUp"
+        style={
+          props.center
+            ? StyleSheet.absoluteFill
+            : {
+                position: "absolute",
+                //TODO change to work with device for presentation
+                top: 50,
+                right: 30,
+              }
+        }
+      >
+        <Animated.ScrollView
+          style={[
+            styles(props).modal,
+            { opacity: fadeAnim, translateY: transitionAnim },
+          ]}
         >
-          <Animated.ScrollView
-            style={[
-              styles(props).modal,
-              { opacity: fadeAnim, translateY: transitionAnim },
-            ]}
-          >
-            <CustomSearchBar
-              text={searchText}
-              setText={setSearchText}
-              textHint={props.textHint || "                    "}
-            />
-            <View style={{ height: SPACING.small }} />
-            {getOptions()}
-            {props.options.length > 7 && (
-              <View style={{ height: SPACING.medium }} />
-            )}
-          </Animated.ScrollView>
-        </Modal>
-      </View>
-    </View>
+          <CustomSearchBar
+            text={searchText}
+            setText={setSearchText}
+            textHint={props.textHint || "                    "}
+          />
+          <View style={{ height: SPACING.small }} />
+          {getOptions()}
+          {props.options.length > 7 && (
+            <View style={{ height: SPACING.medium }} />
+          )}
+        </Animated.ScrollView>
+      </Modal>
+    </>
   );
 };
 

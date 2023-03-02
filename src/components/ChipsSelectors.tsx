@@ -13,6 +13,7 @@ type Props = {
   categories: Category[];
   setCategories: (list: Category[]) => void;
   onAdd?: (arg: Category) => void; // Function to run when a new category is created
+  center?: boolean;
 };
 
 const ChipsSelectors = (props: Props) => {
@@ -62,6 +63,7 @@ const ChipsSelectors = (props: Props) => {
           setOptions={props.setCategories}
           onAdd={props.onAdd}
           plusSymbol
+          center={props.center || false}
         />
       </View>
     </>
