@@ -298,7 +298,7 @@ export function Debug(): JSX.Element{
                                 switch(selectedTable){
                                     case "Ingredient":
                                         if (ing != undefined){
-                                            ing.quantity ++;
+                                            ing.quantity --;
                                             console.log(ing)
                                             setLog(JSON.stringify(ing))
                                             DB.updateIngredient(ing)

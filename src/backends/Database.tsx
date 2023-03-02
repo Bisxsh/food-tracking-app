@@ -308,6 +308,43 @@ export async function readIngredient(value: any): Promise<any>{
     return;
 }
 
+export async function searchIngredient(name?: string, quantity?: [number, number], categories?: Category[]):Promise<Ingredient[]|[]> {
+    var sql: string = "select * from " + IngredientSchema.name
+    var arg: any[] = []
+    if (name != undefined || quantity != undefined || categories != undefined){
+        sql = sql + " where"
+    }
+    if (name != undefined){
+        sql = sql + " name like '%"+name+"%'"
+    }
+    if (quantity != undefined){
+        if (name != undefined){
+            sql = sql + " and"
+        }
+        sql = sql + " quantity between "+quantity[0]+" AND "+quantity[1]
+    }
+    if (categories != undefined){
+        for (const category of categories) {
+            if (name != undefined || quantity != undefined){
+                sql = sql + " and"
+            }
+            sql = sql + " categoryId like '%,"+category._id+",%'"
+        }
+    }
+    sql += ";"
+    const result = await transaction(sql, arg, "Select record")
+    if (result == undefined){
+        throw Error("Table doesn't exist");
+    }
+    
+    const rows = result.rows._array
+    const ings: Ingredient[] = [];
+    for (const row of rows){
+        ings.push(Ingredient.fromList(Object.values(row)));
+    }
+    return ings;
+}
+
 export async function readAllIngredient():Promise<Ingredient[]>{
     const rows: Object[] = await readAll(IngredientSchema);
     const ings: Ingredient[] = [];

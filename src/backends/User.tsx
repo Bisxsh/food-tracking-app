@@ -1,6 +1,8 @@
 import React, { createContext, Dispatch, SetStateAction } from "react";
 
+import { Category } from "./Category";
 import { UserSetting } from "./UserSetting"
+import * as DB from "./Database"
 
 /**
  * Map API Parameter to Web Label
@@ -53,8 +55,9 @@ export class User{
     dietReq: [string, boolean][]
     setting: UserSetting
     consent: boolean
+    categories: Category[]
 
-    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean){
+    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean, categories?: Category[]){
         this._id = (_id != undefined)? _id: User.count ++
         this.name = name
         this.imgSrc = imgSrc
@@ -62,6 +65,21 @@ export class User{
         this.dietReq = (dietReq != undefined)? dietReq: Object.values(DietReqs).map((value)=>[value, false])
         this.setting = (setting != undefined)? setting: new UserSetting()
         this.consent = (consent != undefined)? consent: false
+        this.categories = (categories != undefined)? categories: []
+        this.loadCategories()
+    }
+
+    async loadCategories(){
+        this.categories = await DB.readAllCategory()
+    }
+
+    findCategory(_id: number): Category | undefined{
+        for (const category of this.categories) {
+            if (category._id == _id){
+                return category
+            }
+        }
+        return
     }
 
     reset(){
