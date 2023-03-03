@@ -48,13 +48,14 @@ const months: Months = {
 const sortOrders = {
   0: "Name: A to Z",
   1: "Name: Z to A",
-  2: "Date Used: Low to High",
-  3: "Date Used: High to Low",
+  2: "Date Used: Old to Latest",
+  3: "Date Used: Latest to Old",
 }
 
 type ingredientRowProp = {
   ingredient: Ingredient
   dimension: [number, number]
+  isDarkMode: boolean
 }
 
 function IngredientRow(prop: ingredientRowProp): JSX.Element{
@@ -117,6 +118,7 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
         setShowModal={setShowModal}
         ingredient={prop.ingredient}
         dimension={prop.dimension}
+        isDarkMode={prop.isDarkMode}
       />
     </TouchableOpacity>
   )
@@ -162,14 +164,20 @@ type ingredientPopupProp = {
   setShowModal: (show: boolean) => void;
   ingredient: Ingredient;
   dimension: [number, number]
+  isDarkMode: boolean
 };
 
 const IngredientPopup = (prop: ingredientPopupProp) => {
   const { user, setUser } = useContext(UserContext);
 
-  function Header() {
+  function Header(isDarkMode:boolean) {
     return (
-      <View style={styles.header}>
+      <View style={{
+        ...styles.header, 
+        ...{
+          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+        }
+      }}>
         {prop.ingredient.imgSrc != undefined && <Image
           style={{
             alignItems: "center",
@@ -200,19 +208,20 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
           />
         </View>}
         <View style={{ flexDirection: "column", justifyContent: "center", paddingLeft: SPACING.small }}>
-          <Text style={{ fontSize: FONT_SIZES.body, fontWeight: "500" }}>
+          <Text style={{ fontSize: FONT_SIZES.body, fontWeight: "500", color: (isDarkMode)?COLOURS.white: COLOURS.black }}>
             {prop.ingredient.name}
           </Text>
           <View style={styles.detailRow}>
             <MaterialCommunityIcons
               name="scale-balance"
               size={24}
-              color="black"
+              color={(isDarkMode)?COLOURS.white: COLOURS.black }
             />
             <Text
               style={{
                 marginLeft: SPACING.small,
                 fontSize: FONT_SIZES.small,
+                color: (isDarkMode)?COLOURS.white: COLOURS.black,
               }}
             >
               {prop.ingredient.weight} {prop.ingredient.weightUnit}
@@ -222,14 +231,15 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             <MaterialCommunityIcons
               name="calendar-outline"
               size={24}
-              color="black"
+              color={(isDarkMode)?COLOURS.white: COLOURS.black }
             />
             <Text
               style={{
                 marginLeft: SPACING.small,
                 fontSize: FONT_SIZES.small,
+                color: (isDarkMode)?COLOURS.white: COLOURS.black,
               }}
-            >{`Used on: `+ ((prop.ingredient.useDate != undefined)? prop.ingredient.useDate?.toLocaleDateString(): "Unknown")}</Text>
+            >{"Used on: "+ ((prop.ingredient.useDate != undefined)? prop.ingredient.useDate?.toLocaleDateString(): "Unknown")}</Text>
           </View>
         </View>
       </View>
@@ -281,8 +291,15 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
         alignItems: "center",
       }}
     >
-      <View style={styles.container}>
-        <Header />
+      <View style={{
+        ...styles.container, 
+        ...{
+          backgroundColor: prop.isDarkMode ? Colors.darker : Colors.white,
+          borderColor:  prop.isDarkMode ? COLOURS.darkGrey : Colors.white, 
+          borderWidth: 0.5
+        }
+      }}>
+        {Header(prop.isDarkMode)}
         <View style={styles.categories}>
           {prop.ingredient.categoryId.map((id) => {
             const category = user.findCategory(id)
@@ -303,8 +320,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             }
           })}
         </View>
-        {Nutrition(prop.ingredient.nutrition)}
-        
+        {Nutrition(prop.ingredient.nutrition)}        
         <TouchableOpacity
           style={styles.edit}
           onPress={() => {
@@ -781,7 +797,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             <View
               style={{paddingHorizontal: SPACING.medium}}
             >
-              {ingredients.map((value)=><IngredientRow ingredient={value} dimension={[height, width]}/>)}
+              {ingredients.map((value)=><IngredientRow ingredient={value} dimension={[height, width]} isDarkMode={isDarkMode}/>)}
             </View>
           </View>
         </ScrollView> 
@@ -798,7 +814,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   container: {
-    backgroundColor: "white",
     padding: SPACING.medium,
     borderRadius: RADIUS.standard,
     ...DROP_SHADOW,

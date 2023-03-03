@@ -13,6 +13,7 @@ import { COLOURS, RADIUS, SPACING } from '../../../util/GlobalStyles';
 import { Meal } from '../../../backends/Meal';
 import { History } from '../../../backends/Histories';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Dummy from '../../../classes/DummyData'
 
 
 export function Debug(): JSX.Element{
@@ -114,6 +115,76 @@ export function Debug(): JSX.Element{
                             }}
                         >
                             <Text>Open DB</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                for (const i of Dummy.DUMMY_CATEGORIES){
+                                    DB.create(new Category(
+                                        i.name,
+                                        i.colour,
+                                        undefined,
+                                        i.active
+                                    ))
+                                }
+                                for (const i of Dummy.DUMMY_STORED_INGREDIENTS) {
+                                    DB.create(new Ingredient(
+                                        i.name, 
+                                        0,
+                                        i.weightType, 
+                                        i.servingSizeType, 
+                                        new Nutrition(
+                                            undefined, 
+                                            i.nutrition.getCarbs, 
+                                            undefined,
+                                            i.nutrition.getEnergy,
+                                            undefined,
+                                            i.nutrition.getProtein,
+                                            undefined,
+                                            i.nutrition.getFat,
+                                            undefined,
+                                            i.nutrition.getSaturatedFat,
+                                            undefined,
+                                            i.nutrition.getFibre,
+                                            undefined,
+                                            i.nutrition.getSalt,
+                                            undefined,
+                                            i.nutrition.getSugar,
+                                            undefined
+                                        ), 
+                                        i.categories.map((v)=>(v.id != undefined)? v.id:0), 
+                                        i.id, 
+                                        i.weight, 
+                                        i.servingSize, 
+                                        i.imgSrc, 
+                                        i.useDate, 
+                                        i.expiryDate
+                                    ))
+                                }
+                                for (const i of Dummy.DUMMY_MEALS){
+                                    DB.create(new Meal(
+                                        i.name,
+                                        i.categoryId,
+                                        i.instruction,
+                                        [],
+                                        i._id,
+                                        i.url,
+                                        i.imgSrc
+                                    ))
+                                }
+                                var c = monthCount
+                                for (let i = 0; i < 100; i++) {
+                                    const date = new Date()
+                                    date.setMonth(Math.floor(c/2) % 12)
+                                    date.setFullYear(date.getFullYear() - Math.floor(Math.floor(c/2)/12))
+                                    const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
+                                    DB.create(newHistory)
+                                    c++
+                                }
+                                setMonthCount(c)
+                            }}
+                        >
+                            <Text>Load Dummy Data</Text>
                         </Pressable>
                         <Pressable
                             style={styles.pressable}
