@@ -11,10 +11,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Dimensions } from "react-native";
 
-import {
-  IngredientBuilder,
-  weightUnit,
-} from "../../classes/IngredientClass";
+import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import { MealBuilder } from "../../classes/MealClass";
 
 import ChipsSelectors from "../../components/ChipsSelectors";
@@ -46,8 +43,7 @@ const ManualMeal = (props: Props) => {
     userData.ingredientCategories
   );
   const navigation = useNavigation<any>();
-  const mealBuilder =
-  recipeContext.recipeBeingEdited || new MealBuilder();
+  const mealBuilder = recipeContext.recipeBeingEdited || new MealBuilder();
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -58,12 +54,9 @@ const ManualMeal = (props: Props) => {
       alert("All required fields must be set");
       return;
     }
-    
+
     mealBuilder.setCategoryId([1]);
-    if (
-      mealBuilder.getId() == 0 &&
-      userData.savedRecipes.length > 0
-    ) {
+    if (mealBuilder.getId() == 0 && userData.savedRecipes.length > 0) {
       mealBuilder.setId(userData.savedRecipes.length); //change to meal id
     }
     console.log("ID: ", mealBuilder.getId());
@@ -78,11 +71,18 @@ const ManualMeal = (props: Props) => {
     //       ing.id === ingredientBuilder.getId() ? ingredientBuilder.build() : ing
     //     ),
     //   });
-    // } else 
+    // } else
     // userData.storedIngredients.push(mealBuilder.build());
     let builtMeal = mealBuilder.build();
     userData.savedRecipes.push(builtMeal);
-    let meal = new Meal(builtMeal.getName, builtMeal.getCategoryId, builtMeal.getInstruction, builtMeal.getId, builtMeal.getUrl, builtMeal.getImgSrc);
+    let meal = new Meal(
+      builtMeal.getName,
+      builtMeal.getCategoryId,
+      builtMeal.getInstruction,
+      builtMeal.getId,
+      builtMeal.getUrl,
+      builtMeal.getImgSrc
+    );
     create(meal);
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
@@ -113,42 +113,44 @@ const ManualMeal = (props: Props) => {
           />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1}}>
-      <ScrollView style={{ width: "100%", height: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 60}}>
-          
-        
-        <NameAndImage
-          onImgChange={(str) => mealBuilder.setImgSrc(str)}
-          onNameChange={(str) => mealBuilder.setName(str)}
-          imgStr={mealBuilder.getImgSrc()}
-          nameStr={mealBuilder.getName()}
-        />
-        {getSeperator()}
-        <ChipsSelectors
-          fieldName="Categories"
-          categories={categories}
-          setCategories={(categories: Category[]) => setCategories(categories)}
-          onAdd={(category: Category) => {
-            setUserData({
-              ...userData,
-              ingredientCategories: [
-                ...userData.ingredientCategories,
-                category,
-              ],
-            });
-          }}
-        />
-        {getSeperator()}
-        <RecipeIngredientList />
-        <Text>Instructions</Text>
-        {getSeperator()}
-        <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
-        {getSeperator()}
-        <PrimaryButton text="Save" onPress={saveRecipe} />
-        <View style={{ height: SPACING.medium }} />
-        
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        <ScrollView
+          style={{ width: "100%", height: "100%" }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
+        >
+          <NameAndImage
+            onImgChange={(str) => mealBuilder.setImgSrc(str)}
+            onNameChange={(str) => mealBuilder.setName(str)}
+            imgStr={mealBuilder.getImgSrc()}
+            nameStr={mealBuilder.getName()}
+          />
+          {getSeperator()}
+          <ChipsSelectors
+            fieldName="Categories"
+            categories={categories}
+            setCategories={(categories: Category[]) =>
+              setCategories(categories)
+            }
+            center
+            onAdd={(category: Category) => {
+              setUserData({
+                ...userData,
+                ingredientCategories: [
+                  ...userData.ingredientCategories,
+                  category,
+                ],
+              });
+            }}
+          />
+          {getSeperator()}
+          <RecipeIngredientList />
+          <Text>Instructions</Text>
+          {getSeperator()}
+          <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
+          {getSeperator()}
+          <PrimaryButton text="Save" onPress={saveRecipe} />
+          <View style={{ height: SPACING.medium }} />
+        </ScrollView>
       </View>
     </View>
   );
@@ -169,7 +171,6 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.large + 16,
     flex: 1,
   },
-  
 
   menu: {
     flexDirection: "row",
@@ -179,7 +180,6 @@ const styles = StyleSheet.create({
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
     paddingBottom: SPACING.large,
-    
   },
 
   button: {
@@ -191,5 +191,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-
 });

@@ -41,6 +41,8 @@ const BarcodeScanner = (props: Props) => {
         setScanning(false);
       })
       .catch((error) => {
+        console.log(error);
+
         alert("Failed to get ingredient information. Please enter manually.");
         navigation.navigate("ManualIngredient");
         setScanning(false);

@@ -46,5 +46,6 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: SPACING.tiny,
     fontSize: FONT_SIZES.small,
+    maxWidth: "98%",
   },
 });

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import { UserContext } from "../../backends/User";
@@ -68,15 +68,13 @@ export function Home(): JSX.Element {
 
   return (
     <>
-      <View
+      <SafeAreaView
         style={{
           backgroundColor: isDarkMode ? Colors.darker : Colors.white,
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
           paddingTop: SPACING.extraLarge,
-          paddingLeft: SPACING.medium,
-          paddingRight: SPACING.medium,
         }}
       >
         <HomeMenu
@@ -102,7 +100,7 @@ export function Home(): JSX.Element {
         >
           <IndgredientView ingredientsSearch={ingredientsSearch} />
         </View>
-      </View>
+      </SafeAreaView>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
     </>

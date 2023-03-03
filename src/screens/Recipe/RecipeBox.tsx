@@ -11,20 +11,18 @@ import {
   Image,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-import { getRecipes } from "../util/GetRecipe";
+import { getRecipes } from "../../util/GetRecipe";
 import {
   COLOURS,
   DROP_SHADOW,
   FONT_SIZES,
   RADIUS,
   SPACING,
-} from "../util/GlobalStyles";
+} from "../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestMicrophonePermissionsAsync } from "expo-camera";
-import CardDetail, {
-  RecipeCardIcon,
-} from "../screens/Recipe/components/CardDetail";
-import { Meal } from "../classes/MealClass";
+import CardDetail, { RecipeCardIcon } from "./components/CardDetail";
+import { Meal } from "../../classes/MealClass";
 
 type Props = {
   recipeName: string;
@@ -43,9 +41,20 @@ const RecipeBox = (props: Props) => {
   };
 
   return (
-    <View style={{ flex: 1, width: "100%" }}>
+    <View style={{ flex: 1, width: "100%", paddingHorizontal: SPACING.medium }}>
       <View style={styles.container}>
-        <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+        <View style={{ position: "relative" }}>
+          <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+          <View style={styles.timeContainer}>
+            <MaterialCommunityIcons
+              name="clock-outline"
+              size={16}
+              color="black"
+            />
+            {/* TODO implement time here */}
+            <Text style={{ marginLeft: SPACING.tiny }}>30 mins</Text>
+          </View>
+        </View>
         <View style={styles.textContainer}>
           <Text style={styles.textHeading} numberOfLines={1}>
             {props.recipeName}
@@ -108,15 +117,22 @@ const styles = StyleSheet.create({
   },
 
   textHeading: {
-    // left: "35%",
-    // bottom: "35%",
-    // fontSize: 16,
     fontSize: FONT_SIZES.medium,
   },
 
-  textSmall: {
-    // left: "40%",
-    // bottom: "40%",
-    // fontSize: 14,
+  timeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    alignSelf: "center",
+    paddingVertical: SPACING.tiny,
+    paddingHorizontal: SPACING.tiny,
+    backgroundColor: "rgba(238, 238, 238, 0.9)",
+    borderRadius: RADIUS.tiny,
+    marginBottom: SPACING.tiny,
+    marginLeft: SPACING.tiny,
   },
 });

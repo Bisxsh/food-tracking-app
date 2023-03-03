@@ -14,12 +14,15 @@ import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
 import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../../util/GlobalStyles";
-import RecipeBox from "../../components/RecipeBox";
-import HomeMenu from "./HomeMenu";
+import RecipeBox from "./RecipeBox";
+import RecipeMenu from "./RecipeMenu";
 import { useNavigation } from "@react-navigation/native";
 import { UserDataContext } from "../../classes/UserData";
 import { UserContext } from "../../backends/User";
-import { HomeSortingFilter, HomeSortingFilters } from "./HomeSortingFilters";
+import {
+  RecipeSortingFilter,
+  RecipeSortingFilters,
+} from "./RecipeSortingFilters";
 import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
 import { Meal } from "../../classes/MealClass";
@@ -43,17 +46,29 @@ export function Recipe(): JSX.Element {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
-
+  const [selectedSort, setSelectedSort] = useState(
+    userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
+  );
 
   async function readMeals() {
-    await readAllMeal().then((meals) => {
-      let temp: Meal[] = [];
-      meals.map((meal) => {
-        temp.push(new Meal(meal.name, meal.categoryId, meal.instruction, meal._id, meal.url, meal.imgSrc));
-      });
-      setUserData({ ...userData, savedRecipes: temp });
-    }).then(() => genSaved());
+    await readAllMeal()
+      .then((meals) => {
+        let temp: Meal[] = [];
+        meals.map((meal) => {
+          temp.push(
+            new Meal(
+              meal.name,
+              meal.categoryId,
+              meal.instruction,
+              meal._id,
+              meal.url,
+              meal.imgSrc
+            )
+          );
+        });
+        setUserData({ ...userData, savedRecipes: temp });
+      })
+      .then(() => genSaved());
   }
 
   useEffect(() => {
@@ -66,41 +81,138 @@ export function Recipe(): JSX.Element {
     const recipeList = await getRecipes();
     setRecipes(recipeList);
     setExplore(recipeList);
+    sortList();
   }
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
-    var temp:any[] = [] 
+    var temp: any[] = [];
     recipeList.map((recipe) => {
       temp.push({
-      recipe: {id: recipe.getId, label: recipe.getName, image: recipe.getImgSrc, servings: 2, calories: 1000.0, ingredients: ["Cheesse"], cautions: ["None"] }})
-    })
-    console.log("this is temp")
-    console.log(temp)
-    console.log("this is explore")
-    console.log(explore)
+        recipe: {
+          id: recipe.getId,
+          label: recipe.getName,
+          image: recipe.getImgSrc,
+          servings: 2,
+          calories: 1000.0,
+          ingredients: ["Cheesse"],
+          cautions: ["None"],
+        },
+      });
+    });
+    console.log("this is temp");
+    console.log(temp);
+    console.log("this is explore");
+    console.log(explore);
     setSaved(temp);
   }
 
   function switchList() {
     if (currentButton === true) {
       setRecipes(explore);
+      sortList();
     } else {
       setRecipes(saved);
+      sortList();
     }
     setCurrentButton(!currentButton);
   }
 
   const [currentButton, setCurrentButton] = useState(false);
 
+  function getCals(recipe: any) {
+    console.log(recipe.calories + " " + recipe.yield);
+    return Math.round(
+      parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
+    );
+  }
+
+  function sortList() {
+    switch (selectedSort) {
+      case RecipeSortingFilter.TimeLowToHigh:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.TimeHighToLow:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.CaloriesLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(b.recipe) - getCals(a.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.CaloriesHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(a.recipe) - getCals(b.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.ingredients.length - a.recipe.ingredients.length;
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.ingredients.length - b.recipe.ingredients.length;
+          })
+        );
+        break;
+    }
+  }
+
+  useEffect(() => {
+    switch (selectedSort) {
+      case RecipeSortingFilter.TimeLowToHigh:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.TimeHighToLow:
+        //TODO implement sorting by time
+        break;
+      case RecipeSortingFilter.CaloriesLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(b.recipe) - getCals(a.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.CaloriesHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return getCals(a.recipe) - getCals(b.recipe);
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsLowToHigh:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.ingredients.length - a.recipe.ingredients.length;
+          })
+        );
+        break;
+      case RecipeSortingFilter.IngredientsHighToLow:
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.ingredients.length - b.recipe.ingredients.length;
+          })
+        );
+        break;
+    }
+  }, [selectedSort]);
+
   return (
-    <View
+    <SafeAreaView
       style={[
         styles.container,
         { backgroundColor: isDarkMode ? Colors.darker : Colors.white },
       ]}
     >
-      <View style={styles.buttonContainer}>
+      <View style={[styles.buttonContainer]}>
         <TouchableOpacity
           style={[
             {
@@ -128,13 +240,15 @@ export function Recipe(): JSX.Element {
           </Text>
         </TouchableOpacity>
       </View>
-      <HomeMenu
-        sortFilters={HomeSortingFilters}
-        ingredientsSearch={ingredientsSearch}
-        sort={HomeSortingFilters.indexOf(selectedSort)}
-        setIngredientsSearch={setIngredientsSearch}
-        setSort={(i: number) => setSelectedSort(HomeSortingFilters[i])}
-      />
+      <View style={{ paddingHorizontal: SPACING.medium, width: "100%" }}>
+        <RecipeMenu
+          sortFilters={RecipeSortingFilters}
+          ingredientsSearch={ingredientsSearch}
+          sort={RecipeSortingFilters.indexOf(selectedSort)}
+          setIngredientsSearch={setIngredientsSearch}
+          setSort={(i: number) => setSelectedSort(RecipeSortingFilters[i])}
+        />
+      </View>
       <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
@@ -142,25 +256,23 @@ export function Recipe(): JSX.Element {
         {recipes.map((recipe, key) => {
           if (
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
-          )
-          {
+          ) {
             return (
               <RecipeBox
-              key={key}
-              recipeImage={recipe["recipe"]["image"]}
-              recipeName={recipe["recipe"]["label"]}
-              recipeCalories={recipe["recipe"]["calories"]}
-              recipeServings={recipe["recipe"]["yield"]}
-              recipeCautions={recipe["recipe"]["cautions"]}
-              recipeIngredients={recipe["recipe"]["ingredients"]}
+                key={key}
+                recipeImage={recipe["recipe"]["image"]}
+                recipeName={recipe["recipe"]["label"]}
+                recipeCalories={recipe["recipe"]["calories"]}
+                recipeServings={recipe["recipe"]["yield"]}
+                recipeCautions={recipe["recipe"]["cautions"]}
+                recipeIngredients={recipe["recipe"]["ingredients"]}
               />
             );
           }
         })}
       </ScrollView>
       <AddButton onPress={() => navigation.navigate("ManualIngredient")} />
-
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -170,8 +282,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingTop: SPACING.extraLarge,
-    paddingLeft: SPACING.medium,
-    paddingRight: SPACING.medium,
     flexDirection: "column",
     borderRadius: 10,
   },
@@ -201,8 +311,7 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.medium,
     paddingBottom: SPACING.medium,
     borderRadius: RADIUS.circle,
-    marginLeft: SPACING.medium,
-    marginRight: SPACING.medium,
+    marginHorizontal: SPACING.medium,
 
     alignItems: "center",
     justifyContent: "center",

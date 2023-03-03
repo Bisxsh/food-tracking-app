@@ -1,7 +1,12 @@
 import React, { createContext, Dispatch, SetStateAction } from "react";
 import { HomeSortingFilter } from "../screens/Home/components/Menu/HomeSortingFilters";
+import { RecipeSortingFilter } from "../screens/Recipe/RecipeSortingFilters";
 import { Category } from "./Categories";
-import { DUMMY_CATEGORIES, DUMMY_STORED_INGREDIENTS, DUMMY_MEALS } from "./DummyData";
+import {
+  DUMMY_CATEGORIES,
+  DUMMY_STORED_INGREDIENTS,
+  DUMMY_MEALS,
+} from "./DummyData";
 import { Ingredient } from "./IngredientClass";
 import { Meal } from "./MealClass";
 
@@ -10,8 +15,8 @@ export interface UserData {
   ingredientCategories: Category[];
   homePageSort: HomeSortingFilter;
   savedRecipes: Meal[];
+  recipesPageSort: RecipeSortingFilter;
   //TODO implement
-  // recipesPageSort: RecipeSortingFilter;
   // recipeCategories: RecipeCategory[];
   // dietaryRequriements: DietaryRequirement[];
   // ingredientHistory: UsedIngredient[];
@@ -29,6 +34,7 @@ export const DEFAULT_USER_DATA: UserData = {
   storedIngredients: DUMMY_STORED_INGREDIENTS,
   ingredientCategories: DUMMY_CATEGORIES,
   homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
+  recipesPageSort: RecipeSortingFilter.TimeLowToHigh,
   savedRecipes: DUMMY_MEALS,
 };
 

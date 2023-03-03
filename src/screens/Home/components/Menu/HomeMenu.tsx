@@ -5,6 +5,8 @@ import SortButton from "../../../../components/SortButton";
 import IngredientsFilter from "../../../../components/IngredientsFilter";
 import { UserDataContext } from "../../../../classes/UserData";
 import ExpiringButton from "../Main/ExpiringButton";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { SPACING } from "../../../../util/GlobalStyles";
 
 type Props = {
   ingredientsSearch: string;
@@ -47,5 +49,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
+    paddingHorizontal: SPACING.medium,
   },
 });

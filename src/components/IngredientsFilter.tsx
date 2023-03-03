@@ -19,6 +19,7 @@ type Props = {
   setOptions: (options: Category[]) => void;
   onAdd?: (arg: Category) => void;
   plusSymbol?: boolean;
+  center?: boolean;
 };
 
 const IngredientsFilter = (props: Props) => {
@@ -38,6 +39,7 @@ const IngredientsFilter = (props: Props) => {
         }}
         setOptions={props.setOptions}
         plusSymbol={props.plusSymbol}
+        center={props.center || false}
       />
 
       <Modal

@@ -6,6 +6,7 @@ import {
   View,
   Animated,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import IngredientViewExpiring from "./IngredientViewExpiring";
 import { Ingredient } from "../../../../backends/Ingredient";
@@ -39,7 +40,6 @@ const ExpiringButton: React.FC<ExpiringButtonProps> = ({ label }) => {
         backdropOpacity={0.3}
         animationIn="fadeIn"
         animationOut="fadeOut"
-        style={{}}
       >
         <View style={{ flex: 1 }} />
         <View style={styles.modalContainer}>
@@ -80,9 +80,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.white,
-    ...DROP_SHADOW,
     padding: SPACING.medium,
     borderRadius: RADIUS.standard,
+    ...DROP_SHADOW,
   },
   box: {
     marginVertical: SPACING.small,
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   boxText: {
     color: COLOURS.black,
     fontWeight: "bold",
-    fontSize: FONT_SIZES.body,
+    fontSize: FONT_SIZES.medium,
   },
 });
 

@@ -1,3 +1,5 @@
+import { Dimensions } from "react-native";
+
 export const COLOURS = {
   //TODO change if needed
   primary: "#27C179",
@@ -21,13 +23,13 @@ export const FONT_SIZES = {
 };
 
 export const ICON_SIZES = {
-    //TODO change if needed
-    extraLarge: 40,
-    large: 32,
-    medium: 24,
-    small: 16,
-    tiny: 8,
-}
+  //TODO change if needed
+  extraLarge: 40,
+  large: 32,
+  medium: 24,
+  small: 16,
+  tiny: 8,
+};
 
 export const SPACING = {
   //TODO change if needed
@@ -48,9 +50,9 @@ export const RADIUS = {
 
 export const DROP_SHADOW = {
   // IOS
-  shadowColor: "#171717",
-  shadowOffset: { width: -2, height: 4 },
-  shadowOpacity: 1,
+  shadowColor: "rgba(23, 23, 23, 0.6)",
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.6,
   shadowRadius: 3,
 
   // Android
