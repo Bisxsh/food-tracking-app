@@ -70,12 +70,29 @@ export class User{
     }
 
     async loadCategories(){
-        this.categories = await DB.readAllCategory()
+        (await DB.readAllCategory()).forEach((v)=>{
+            if (this.categories.filter((value)=>v.name == value.name).length == 0){
+                this.categories.push(v)
+            }
+        })
     }
 
-    findCategory(_id: number): Category | undefined{
+    findCategory(_id: number): Category | undefined
+    
+    findCategory(name: string): Category | undefined
+    
+    findCategory(value: any): Category | undefined{
+        var attribute: keyof Category = "_id"
+        switch(typeof value){
+            case "number":
+                attribute = "_id"
+                break;
+            case "string":
+                attribute = "name"
+                break;
+        }
         for (const category of this.categories) {
-            if (category._id == _id){
+            if (category[attribute] == value){
                 return category
             }
         }

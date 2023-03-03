@@ -131,10 +131,12 @@ type searchMenuProp = {
   setSort: (sort: number) => void;
   sortFilters: any[];
   showExpiringButton?: boolean;
+  option: Category[]
+  setOption: (category: Category[]) => void
 };
 
 const SearchMenu = (props: searchMenuProp) => {
-  const { user, setUser } = useContext(UserContext);
+  //const { user, setUser } = useContext(UserContext);
   return (
     <View style={styles.menu}>
       <CustomSearchBar
@@ -148,11 +150,10 @@ const SearchMenu = (props: searchMenuProp) => {
         setSelectedOption={props.setSort}
       />
       <IngredientsFilter
-        options={user.categories}
+        options={props.option}
         setOptions={(options) =>{
-          user.categories = options.map((value)=>new Category(value.name, value.colour, value.id, value.active))
-          setUser(user)
-          DB.updateUser(user)
+          const categories = options.map((value)=>new Category(value.name, value.colour, value._id, value.active))
+          props.setOption(categories)
         }}
       />
     </View>
@@ -357,6 +358,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
   const [dataSet, setDataSet] = useState<number[]>([])
 
   const [sort, setSort] = useState<number>(0)
+  const [option, setOption] = useState(user.categories.copyWithin(user.categories.length, 0))
   const [searchText, setSearchText] = useState<string>("")
   const [ingredients, setIngredients] = useState<Ingredient[]>([])
   const [loadingIng, setLoadingIng] = useState(true)
@@ -381,7 +383,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
       setDataSet(dataSet[1])
     }
     setloadingChart(false)
-    const ing = await DB.searchIngredient(undefined, [0,0])
+    const ing = await DB.searchIngredient(searchText, [0,0], option.filter((v)=>v.active))
     setIngredients(ing)
     setLoadingIng(false)
   }
@@ -773,7 +775,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 ingredientsSearch={searchText}
                 setIngredientsSearch={async (text)=>{
                   setLoadingIng(true)
-                  const ing = await DB.searchIngredient(text, [0,0])
+                  const ing = await DB.searchIngredient(searchText, [0,0], option.filter((v)=>v.active))
                   switch (sort){
                     case 0:
                       ing.sort((a,b)=>(a.name < b.name? -1:1))
@@ -790,6 +792,38 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                   }
                   setIngredients(ing)
                   setSearchText(text)
+                  setLoadingIng(false)
+                }}
+                option={option}
+                setOption={async (category)=>{
+                  setLoadingIng(true)
+                  for (const cat of category) {
+                    if (user.findCategory(cat.name) == undefined){
+                      DB.create(cat)
+                    }else{
+                      DB.updateCategory(cat)
+                    }
+                  }
+                  user.categories = category.copyWithin(category.length, 0)
+                  console.log(category.filter((v)=>v.active))
+                  const ing = await DB.searchIngredient(searchText, [0,0], category.filter((v)=>v.active))
+                  switch (sort){
+                    case 0:
+                      ing.sort((a,b)=>(a.name < b.name? -1:1))
+                      break;
+                    case 1:
+                      ing.sort((a,b)=>(a.name > b.name? -1:1))
+                      break;
+                    case 2:
+                      ing.sort((a,b)=>(getDateInMiliSec(a) < getDateInMiliSec(b)? -1:1))
+                      break;
+                    case 3:
+                      ing.sort((a,b)=>(getDateInMiliSec(a) > getDateInMiliSec(b)? -1:1))
+                      break;
+                  }
+                  setUser(user)
+                  setIngredients(ing)
+                  setOption(option)
                   setLoadingIng(false)
                 }}
               />

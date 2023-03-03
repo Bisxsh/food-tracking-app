@@ -21,7 +21,7 @@ import {
   RADIUS,
   SPACING,
 } from "../../../util/GlobalStyles";
-import { User, UserContext } from "../../../backends/User";
+import { DEFAULT_USER, User, UserContext } from "../../../backends/User";
 import * as DB from "../../../backends/Database";
 import { UserSetting } from "../../../backends/UserSetting";
 import { ScreenProp, StackParams } from "../ProfileNavigator";
@@ -32,6 +32,7 @@ import { Ingredient } from "../../../backends/Ingredient";
 import { Meal } from "../../../backends/Meal";
 import { Nutrition } from "../../../backends/Nutrition";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { DEFAULT_USER_DATA, UserDataContext } from "../../../classes/UserData";
 
 
 type alertProp = {
@@ -168,6 +169,7 @@ const TouchableRow = (text: string, func: Function) => {
 
 export function Setting({ navigation }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserDataContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
 
   useEffect(() => {
@@ -223,6 +225,8 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
                       Meal.reset()
                       Nutrition.reset()
                       User.reset()
+                      setUser(DEFAULT_USER)
+                      setUserData(DEFAULT_USER_DATA)
                       DB.deleteFile().then(()=>{
                         UserSetting.reloadApp!()
                       })

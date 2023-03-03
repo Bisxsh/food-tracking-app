@@ -118,17 +118,21 @@ export function Debug(): JSX.Element{
                         </Pressable>
                         <Pressable
                             style={styles.pressable}
-                            onPress={()=>{
+                            onPress={async ()=>{
+                                let categories: {[name:string]:number} = {}
                                 for (const i of Dummy.DUMMY_CATEGORIES){
-                                    DB.create(new Category(
+                                    await DB.create(new Category(
                                         i.name,
                                         i.colour,
                                         undefined,
                                         i.active
                                     ))
                                 }
+                                for (const cat of await DB.readAllCategory()){
+                                    categories[cat.name] = cat._id
+                                }
                                 for (const i of Dummy.DUMMY_STORED_INGREDIENTS) {
-                                    DB.create(new Ingredient(
+                                    await DB.create(new Ingredient(
                                         i.name, 
                                         0,
                                         i.weightType, 
@@ -152,7 +156,7 @@ export function Debug(): JSX.Element{
                                             i.nutrition.getSugar,
                                             undefined
                                         ), 
-                                        i.categories.map((v)=>(v.id != undefined)? v.id:0), 
+                                        i.categories.map((v)=>categories[v.name]), 
                                         i.id, 
                                         i.weight, 
                                         i.servingSize, 
@@ -162,7 +166,7 @@ export function Debug(): JSX.Element{
                                     ))
                                 }
                                 for (const i of Dummy.DUMMY_MEALS){
-                                    DB.create(new Meal(
+                                    await DB.create(new Meal(
                                         i.name,
                                         i.categoryId,
                                         i.instruction,
@@ -178,10 +182,13 @@ export function Debug(): JSX.Element{
                                     date.setMonth(Math.floor(c/2) % 12)
                                     date.setFullYear(date.getFullYear() - Math.floor(Math.floor(c/2)/12))
                                     const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
-                                    DB.create(newHistory)
+                                    await DB.create(newHistory)
                                     c++
                                 }
                                 setMonthCount(c)
+                                user.loadCategories()
+                                setUser(user)
+                                DB.updateUser(user)
                             }}
                         >
                             <Text>Load Dummy Data</Text>

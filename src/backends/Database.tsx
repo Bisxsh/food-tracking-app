@@ -187,54 +187,54 @@ export async function init(){
  * Create a record of the given object in DB
  * @param ingredient Object to store in DB
  */
-export function create(ingredient:Ingredient):any
+export async function create(ingredient:Ingredient): Promise<void>
 
 /**
  * Create a record of the given object in DB
  * @param category Object to store in DB
  */
-export function create(category: Category):any
+export async function create(category: Category): Promise<void>
 
 /**
  * Create a record of the given object in DB
  * @param user Object to store in DB
  */
-export function create(user: User): any
+export async function create(user: User): Promise<void>
 
 /**
  * Create a record of the given object in DB
  * @param meal Object to store in DB
  */
-export function create(meal: Meal): any
+export async function create(meal: Meal): Promise<void>
 
 /**
  * Create a record of the given object in DB
  * @param history Object to store in DB
  */
-export function create(history: History): any
+export async function create(history: History): Promise<void>
 
-export function create(value: any){
+export async function create(value: any): Promise<void>{
     var sql: string;
     if (value instanceof  Ingredient){
         const arg = value.toList()
         sql = "insert into " + IngredientSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-        transaction(sql, arg, "Insert record")
+        await transaction(sql, arg, "Insert record")
     }else if (value instanceof Category){
         const arg = value.toList()
         sql = "insert into " + CategorySchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-        transaction(sql, arg, "Insert record")
+        await transaction(sql, arg, "Insert record")
     }else if (value instanceof User){
         const arg = value.toList()
         sql = "insert or ignore into " + UserSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-        transaction(sql, arg, "Insert record")
+        await transaction(sql, arg, "Insert record")
     }else if (value instanceof Meal){
         const arg = value.toList()
         sql = "insert or ignore into " + MealSchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-        transaction(sql, arg, "Insert record")
+        await transaction(sql, arg, "Insert record")
     }else if (value instanceof History){
         const arg = value.toList()
         sql = "insert or ignore into " + HistorySchema.name + " values (" + "?,".repeat(arg.length).substring(0, arg.length*2 -1) + ");"
-        transaction(sql, arg, "Insert record")
+        await transaction(sql, arg, "Insert record")
     }
 }
 
