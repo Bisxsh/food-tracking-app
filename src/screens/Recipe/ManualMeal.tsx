@@ -13,7 +13,7 @@ import { Dimensions } from "react-native";
 
 import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import { MealBuilder } from "../../classes/MealClass";
-
+import * as DB from '../../backends/Database';
 import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
 import { Category } from "../../classes/Categories";
@@ -22,14 +22,14 @@ import DateField from "../../components/DateField";
 import InputFieldWithUnits from "../../components/InputFieldWithUnits";
 import InputField from "../../components/InputField";
 import NumberInputRow from "../Home/components/Add/NumberInputRow";
-import RecipeBox from "../../components/RecipeBox";
+import RecipeBox from "./RecipeBox";
 import RecipeIngredientList from "../../components/RecipeIngredientList";
 import PrimaryButton from "../../components/PrimaryButton";
 import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
-import { create } from "../../backends/Database";
+import { create, readAllMeal } from "../../backends/Database";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
   setMeal?: (meal: MealBuilder | null) => void;
@@ -49,7 +49,7 @@ const ManualMeal = (props: Props) => {
     return <View style={{ height: SPACING.medium }} />;
   }
 
-  function saveRecipe() {
+  async function saveRecipe() {
     if (!mealBuilder.allRequiredFieldsSet()) {
       alert("All required fields must be set");
       return;
@@ -79,11 +79,14 @@ const ManualMeal = (props: Props) => {
       builtMeal.getName,
       builtMeal.getCategoryId,
       builtMeal.getInstruction,
+      builtMeal.getIngredients,
       builtMeal.getId,
       builtMeal.getUrl,
       builtMeal.getImgSrc
     );
-    create(meal);
+    await DB.create(meal);
+    console.log("here")
+    console.log(await readAllMeal());
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }

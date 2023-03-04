@@ -51,15 +51,19 @@ export function Recipe(): JSX.Element {
   );
 
   async function readMeals() {
+    console.log("before")
+    console.log(await readAllMeal())
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
         meals.map((meal) => {
+          console.log(meal)
           temp.push(
             new Meal(
               meal.name,
               meal.categoryId,
               meal.instruction,
+              meal.ingredient,
               meal._id,
               meal.url,
               meal.imgSrc
@@ -69,6 +73,7 @@ export function Recipe(): JSX.Element {
         setUserData({ ...userData, savedRecipes: temp });
       })
       .then(() => genSaved());
+      console.log("after")
   }
 
   useEffect(() => {
@@ -78,7 +83,7 @@ export function Recipe(): JSX.Element {
   }, []);
 
   async function genRecipe() {
-    const recipeList = await getRecipes();
+    const recipeList = userData.exploreRecipes;
     setRecipes(recipeList);
     setExplore(recipeList);
     sortList();
@@ -100,10 +105,6 @@ export function Recipe(): JSX.Element {
         },
       });
     });
-    console.log("this is temp");
-    console.log(temp);
-    console.log("this is explore");
-    console.log(explore);
     setSaved(temp);
   }
 
@@ -265,8 +266,9 @@ export function Recipe(): JSX.Element {
                 recipeCalories={recipe["recipe"]["calories"]}
                 recipeServings={recipe["recipe"]["yield"]}
                 recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]}
-              />
+                recipeIngredients={recipe["recipe"]["ingredients"]} 
+                recipeLink={recipe["recipe"]["url"]}
+                />
             );
           }
         })}

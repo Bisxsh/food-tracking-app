@@ -1,4 +1,5 @@
 import { Category } from "./Categories";
+import { Ingredient } from "../backends/Ingredient";
 import { Nutrition, NutritionBuilder } from "./NutritionClass";
 
 export enum weightUnit {
@@ -10,6 +11,7 @@ export class Meal {
   name: string;
   categoryId: number[];
   instruction: string[];
+  ingredients: Ingredient[];
   _id?:number;
   url?: string;
   imgSrc?: string;
@@ -19,6 +21,7 @@ export class Meal {
     name: string,
     categoryId: number[],
     instruction: string[],
+    ingredients: Ingredient[],
     _id?:number,
     url?: string,
     imgSrc?: string,
@@ -26,6 +29,7 @@ export class Meal {
     this.name = name;
     this.categoryId = categoryId;
     this.instruction = instruction;
+    this.ingredients = ingredients;
     this._id = _id;
     this.url = url;
     this.imgSrc = imgSrc;
@@ -65,6 +69,13 @@ export class Meal {
     this.instruction = instruction;
   }
 
+  public get getIngredients(): Ingredient[] {
+    return this.ingredients;
+  }
+  public set setIngredients(ingredients: Ingredient[]) {
+    this.ingredients = ingredients;
+  }
+
   public get getId(): number {
     return this._id!;
   }
@@ -93,6 +104,7 @@ export class MealBuilder {
   private name: string;
   private categoryId: number[];
   private instruction: string[];
+  private ingredients: Ingredient[];
   private _id?:number;
   private url?: string;
   private imgSrc?: string;
@@ -101,6 +113,7 @@ export class MealBuilder {
     this.name = "";
     this.categoryId = [];
     this.instruction = [];
+    this.ingredients = [];
     this._id = 0;
     this.url = "";
     this.imgSrc = "";
@@ -111,6 +124,7 @@ export class MealBuilder {
     builder.name = meal.name;
     builder.categoryId = meal.categoryId;
     builder.instruction = meal.instruction;
+    builder.ingredients = meal.ingredients;
     builder._id = meal._id;
     builder.url = meal.url;
     builder.imgSrc = meal.imgSrc;
@@ -130,6 +144,11 @@ export class MealBuilder {
 
   public setInstruction(instruction: string[]): MealBuilder {
     this.instruction = instruction;
+    return this;
+  }
+
+  public setIngredients(ingredients: Ingredient[]): MealBuilder {
+    this.ingredients = ingredients;
     return this;
   }
 
@@ -165,6 +184,10 @@ export class MealBuilder {
     return this.instruction;
   }
 
+  public getIngredients(): Ingredient[] {
+    return this.ingredients;
+  }
+
   public getId(): number {
     return this._id!;
   }
@@ -182,6 +205,7 @@ export class MealBuilder {
       this.name,
       this.categoryId,
       this.instruction,
+      this.ingredients,
       this._id,
       this.url,
       this.imgSrc

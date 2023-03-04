@@ -21,6 +21,7 @@ import { InitialEntry } from "./src/screens/InitialEntry";
 import registerNNPushToken from "native-notify";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { getRecipes, getSaved } from "./src/util/GetRecipe";
 
 
 const Tab = createBottomTabNavigator();
@@ -47,6 +48,7 @@ function App(): JSX.Element {
       setUser(stored);
       setConsent(stored.consent);
     }
+    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved()});
     setLoading(false);
   };
 

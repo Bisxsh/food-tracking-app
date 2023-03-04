@@ -9,6 +9,9 @@ import {
   View,
   Button,
   Image,
+  Linking,
+  Pressable,
+  Alert,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes } from "../../util/GetRecipe";
@@ -24,6 +27,7 @@ import { requestMicrophonePermissionsAsync } from "expo-camera";
 import CardDetail, { RecipeCardIcon } from "./components/CardDetail";
 import { Meal } from "../../classes/MealClass";
 
+
 type Props = {
   recipeName: string;
   recipeImage: string;
@@ -31,6 +35,7 @@ type Props = {
   recipeServings: string;
   recipeCautions: any;
   recipeIngredients: string;
+  recipeLink: string;
 };
 
 const RecipeBox = (props: Props) => {
@@ -40,11 +45,22 @@ const RecipeBox = (props: Props) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const openURI = async () => {
+    const url = props.recipeLink; //URL to be opened.
+    const supported = await Linking.canOpenURL(url); //To check if URL is supported or not.
+    if (supported) {
+    await Linking.openURL(url); // It will open the URL on browser.
+    } else {
+    Alert.alert(`Don't know how to open this URL: ${url}`);
+    }
+    }
+
+
   return (
     <View style={{ flex: 1, width: "100%", paddingHorizontal: SPACING.medium }}>
-      <View style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={openURI}>
         <View style={{ position: "relative" }}>
-          <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+          <Image source={{ uri: props.recipeImage}} style={styles.foodImage} />
           <View style={styles.timeContainer}>
             <MaterialCommunityIcons
               name="clock-outline"
@@ -83,7 +99,7 @@ const RecipeBox = (props: Props) => {
             />
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -92,7 +108,6 @@ export default RecipeBox;
 const styles = StyleSheet.create({
   container: {
     marginTop: SPACING.small,
-    flex: 1,
     height: 128,
     flexDirection: "row",
     backgroundColor: COLOURS.grey,
