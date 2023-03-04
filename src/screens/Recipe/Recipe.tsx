@@ -266,8 +266,9 @@ export function Recipe(): JSX.Element {
                 recipeCalories={recipe["recipe"]["calories"]}
                 recipeServings={recipe["recipe"]["yield"]}
                 recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]}
-              />
+                recipeIngredients={recipe["recipe"]["ingredients"]} 
+                recipeLink={recipe["recipe"]["url"]}
+                />
             );
           }
         })}
