@@ -24,6 +24,7 @@ import { requestMicrophonePermissionsAsync } from "expo-camera";
 import CardDetail, { RecipeCardIcon } from "./components/CardDetail";
 import { Meal } from "../../classes/MealClass";
 
+
 type Props = {
   recipeName: string;
   recipeImage: string;
@@ -44,7 +45,7 @@ const RecipeBox = (props: Props) => {
     <View style={{ flex: 1, width: "100%", paddingHorizontal: SPACING.medium }}>
       <View style={styles.container}>
         <View style={{ position: "relative" }}>
-          <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+          <Image source={{ uri: props.recipeImage}} style={styles.foodImage} />
           <View style={styles.timeContainer}>
             <MaterialCommunityIcons
               name="clock-outline"

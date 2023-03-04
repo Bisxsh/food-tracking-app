@@ -1,4 +1,5 @@
 import React from "react"
+import { Image } from "react-native"
 import Axios, { AxiosResponse } from 'axios'
 import { readAllIngredient } from "../backends/Database"
 import { readAllMeal } from "../backends/Database"
@@ -12,6 +13,7 @@ var APP_KEY = "a9afdf98df39331609c06cab2fec2b6f"
 export async function getRecipes(){
     let mealList =  <Meal[]>([])
     var recipeList: any[]= []
+    var newList: any[]= []
     // var currentIngredients = await readAllIngredient()
     //need to pull dietary requirements from user profile
     //need to check for duplicate recipes
@@ -32,8 +34,10 @@ export async function getRecipes(){
         await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
             const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
             const data = await Axios.get(url);
+            data.data.hits.map( async (recipe: any) => {
+                await Image.prefetch(recipe["recipe"]["image"])
+            })
             recipeList = recipeList.concat(data.data.hits);
-            
             // data.data.hits.map( (recipe: any) => {
             //     console.log("hit")
             //     const newMeal = new Meal(recipe["recipe"]["label"], [1], ["Add this"], 1 , recipe["recipe"]["image"], recipe["recipe"]["image"])

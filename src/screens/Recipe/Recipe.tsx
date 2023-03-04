@@ -78,7 +78,7 @@ export function Recipe(): JSX.Element {
   }, []);
 
   async function genRecipe() {
-    const recipeList = await getRecipes();
+    const recipeList = userData.exploreRecipes;
     setRecipes(recipeList);
     setExplore(recipeList);
     sortList();
@@ -100,10 +100,6 @@ export function Recipe(): JSX.Element {
         },
       });
     });
-    console.log("this is temp");
-    console.log(temp);
-    console.log("this is explore");
-    console.log(explore);
     setSaved(temp);
   }
 

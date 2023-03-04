@@ -22,7 +22,7 @@ import DateField from "../../components/DateField";
 import InputFieldWithUnits from "../../components/InputFieldWithUnits";
 import InputField from "../../components/InputField";
 import NumberInputRow from "../Home/components/Add/NumberInputRow";
-import RecipeBox from "../../components/RecipeBox";
+import RecipeBox from "./RecipeBox";
 import RecipeIngredientList from "../../components/RecipeIngredientList";
 import PrimaryButton from "../../components/PrimaryButton";
 import { RecipeContext } from "./RecipeContextProvider";
