@@ -91,28 +91,28 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
 ];
 
 export const DUMMY_MEALS: Meal[] = [
-  new Meal(
-    "Pasta bacon dish", //name
-    [1],
-    ["Add butter", "Add milk"],
-    1,
-    "https://www.youtube.com/watch?v=sagjXH3q3g0",
-    "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
-  ),
-  new Meal(
-    "Dish 2", //name
-    [1],
-    ["Add butter", "Add milk"],
-    1,
-    "https://www.youtube.com/watch?v=sagjXH3q3g0",
-    "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
-  ),
-  new Meal(
-    "Dish 3", //name
-    [1],
-    ["Add butter", "Add milk"],
-    1,
-    "https://www.youtube.com/watch?v=sagjXH3q3g0",
-    "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
-  ),
+  // new Meal(
+  //   "Pasta bacon dish", //name
+  //   [1],
+  //   ["Add butter", "Add milk"],
+  //   1,
+  //   "https://www.youtube.com/watch?v=sagjXH3q3g0",
+  //   "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
+  // ),
+  // new Meal(
+  //   "Dish 2", //name
+  //   [1],
+  //   ["Add butter", "Add milk"],
+  //   1,
+  //   "https://www.youtube.com/watch?v=sagjXH3q3g0",
+  //   "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
+  // ),
+  // new Meal(
+  //   "Dish 3", //name
+  //   [1],
+  //   ["Add butter", "Add milk"],
+  //   1,
+  //   "https://www.youtube.com/watch?v=sagjXH3q3g0",
+  //   "https://i.dailymail.co.uk/1s/2019/11/13/12/20947788-7680381-This_cheesy_beans_pasta_bacon_and_egg_dish_created_by_Niall_rece-a-1_1573646527575.jpg"
+  // ),
 ];

@@ -51,31 +51,20 @@ export async function getRecipes(){
 
 
 export async function getSaved(){
-    var recipeList: any[]= []
-    // var currentIngredients = await readAllIngredient()
-    //need to pull dietary requirements from user profile
-    //need to check for duplicate recipes
-    //
-    // let ingredients = await readAllIngredient()
-    // var currentIngredientsNames: string[] = [] 
-    // ingredients.map((ingredient)=>{
-    //     currentIngredientsNames.push(ingredient.name)
-    // })
-    // console.log("current name are")
-    // console.log(currentIngredientsNames)
-    //probalby only query ingredient close to expiring 
-    let currentIngredientsNames = ["Potato"]
-    if(currentIngredientsNames.length == 0){
-        return recipeList;
-    }
-    else{
-        await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
-            const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
-            const data = await Axios.get(url);
-            recipeList = recipeList.concat(data.data.hits);
-        }))
-        return recipeList
-    }
+    let meals = await readAllMeal()
+    let savedMeals = meals.map((meal)=>{
+        return(
+            new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+            )
+        )})
+    return savedMeals
 }
 
 

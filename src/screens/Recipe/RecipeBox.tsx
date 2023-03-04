@@ -93,7 +93,6 @@ export default RecipeBox;
 const styles = StyleSheet.create({
   container: {
     marginTop: SPACING.small,
-    flex: 1,
     height: 128,
     flexDirection: "row",
     backgroundColor: COLOURS.grey,

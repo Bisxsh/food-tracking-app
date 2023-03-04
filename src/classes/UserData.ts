@@ -9,6 +9,7 @@ import {
 } from "./DummyData";
 import { Ingredient } from "./IngredientClass";
 import { Meal } from "./MealClass";
+import { readAllMeal } from "../backends/Database";
 
 export interface UserData {
   storedIngredients: Ingredient[];
@@ -36,7 +37,7 @@ export const DEFAULT_USER_DATA: UserData = {
   ingredientCategories: DUMMY_CATEGORIES,
   homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
   recipesPageSort: RecipeSortingFilter.TimeLowToHigh,
-  savedRecipes: DUMMY_MEALS,
+  savedRecipes:  DUMMY_MEALS,
   exploreRecipes: <any>[],
 };
 
