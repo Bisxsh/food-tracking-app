@@ -18,8 +18,11 @@ const InputField = (props: Props) => {
   const { user, setUser } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
   return (
-    <View style={{ position: "relative", flex: 1 }}>
-      <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+    <View style={{ position: "relative", flex: 1, flexDirection: "column" }}>
+      <Text 
+        style={{ color: isDarkMode ? Colors.white : Colors.darker}}
+        numberOfLines={1}
+      >
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>

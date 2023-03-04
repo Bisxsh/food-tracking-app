@@ -17,6 +17,7 @@ const CustomSearchBar = (props: Props) => {
       <TextInput
         placeholder={props.textHint}
         onChangeText={(value: string) => props.setText(value)}
+        style={{flexShrink: 1}}
       />
       <MaterialCommunityIcons
         name="magnify"

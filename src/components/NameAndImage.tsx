@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import React, { useState } from "react";
 
 import InputField from "./InputField";
 import { MaterialIcons } from "@expo/vector-icons";
-import { COLOURS, SPACING } from "../util/GlobalStyles";
+import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
 import * as ImagePicker from "expo-image-picker";
 
 type Props = {
@@ -16,6 +16,7 @@ type Props = {
 const NameAndImage = (props: Props) => {
   const [image, setImage] = useState<string>(props.imgStr || "");
   const [nameStr, setNameStr] = useState(props.nameStr || "");
+  const {height, width} = useWindowDimensions()
 
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
@@ -35,13 +36,13 @@ const NameAndImage = (props: Props) => {
   return (
     <View style={styles.container}>
       {!image && (
-        <TouchableOpacity style={styles.camera} onPress={pickImage}>
+        <TouchableOpacity style={{...styles.camera, ...{width: Math.min(height, width)/4}}} onPress={pickImage}>
           <MaterialIcons name="camera-alt" size={24} color="black" />
         </TouchableOpacity>
       )}
       {image && (
         <TouchableOpacity onPress={pickImage}>
-          <Image source={{ uri: image }} style={styles.camera} />
+          <Image source={{ uri: image }} style={{...styles.camera, ...{width: Math.min(height, width)/4}}} />
         </TouchableOpacity>
       )}
       <InputField
@@ -68,8 +69,8 @@ const styles = StyleSheet.create({
   camera: {
     aspectRatio: 1,
     backgroundColor: COLOURS.grey,
-    width: 104,
     marginRight: SPACING.small,
+    borderRadius: RADIUS.standard,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -103,7 +103,7 @@ const ManualMeal = (props: Props) => {
         <TouchableOpacity style={styles.button} onPress={closeManual}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
         </TouchableOpacity>
-        <Text>Add an ingredient</Text>
+        <Text>Add a meal</Text>
         <TouchableOpacity style={styles.button}>
           <MaterialCommunityIcons
             name="check"
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
-    paddingBottom: SPACING.large,
+    paddingBottom: SPACING.small,
   },
 
   button: {

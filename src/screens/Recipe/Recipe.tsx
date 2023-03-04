@@ -281,9 +281,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: SPACING.extraLarge,
+    paddingTop: SPACING.medium,
     flexDirection: "column",
-    borderRadius: 10,
   },
 
   foodImage: {

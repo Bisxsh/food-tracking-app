@@ -12,10 +12,13 @@ import { Theme } from "./Screens/Theme";
 import { UserContext } from "../../backends/User";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Account } from "./Screens/Account";
+import IngredientEdit from "./Screens/IngredientEdit";
+import { Ingredient } from "../../backends/Ingredient";
 
 
 export type StackParams ={
     Profile: undefined
+    IngredientEdit: Ingredient
     Setting: undefined
     Account: undefined
     Theme: undefined
@@ -24,7 +27,7 @@ export type StackParams ={
     About: undefined
 }
 
-export type ScreenProp = NativeStackScreenProps<StackParams>
+export type ScreenProp = NativeStackScreenProps<StackParams, keyof StackParams>
 
 interface TabNaviContextInterface {
     tabNavi: BottomTabNavigationProp<any, any, any> | undefined;
@@ -69,6 +72,7 @@ export function ProfileNavigator(): JSX.Element{
                 
             >
                 <stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
+                <stack.Screen name="IngredientEdit" component={IngredientEdit}/>
                 <stack.Screen name="Setting" component={Setting}/>
                 <stack.Screen name="Account" component={Account}/>
                 <stack.Screen name="Theme" component={Theme}/>

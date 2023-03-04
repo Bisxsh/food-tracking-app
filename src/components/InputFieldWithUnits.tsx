@@ -39,7 +39,15 @@ const InputFieldWithUnits = (props: Props) => {
         defaultValue={props.defaultText}
       />
       <Menu style={styles.unitContainer}>
-        <MenuTrigger text={value} style={{ height: 40 }} />
+        <MenuTrigger style={{ height: 40 , flexDirection:"row"}} >
+          <Text>{value}</Text>
+          <MaterialCommunityIcons
+            name="chevron-down"
+            size={24}
+            color="black"
+            style={styles.arrow}
+          />
+        </MenuTrigger>
         <MenuOptions>
           {items.map((item) => {
             return (
@@ -55,12 +63,7 @@ const InputFieldWithUnits = (props: Props) => {
             );
           })}
         </MenuOptions>
-        <MaterialCommunityIcons
-          name="chevron-down"
-          size={24}
-          color="black"
-          style={styles.arrow}
-        />
+        
       </Menu>
     </View>
   );
@@ -71,15 +74,15 @@ export default InputFieldWithUnits;
 const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
   },
   unitContainer: {
-    flex: 1,
+    flexDirection: "row",
     height: 40,
     backgroundColor: COLOURS.white,
     marginTop: SPACING.medium + 6,
-
+    
     borderRadius: RADIUS.tiny,
     padding: 10,
     borderColor: COLOURS.darkGrey,
@@ -88,9 +91,7 @@ const styles = StyleSheet.create({
     marginLeft: SPACING.tiny,
   },
   arrow: {
-    position: "absolute",
-    right: SPACING.small,
-    top: 6,
+    position: "relative",
   },
   menuItem: {
     padding: SPACING.small,

@@ -8,16 +8,18 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import { COLOURS, DROP_SHADOW, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/GlobalStyles';
 import { UserContext } from '../../../backends/User';
-import { ScreenProp, TabNaviContext } from '../ProfileNavigator';
+import { ScreenProp, StackParams, TabNaviContext } from '../ProfileNavigator';
 import { getMonthlyData, getMonthlyDataSet } from '../../../backends/Histories'
 import CustomSearchBar from '../../../components/CustomSearchBar';
 import SortButton from '../../../components/SortButton';
 import IngredientsFilter from '../../../components/IngredientsFilter';
 import { Category } from '../../../backends/Category';
+import * as Categories from '../../../classes/Categories';
 import * as DB from '../../../backends/Database'
 import { Ingredient } from '../../../backends/Ingredient';
 import { Nutrition } from '../../../backends/Nutrition';
 import Modal from 'react-native-modal/dist/modal';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type Months = {
   short: {
@@ -56,6 +58,7 @@ type ingredientRowProp = {
   ingredient: Ingredient
   dimension: [number, number]
   isDarkMode: boolean
+  navigation: NativeStackNavigationProp<StackParams, keyof StackParams, undefined>
 }
 
 function IngredientRow(prop: ingredientRowProp): JSX.Element{
@@ -119,6 +122,7 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
         ingredient={prop.ingredient}
         dimension={prop.dimension}
         isDarkMode={prop.isDarkMode}
+        navigation={prop.navigation}
       />
     </TouchableOpacity>
   )
@@ -152,7 +156,7 @@ const SearchMenu = (props: searchMenuProp) => {
       <IngredientsFilter
         options={props.option}
         setOptions={(options) =>{
-          const categories = options.map((value)=>new Category(value.name, value.colour, value._id, value.active))
+          const categories = options.map((value:Categories.Category)=>new Category(value.name, value.colour, (value as Category)._id, value.active))
           props.setOption(categories)
         }}
       />
@@ -166,6 +170,7 @@ type ingredientPopupProp = {
   ingredient: Ingredient;
   dimension: [number, number]
   isDarkMode: boolean
+  navigation: NativeStackNavigationProp<StackParams, keyof StackParams, undefined>
 };
 
 const IngredientPopup = (prop: ingredientPopupProp) => {
@@ -325,13 +330,8 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
         <TouchableOpacity
           style={styles.edit}
           onPress={() => {
-            // setHomeContext({
-            //   ...homeContext,
-            //   ingredientBeingEdited: IngredientBuilder.fromIngredient(
-            //     props.ingredient
-            //   ),
-            // });
-            // navigation.navigate("ManualIngredient");
+            prop.navigation.navigate("IngredientEdit", prop.ingredient)
+            prop.setShowModal(false)
           }}
         >
           <MaterialCommunityIcons name="pencil" size={24} color="black" />
@@ -383,6 +383,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
       setDataSet(dataSet[1])
     }
     setloadingChart(false)
+    await user.loadCategories()
     const ing = await DB.searchIngredient(searchText, [0,0], option.filter((v)=>v.active))
     setIngredients(ing)
     setLoadingIng(false)
@@ -831,7 +832,16 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             <View
               style={{paddingHorizontal: SPACING.medium}}
             >
-              {ingredients.map((value)=><IngredientRow ingredient={value} dimension={[height, width]} isDarkMode={isDarkMode}/>)}
+              {
+                ingredients.map((value)=>
+                  <IngredientRow 
+                    ingredient={value} 
+                    dimension={[height, width]} 
+                    isDarkMode={isDarkMode}
+                    navigation={navigation}
+                  />
+                )
+              }
             </View>
           </View>
         </ScrollView> 

@@ -3,6 +3,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
@@ -133,18 +134,18 @@ const ManualIngredient = (props: Props) => {
         <DateField
           fieldName="Expiry Date"
           required
-          width={Dimensions.get("screen").width - 2 * SPACING.medium}
+          width={useWindowDimensions().width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setExpiryDate(date)}
           defaultValue={ingredientBuilder.getExpiryDate()}
         />
         {getSeperator()}
         {/* <DateField
           fieldName="Use-by Date"
-          width={Dimensions.get("screen").width - 2 * SPACING.medium}
+          width={useWindowDimensions().width - 2 * SPACING.medium}
           setValue={(date: Date) => ingredientBuilder.setUseDate(date)}
           defaultValue={ingredientBuilder.getUseDate()}
         /> */}
-        {getSeperator()}
+        {/* {getSeperator()} */}
         <ChipsSelectors
           fieldName="Categories"
           categories={categories}
@@ -368,7 +369,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
-    paddingBottom: SPACING.large,
+    paddingBottom: SPACING.small,
   },
 
   button: {
@@ -377,7 +378,7 @@ const styles = StyleSheet.create({
 
   inputRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "space-between",
   },
 });
