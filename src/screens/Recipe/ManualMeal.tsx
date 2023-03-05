@@ -47,6 +47,7 @@ const ManualMeal = (props: Props) => {
     recipeContext.recipeBeingEdited || new MealBuilder()
   );
 
+
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
   }
@@ -76,17 +77,17 @@ const ManualMeal = (props: Props) => {
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
     let builtMeal = mealBuilder.build();
-    userData.savedRecipes.push(builtMeal);
+    userData.customRecipes.push(builtMeal);
     let meal = new Meal(
       builtMeal.getName,
       builtMeal.getCategoryId,
       builtMeal.getInstruction,
       builtMeal.getIngredients,
       builtMeal.getId,
-      builtMeal.getUrl,
+      "",
       builtMeal.getImgSrc
     );
-    await DB.create(meal);
+      await DB.create(meal);
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
