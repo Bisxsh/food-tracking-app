@@ -149,6 +149,7 @@ function RecipeIngredientList() {
         <View style={styles.modalContainer}>
           <TextInput
             placeholder={"Quantity"}
+            keyboardType={"numeric"}
             style={styles.textInput}
             onChangeText={(text) => {
               ingredientBeingEdited?.setServingSize(parseInt(text) || 0);
@@ -168,7 +169,6 @@ function RecipeIngredientList() {
                 )
               );
               setIngredientBeingEdited(null);
-              //TODO implement
             }}
           />
         </View>

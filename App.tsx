@@ -39,6 +39,7 @@ function App(): JSX.Element {
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER);
   const init = async () => {
+    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved()});
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
@@ -48,7 +49,6 @@ function App(): JSX.Element {
       setUser(stored);
       setConsent(stored.consent);
     }
-    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved()});
     setLoading(false);
   };
 

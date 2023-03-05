@@ -51,13 +51,10 @@ export function Recipe(): JSX.Element {
   );
 
   async function readMeals() {
-    console.log("before")
-    console.log(await readAllMeal())
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
         meals.map((meal) => {
-          console.log(meal)
           temp.push(
             new Meal(
               meal.name,
@@ -73,7 +70,6 @@ export function Recipe(): JSX.Element {
         setUserData({ ...userData, savedRecipes: temp });
       })
       .then(() => genSaved());
-      console.log("after")
   }
 
   useEffect(() => {
@@ -253,7 +249,7 @@ export function Recipe(): JSX.Element {
       </View>
       <ScrollView
         style={{ width: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        contentContainerStyle={{ flexGrow: 1, alignItems: "center"}}
       >
         {recipes.map((recipe, key) => {
           if (

@@ -1,54 +1,73 @@
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Button, TextInput  } from "react-native";
-import React, { useState, useRef } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Button,
+  TextInput,
+} from "react-native";
+import React, { useState, useRef, useEffect } from "react";
 import { COLOURS, FONT_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MealBuilder } from "../classes/MealClass";
 import Instruction from "./Instruction";
 
-
 type Props = {
-    mealBuilder: MealBuilder;
+  mealBuilder: MealBuilder;
 };
 
-
-
-
 const InstructionsList = (props: Props) => {
+  const [text, onChangeText] = useState("");
+  const [instructionList, setInstructionList] = useState<any>([]);
 
-    const [text, onChangeText] = useState("");
-    const [instructionList, setInstructionList] = useState<any>([])
+  function addInstruction(instruction: any) {
+    let num = instructionList.length + 1;
+    // console.log(instruction)
+    setInstructionList([...instructionList, [num + ". " + instruction]]);
+    props.mealBuilder.setInstruction(instructionList);
+    onChangeText("");
+  }
 
-
-    function addInstruction(instruction: any){
-      let num = instructionList.length + 1
-      // console.log(instruction)
-      setInstructionList([...instructionList, num + ". " + instruction])
-      // console.log(instructionList)
-      props.mealBuilder.setInstruction(instruction)
-      onChangeText("")
-
-    }
+  useEffect(() => {
+    console.log(instructionList);
+  }, [instructionList]);
 
   return (
     <>
-    <View style={styles.searchContainer}>
-    <View style={styles.searchBox}>
-    <TextInput
-        onChangeText={text => onChangeText(text)}
-        value={text}
-        placeholder="Add instruction"
-        placeholderTextColor={COLOURS.darkGrey}
-      />
+      <View style={styles.searchContainer}>
+        <View style={styles.searchBox}>
+          <TextInput
+            onChangeText={(text) => onChangeText(text)}
+            value={text}
+            placeholder="Add instruction"
+            placeholderTextColor={COLOURS.darkGrey}
+          />
+        </View>
+        <View style={styles.addButton}>
+          <TouchableOpacity onPress={() => addInstruction(text)}>
+            <Text
+              style={{
+                color: COLOURS.white,
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            >
+              Add
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    <View style={styles.addButton}>
-    <Button title="Add" color="grey" onPress={() => addInstruction(text)}/>
-    </View>
-    </View>
-    <View style={styles.container}>
-      {instructionList.map((item: string)=>{
-
-        return <Instruction instructionList={instructionList} setInstructionList={setInstructionList} text={item}/>
-      })}
-    </View>
+      <View style={styles.container}>
+        {instructionList.map((item: string) => {
+          return (
+            <Instruction
+              instructionList={instructionList}
+              setInstructionList={setInstructionList}
+              text={item}
+            />
+          );
+        })}
+      </View>
     </>
   );
 };
@@ -65,9 +84,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 
-
-
-  searchContainer:{
+  searchContainer: {
     flexDirection: "row",
     padding: SPACING.small,
   },
@@ -81,12 +98,15 @@ const styles = StyleSheet.create({
   },
 
   addButton: {
-    backgroundColor: COLOURS.darkGrey,
+    backgroundColor: COLOURS.primary,
     borderBottomRightRadius: RADIUS.standard,
     borderTopRightRadius: RADIUS.standard,
-    width: "15%",
+    flex: 1,
     color: COLOURS.white,
     alignSelf: "flex-end",
-
-  }
+    height: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
