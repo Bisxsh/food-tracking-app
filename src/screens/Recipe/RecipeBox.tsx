@@ -67,15 +67,17 @@ const RecipeBox = (props: Props) => {
       //TODO add to favorites
       // console.log(isFavourite)
       setIsFavourite(!isFavourite)
-      console.log(isFavourite)
+      // console.log(isFavourite)
       if(isFavourite){
       // console.log(await readAllMeal())
+      await DB.deleteMeal(props.recipeName)
+      setUserData({...userData, savedRecipes: await getSaved()});
       }
       else{
         console.log("its favourited")
         let meal = new Meal(props.recipeName, [], ["what"], [], Math.floor(Math.random() * 1000), props.recipeLink, props.recipeImage)
         await DB.create(meal)
-        console.log(await readAllMeal())
+        // console.log(await readAllMeal())
         setUserData({...userData, savedRecipes: await getSaved()});
         // await DB.deleteMeal(props.recipeName)
       }
@@ -92,7 +94,7 @@ const RecipeBox = (props: Props) => {
 
 
   return (
-    <View style={{ flex: 1, width: "100%", paddingHorizontal: SPACING.medium }}>
+    <View style={{ width: "100%", paddingHorizontal: SPACING.medium }}>
       <TouchableOpacity style={styles.container} onPress={openURI}>
         <View style={{ position: "relative" }}>
           <Image source={{ uri: props.recipeImage}} style={styles.foodImage} />

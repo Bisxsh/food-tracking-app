@@ -252,7 +252,7 @@ export function Recipe(): JSX.Element {
       </View>
       <ScrollView
         style={{ width: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        contentContainerStyle={{ flexGrow: 1, alignItems: "center"}}
       >
         {recipes.map((recipe, key) => {
           if (
