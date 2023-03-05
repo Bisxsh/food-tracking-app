@@ -59,8 +59,8 @@ const ManualMeal = (props: Props) => {
     }
 
     mealBuilder.setCategoryId([1]);
-    if (mealBuilder.getId() == 0 && userData.savedRecipes.length > 0) {
-      mealBuilder.setId(userData.savedRecipes.length); //change to meal id
+    if (mealBuilder.getId() == 0 && userData.customRecipes.length > 0) {
+      mealBuilder.setId(userData.customRecipes.length); //change to meal id
     }
     console.log("ID: ", mealBuilder.getId());
     // if (
