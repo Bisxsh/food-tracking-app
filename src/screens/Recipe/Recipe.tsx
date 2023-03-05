@@ -208,7 +208,7 @@ export function Recipe(): JSX.Element {
         styles.container,
         { backgroundColor: isDarkMode ? Colors.darker : Colors.white },
       ]}
-      edges={['left', 'right', "top"]}
+      edges={["left", "right", "top"]}
     >
       <View style={[styles.buttonContainer]}>
         <TouchableOpacity
@@ -249,12 +249,15 @@ export function Recipe(): JSX.Element {
       </View>
       <ScrollView
         style={{ width: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center"}}
+        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
           if (
+            //TODO implement allergies here
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
+            console.log(recipe);
+
             return (
               <RecipeBox
                 key={key}
@@ -263,9 +266,12 @@ export function Recipe(): JSX.Element {
                 recipeCalories={recipe["recipe"]["calories"]}
                 recipeServings={recipe["recipe"]["yield"]}
                 recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]} 
+                recipeIngredients={recipe["recipe"]["ingredients"]}
                 recipeLink={recipe["recipe"]["url"]}
-                />
+                source={recipe["recipe"]["source"]}
+                // energy={recipe["recipe"]["ENERC_KCAL"]}
+                // calories={recipe["recipe"]["calories"]}
+              />
             );
           }
         })}
