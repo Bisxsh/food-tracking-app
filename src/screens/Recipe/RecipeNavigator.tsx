@@ -1,12 +1,12 @@
 import { LogBox, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Home } from "../../screens/Home/Home";
 import ManualIngredient from "./ManualMeal";
 import BarcodeScanner from "../Home/components/Add/BarcodeScanner";
 import { DEFAULT_RECIPE_DATA, RecipeContext } from "./RecipeContextProvider";
 import { Recipe } from "./Recipe";
+import { COLOURS } from "../../util/GlobalStyles";
 
 type Props = {};
 
@@ -24,9 +24,9 @@ const HomeNavigator = (props: Props) => {
         initialRouteName="Profile"
         screenOptions={({ route, navigation }) => ({
           headerStyle: {
-            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           },
-          headerTintColor: isDarkMode ? Colors.white : Colors.black,
+          headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
           headerShadowVisible: false,
           headerShown: false,
         })}

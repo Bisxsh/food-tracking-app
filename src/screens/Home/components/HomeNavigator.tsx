@@ -1,11 +1,11 @@
 import { LogBox, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Home } from "../Home";
 import ManualIngredient from "./Add/ManualIngredient";
 import BarcodeScanner from "./Add/BarcodeScanner";
 import { DEFAULT_HOME_DATA, HomeContext } from "./HomeContextProvider";
+import { COLOURS } from "../../../util/GlobalStyles";
 
 type Props = {};
 
@@ -20,12 +20,12 @@ const HomeNavigator = (props: Props) => {
   return (
     <HomeContext.Provider value={{ homeContext, setHomeContext }}>
       <Stack.Navigator
-        initialRouteName="Profile"
+        initialRouteName="Home"
         screenOptions={({ route, navigation }) => ({
           headerStyle: {
-            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           },
-          headerTintColor: isDarkMode ? Colors.white : Colors.black,
+          headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
           headerShadowVisible: false,
           headerShown: false,
         })}

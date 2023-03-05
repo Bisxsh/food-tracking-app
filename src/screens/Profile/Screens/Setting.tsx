@@ -10,8 +10,6 @@ import {
   Alert, 
   AlertButton,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Updates from 'expo-updates';
 import * as Notifications from "expo-notifications";
 
@@ -188,13 +186,13 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
     <SafeAreaView
       style={{
           flex: 1,
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
       edges={['left', 'right']}
     >
       <ScrollView
         style={{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           flex: 1,
         }}
       >

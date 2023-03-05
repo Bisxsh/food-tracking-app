@@ -93,13 +93,13 @@ export function Theme({navigation}: ScreenProp): JSX.Element {
     <SafeAreaView
       style={{
           flex: 1,
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
       edges={['left', 'right']}
     >
       <ScrollView
         style={{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           flex: 1,
         }}>
           {TouchableSelector(
@@ -111,14 +111,14 @@ export function Theme({navigation}: ScreenProp): JSX.Element {
                   isDarkMode = user.setting.isDark()
                   tabNavi?.setOptions({
                     tabBarStyle: {
-                      backgroundColor: isDarkMode ? Colors.darker : Colors.white
+                      backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white
                     }
                   })
                   navigation.setOptions({
                     headerStyle: {
-                        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                        backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     },
-                    headerTintColor: isDarkMode ? Colors.white : Colors.black,
+                    headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
                   })
               },
               user.setting.appearance

@@ -3,7 +3,6 @@ import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navig
 import { useNavigation } from '@react-navigation/native';
 
 import { Profile } from "./Screens/Profile";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Setting } from "./Screens/Setting";
 import { Debug } from "./Screens/Debug";
 import { About } from "./Screens/About";
@@ -14,6 +13,7 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { Account } from "./Screens/Account";
 import IngredientEdit from "./Screens/IngredientEdit";
 import { Ingredient } from "../../backends/Ingredient";
+import { COLOURS } from "../../util/GlobalStyles";
 
 
 export type StackParams ={
@@ -50,7 +50,7 @@ export function ProfileNavigator(): JSX.Element{
     try {
         tabNavi?.setOptions({
             tabBarStyle: {
-            backgroundColor: isDarkMode ? Colors.darker : Colors.white
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white
             }
         })
     } catch (error) {
@@ -64,9 +64,9 @@ export function ProfileNavigator(): JSX.Element{
                 initialRouteName="Profile"
                 screenOptions={({ route, navigation })=>({
                     headerStyle: {
-                        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                        backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     },
-                    headerTintColor: isDarkMode ? Colors.white : Colors.black,
+                    headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
                     headerShadowVisible: false,
                 })}
                 

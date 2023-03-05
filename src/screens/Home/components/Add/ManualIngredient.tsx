@@ -28,7 +28,6 @@ import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../../../backends/User";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {};
 
@@ -98,7 +97,7 @@ const ManualIngredient = (props: Props) => {
       style={[
         styles.container,
         {
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         },
       ]}
     >
@@ -110,7 +109,7 @@ const ManualIngredient = (props: Props) => {
             color={isDarkMode ? "white" : "black"}
           />
         </TouchableOpacity>
-        <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+        <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
           Add an ingredient
         </Text>
         <TouchableOpacity style={styles.button}>
@@ -198,7 +197,7 @@ const ManualIngredient = (props: Props) => {
             size={24}
             color={isDarkMode ? "white" : "black"}
           />
-          <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+          <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
             Nutritional information
           </Text>
         </TouchableOpacity>

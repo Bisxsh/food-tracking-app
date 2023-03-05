@@ -2,7 +2,6 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { RADIUS, COLOURS, SPACING } from "../util/GlobalStyles";
 import { UserContext } from "../backends/User";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
   required?: boolean;
@@ -20,7 +19,7 @@ const InputField = (props: Props) => {
   return (
     <View style={{ position: "relative", flex: 1, flexDirection: "column" }}>
       <Text 
-        style={{ color: isDarkMode ? Colors.white : Colors.darker}}
+        style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker}}
         numberOfLines={1}
       >
         {props.fieldName}

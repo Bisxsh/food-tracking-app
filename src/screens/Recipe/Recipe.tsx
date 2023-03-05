@@ -34,7 +34,7 @@ export function Recipe(): JSX.Element {
 
   useNavigation()?.setOptions({
     tabBarStyle: {
-      backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+      backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
     },
   });
 
@@ -206,7 +206,7 @@ export function Recipe(): JSX.Element {
     <SafeAreaView
       style={[
         styles.container,
-        { backgroundColor: isDarkMode ? Colors.darker : Colors.white },
+        { backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white },
       ]}
       edges={['left', 'right', "top"]}
     >
