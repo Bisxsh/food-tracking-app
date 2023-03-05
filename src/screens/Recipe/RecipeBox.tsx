@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -25,8 +25,13 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestMicrophonePermissionsAsync } from "expo-camera";
 import CardDetail, { RecipeCardIcon } from "./components/CardDetail";
-import { Meal } from "../../classes/MealClass";
-
+import { Meal } from "../../backends/Meal"
+import { readAllMeal } from "../../backends/Database";
+import * as DB from '../../backends/Database';
+import { Ingredient } from "../../backends/Ingredient";
+import { Nutrition } from "../../backends/Nutrition";
+import { UserDataContext } from "../../../src/classes/UserData";
+import { getSaved } from "../../util/GetRecipe";
 
 type Props = {
   recipeName: string;
@@ -45,6 +50,9 @@ const RecipeBox = (props: Props) => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [isFavourite, setIsFavourite] = useState(false);
+  const { userData, setUserData } = useContext(UserDataContext);
+
   const openURI = async () => {
     const url = props.recipeLink; //URL to be opened.
     const supported = await Linking.canOpenURL(url); //To check if URL is supported or not.
@@ -53,6 +61,33 @@ const RecipeBox = (props: Props) => {
     } else {
     Alert.alert(`Don't know how to open this URL: ${url}`);
     }
+    }
+
+    async function updateFavorite() {
+      //TODO add to favorites
+      // console.log(isFavourite)
+      setIsFavourite(!isFavourite)
+      console.log(isFavourite)
+      if(isFavourite){
+      // console.log(await readAllMeal())
+      }
+      else{
+        console.log("its favourited")
+        let meal = new Meal(props.recipeName, [], ["what"], [], Math.floor(Math.random() * 1000), props.recipeLink, props.recipeImage)
+        await DB.create(meal)
+        console.log(await readAllMeal())
+        setUserData({...userData, savedRecipes: await getSaved()});
+        // await DB.deleteMeal(props.recipeName)
+      }
+
+
+      // _id: "int primary key not null",
+      // name: "ntext not null",
+      // url: "ntext",
+      // imgSrc: "ntext",
+      // categoryId: "text",
+      // instruction: "ntext",
+      // ingredient: "ntext",
     }
 
 
@@ -100,7 +135,17 @@ const RecipeBox = (props: Props) => {
           </View>
         </View>
       </TouchableOpacity>
-    </View>
+      <View style={{ position: "absolute", top:20, right: 30}}>
+          <TouchableOpacity onPress={() => {updateFavorite()}}>
+          <MaterialCommunityIcons
+            name={(isFavourite) ?  "star": "star-outline"}
+            size={24}
+            color={(isFavourite) ? COLOURS.primary: "black"}
+            style={{ marginLeft: SPACING.small }}
+          />
+          </TouchableOpacity>
+        </View>
+      </View>
   );
 };
 export default RecipeBox;
@@ -149,5 +194,17 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.tiny,
     marginBottom: SPACING.tiny,
     marginLeft: SPACING.tiny,
+  },
+
+  favContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
+    left: 50,
+    alignSelf: "center",
+    paddingVertical: SPACING.tiny,
+    paddingHorizontal: SPACING.tiny,
+    backgroundColor: "rgba(238, 238, 238, 0.9)",
   },
 });

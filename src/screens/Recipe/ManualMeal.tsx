@@ -29,7 +29,7 @@ import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
-import { create, readAllMeal } from "../../backends/Database";
+import { readAllMeal } from "../../backends/Database";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
   setMeal?: (meal: MealBuilder | null) => void;

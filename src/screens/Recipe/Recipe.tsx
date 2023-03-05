@@ -52,7 +52,6 @@ export function Recipe(): JSX.Element {
 
   async function readMeals() {
     console.log("before")
-    console.log(await readAllMeal())
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
