@@ -52,9 +52,11 @@ export async function getRecipes(){
 
 export async function getSaved(){
     let meals = await readAllMeal()
-    let savedMeals = meals.map((meal)=>{
-        return(
-            new Meal(
+    let savedMeals = <Meal[]>([])
+    meals.map((meal)=>{
+        if(meal.imgSrc != ""){
+        
+        let temp = new Meal(
                 meal.name,
                 meal.categoryId,
                 meal.instruction,
@@ -62,11 +64,31 @@ export async function getSaved(){
                 meal._id,
                 meal.url,
                 meal.imgSrc
-            )
-        )})
+        )
+        savedMeals.push(temp)
+    }})
     return savedMeals
 }
 
+export async function getCustom(){
+    let meals = await readAllMeal()
+    let savedMeals = <Meal[]>([])
+    meals.map((meal)=>{
+        if(meal.imgSrc == ""){
+        
+        let temp = new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+        )
+        savedMeals.push(temp)
+    }})
+    return savedMeals
+}
 
 
 

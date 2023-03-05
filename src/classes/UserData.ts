@@ -16,6 +16,7 @@ export interface UserData {
   ingredientCategories: Category[];
   homePageSort: HomeSortingFilter;
   savedRecipes: Meal[];
+  customRecipes: Meal[];
   recipesPageSort: RecipeSortingFilter;
   exploreRecipes: any[];
   //TODO implement
@@ -38,6 +39,7 @@ export const DEFAULT_USER_DATA: UserData = {
   homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
   recipesPageSort: RecipeSortingFilter.TimeLowToHigh,
   savedRecipes:  DUMMY_MEALS,
+  customRecipes: [],
   exploreRecipes: <any>[],
 };
 
