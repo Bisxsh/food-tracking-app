@@ -40,8 +40,9 @@ const ExpiringButton: React.FC<ExpiringButtonProps> = ({ label }) => {
         backdropOpacity={0.3}
         animationIn="fadeIn"
         animationOut="fadeOut"
+        style={{justifyContent: "center", flexDirection: "column"}}
       >
-        <View style={{ flex: 1 }} />
+        {/* <View style={{ flex: 1 }} /> */}
         <View style={styles.modalContainer}>
           <View style={styles.box}>
             <Text style={styles.boxText}>
@@ -56,7 +57,7 @@ const ExpiringButton: React.FC<ExpiringButtonProps> = ({ label }) => {
             />
           </View>
         </View>
-        <View style={{ flex: 1 }} />
+        {/* <View style={{ flex: 1 }} /> */}
       </Modal>
     </View>
   );
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
 
   modalContainer: {
-    flex: 1,
+    //flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: Colors.white,

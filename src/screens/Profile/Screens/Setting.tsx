@@ -13,6 +13,7 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Updates from 'expo-updates';
+import * as Notifications from "expo-notifications";
 
 import {
   COLOURS,
@@ -64,7 +65,7 @@ const HorizontalLine = (
 
 const NavigateRow = (
   text: string,
-  destination: keyof StackParams,
+  destination: (keyof StackParams),
   navigation: NativeStackNavigationProp<StackParams, any, undefined>
 ) => {
   return (
@@ -100,7 +101,7 @@ const NavigateRow = (
   );
 };
 
-const SwitchRow = (text: string, key: keyof UserSetting) => {
+const SwitchRow = (text: string, key: keyof UserSetting, onValueChange?: (value: boolean)=>void) => {
   const { user, setUser } = useContext(UserContext);
   const [value, setValue] = useState<boolean>(user.setting[key] as boolean);
 
@@ -130,6 +131,9 @@ const SwitchRow = (text: string, key: keyof UserSetting) => {
         value={value}
         onValueChange={(value) => {
           (user.setting[key] as boolean) = value;
+          if (onValueChange != undefined){
+            onValueChange(value)
+          }
           setUser(user);
           setValue(value);
           DB.updateUser(user);
@@ -198,7 +202,31 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
           {NavigateRow("Edit Account", "Account", navigation)}
         </View>
         <View style={styles.container}>
-          {SwitchRow("Notification", "notification")}
+          {SwitchRow(
+            "Notification", 
+            "notification", 
+            (value: boolean)=>{
+              if (!value){ 
+                Notifications.cancelAllScheduledNotificationsAsync() 
+              }else{
+                // Send push notification at 10pm GMT every day
+                const trigger: Notifications.DailyTriggerInput = {
+                  hour: 22, // 10pm GMT
+                  minute: 0,
+                  //second: 0,
+                  repeats: true, // Send notification every day
+                };
+                
+                Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: "Check your food",
+                    body: "You need to check your food that are expiring soon!",
+                  },
+                  trigger,
+                });
+              }
+            }
+          )}
           {HorizontalLine}
           {NavigateRow("Theme", "Theme", navigation)}
         </View>
@@ -226,6 +254,7 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
                       Meal.reset()
                       Nutrition.reset()
                       User.reset()
+                      Notifications.cancelAllScheduledNotificationsAsync()
                       setUser(DEFAULT_USER)
                       setUserData(DEFAULT_USER_DATA)
                       DB.deleteFile().then(()=>{

@@ -53,6 +53,7 @@ function App(): JSX.Element {
   };
 
   UserSetting.reloadApp = async () => {
+    setLoading(true);
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
@@ -63,6 +64,7 @@ function App(): JSX.Element {
       setUser(stored);
       setConsent(stored.consent);
     }
+    setLoading(false);
   };
 
   if (firstTime) {
@@ -72,21 +74,26 @@ function App(): JSX.Element {
   const isDarkMode = user.setting.isDark();
 
   useEffect(() => {
-    // Send push notification at 10pm GMT every day
-    const trigger = {
-      hour: 22, // 10pm GMT
-      minute: 0,
-      second: 0,
-      repeats: true, // Send notification every day
-    };
-
-    Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Check your food",
-        body: "You need to check your food that are expiring soon!",
-      },
-      trigger,
-    });
+    if (user.setting.notification){
+      // Send push notification at 10pm GMT every day
+      const trigger: Notifications.DailyTriggerInput = {
+        hour: 22, // 10pm GMT
+        minute: 0,
+        //second: 0,
+        repeats: true, // Send notification every day
+      };
+      
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Check your food",
+          body: "You need to check your food that are expiring soon!",
+        },
+        trigger,
+      });
+    }
+    Notifications.getAllScheduledNotificationsAsync().then((v)=>{
+      console.log("Number of notications scheduled: "+v.length)
+    })
   }, []);
 
   return (
