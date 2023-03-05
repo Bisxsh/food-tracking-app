@@ -51,12 +51,10 @@ export function Recipe(): JSX.Element {
   );
 
   async function readMeals() {
-    console.log("before")
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
         meals.map((meal) => {
-          console.log(meal)
           temp.push(
             new Meal(
               meal.name,
@@ -72,7 +70,6 @@ export function Recipe(): JSX.Element {
         setUserData({ ...userData, savedRecipes: temp });
       })
       .then(() => genSaved());
-      console.log("after")
   }
 
   useEffect(() => {

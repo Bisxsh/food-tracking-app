@@ -87,8 +87,6 @@ const ManualMeal = (props: Props) => {
       builtMeal.getImgSrc
     );
     await DB.create(meal);
-    console.log("here");
-    console.log(await readAllMeal());
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }

@@ -53,6 +53,19 @@ const RecipeBox = (props: Props) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
 
+  useEffect(() => {
+    checkFavourite()
+  }, [])
+
+  async function checkFavourite() {
+    let meals = await readAllMeal()
+    meals.map((meal) => {
+      if(meal.name == props.recipeName){
+        setIsFavourite(!isFavourite)
+      }
+    })
+  }
+
   const openURI = async () => {
     const url = props.recipeLink; //URL to be opened.
     const supported = await Linking.canOpenURL(url); //To check if URL is supported or not.

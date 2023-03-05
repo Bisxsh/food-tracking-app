@@ -7,7 +7,7 @@ import {
   Button,
   TextInput,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { COLOURS, FONT_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MealBuilder } from "../classes/MealClass";
 import Instruction from "./Instruction";
@@ -23,11 +23,14 @@ const InstructionsList = (props: Props) => {
   function addInstruction(instruction: any) {
     let num = instructionList.length + 1;
     // console.log(instruction)
-    setInstructionList([...instructionList, num + ". " + instruction]);
-    // console.log(instructionList)
-    props.mealBuilder.setInstruction(instruction);
+    setInstructionList([...instructionList, [num + ". " + instruction]]);
+    props.mealBuilder.setInstruction(instructionList);
     onChangeText("");
   }
+
+  useEffect(() => {
+    console.log(instructionList);
+  }, [instructionList]);
 
   return (
     <>
