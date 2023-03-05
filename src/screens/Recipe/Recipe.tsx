@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   StatusBar,
   Text,
@@ -26,6 +25,7 @@ import {
 import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
 import { Meal } from "../../classes/MealClass";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -212,6 +212,7 @@ export function Recipe(): JSX.Element {
         styles.container,
         { backgroundColor: isDarkMode ? Colors.darker : Colors.white },
       ]}
+      edges={['left', 'right', "top"]}
     >
       <View style={[styles.buttonContainer]}>
         <TouchableOpacity

@@ -33,6 +33,7 @@ import { Meal } from "../../../backends/Meal";
 import { Nutrition } from "../../../backends/Nutrition";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DEFAULT_USER_DATA, UserDataContext } from "../../../classes/UserData";
+import * as ImageUtil from '../../../util/ImageUtil'
 
 
 type alertProp = {
@@ -76,7 +77,7 @@ const NavigateRow = (
         paddingBottom: SPACING.tiny,
       }}
       onPress={async () => {
-        navigation.navigate(destination);
+        navigation.navigate(destination, undefined);
       }}
     >
       <Text
@@ -228,7 +229,9 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
                       setUser(DEFAULT_USER)
                       setUserData(DEFAULT_USER_DATA)
                       DB.deleteFile().then(()=>{
-                        UserSetting.reloadApp!()
+                        ImageUtil.deleteAllImage().then(()=>{
+                          UserSetting.reloadApp!()
+                        })
                       })
                     }
                   }
