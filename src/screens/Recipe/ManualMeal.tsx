@@ -13,7 +13,7 @@ import { Dimensions } from "react-native";
 
 import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import { MealBuilder } from "../../classes/MealClass";
-import * as DB from '../../backends/Database';
+import * as DB from "../../backends/Database";
 import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
 import { Category } from "../../classes/Categories";
@@ -43,7 +43,9 @@ const ManualMeal = (props: Props) => {
     userData.ingredientCategories
   );
   const navigation = useNavigation<any>();
-  const mealBuilder = recipeContext.recipeBeingEdited || new MealBuilder();
+  const [mealBuilder, setMealBuilder] = useState(
+    recipeContext.recipeBeingEdited || new MealBuilder()
+  );
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -85,7 +87,7 @@ const ManualMeal = (props: Props) => {
       builtMeal.getImgSrc
     );
     await DB.create(meal);
-    console.log("here")
+    console.log("here");
     console.log(await readAllMeal());
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
@@ -147,8 +149,8 @@ const ManualMeal = (props: Props) => {
           />
           {getSeperator()}
           <RecipeIngredientList />
-          <Text>Instructions</Text>
           {getSeperator()}
+          <Text style={{ marginBottom: SPACING.tiny }}>Instructions</Text>
           <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
           {getSeperator()}
           <PrimaryButton text="Save" onPress={saveRecipe} />

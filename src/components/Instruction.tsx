@@ -1,35 +1,84 @@
-import { StyleSheet, Text, TouchableOpacity, View, FlatList, Button, TextInput  } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+  Button,
+  TextInput,
+} from "react-native";
 import React, { useState, useRef, MutableRefObject } from "react";
 import { COLOURS, FONT_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 import { MealBuilder } from "../classes/MealClass";
-
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 type Props = {
-    instructionList: any;
-    setInstructionList: React.Dispatch<any>;
-    text: string;
+  instructionList: any;
+  setInstructionList: React.Dispatch<any>;
+  text: string;
 };
 
-
-
 const Instruction = (props: Props) => {
-
-  function refreshList(){
-    let temp: string[] = []
+  function deleteInstruction() {
+    let temp: string[] = [];
     props.instructionList.map((item: any) => {
-      if(item !== props.text){
-      temp.push(temp.length + 1 + ". " + item.slice(3))
+      if (item !== props.text) {
+        temp.push(temp.length + 1 + ". " + item.slice(3));
       }
-  })
-  props.setInstructionList(temp)}
+    });
+    props.setInstructionList(temp);
+  }
 
+  function updateInstruction() {
+    let temp: string[] = [];
+    props.instructionList.map((item: any) => {
+      if (item === props.text) {
+        temp.push(temp.length + 1 + ". " + text);
+      }
+    });
+    props.setInstructionList(temp);
+  }
+
+  const inputRef = useRef(null) as MutableRefObject<any>;
+  const [text, setText] = useState(props.text.slice(3));
+  const number = props.text.slice(0, 3);
 
   return (
     <View style={styles.container}>
-    <Text style={{color: COLOURS.black}}>{props.text}</Text>
-    <TouchableOpacity style={styles.delButton} onPress={() => refreshList()}>
-    <Text style={{color: COLOURS.primaryDark}}>Delete</Text>
-    </TouchableOpacity>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text>{number}</Text>
+        <TextInput
+          style={{ color: COLOURS.black }}
+          onChangeText={(text) => setText(text)}
+          value={text}
+          ref={inputRef}
+          onSubmitEditing={() => updateInstruction()}
+          onEndEditing={() => updateInstruction()}
+          // editable={false}
+        />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.delButton}
+          onPress={() => inputRef.current.focus()}
+        >
+          <MaterialCommunityIcons
+            name="pencil-outline"
+            size={24}
+            color={COLOURS.black}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.delButton}
+          onPress={() => deleteInstruction()}
+        >
+          <MaterialCommunityIcons
+            name="delete-outline"
+            size={24}
+            color={COLOURS.black}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -40,17 +89,25 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: COLOURS.grey,
     borderRadius: RADIUS.standard,
-    padding: SPACING.medium,
+    paddingHorizontal: SPACING.medium,
+    paddingVertical: SPACING.small,
     width: "100%",
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: SPACING.small,
   },
 
   delButton: {
     backgroundColor: COLOURS.grey,
     borderRadius: RADIUS.standard,
-    width: "20%",
-    marginLeft: "auto",
     fontSize: FONT_SIZES.small,
-  }
+    marginLeft: SPACING.small,
+  },
+
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
 });
