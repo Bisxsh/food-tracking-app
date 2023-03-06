@@ -7,6 +7,7 @@ import BarcodeScanner from "../Home/components/Add/BarcodeScanner";
 import { DEFAULT_RECIPE_DATA, RecipeContext } from "./RecipeContextProvider";
 import { Recipe } from "./Recipe";
 import { COLOURS } from "../../util/GlobalStyles";
+import RecipeInfo from "./RecipeInfo";
 
 type Props = {};
 
@@ -41,6 +42,7 @@ const HomeNavigator = (props: Props) => {
           component={ManualIngredient}
           options={{}}
         />
+        <Stack.Screen name="RecipeInfo" component={RecipeInfo} />
         <Stack.Screen name="BarcodeScanner" component={BarcodeScanner} />
       </Stack.Navigator>
     </RecipeContext.Provider>

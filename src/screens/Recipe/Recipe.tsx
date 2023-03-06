@@ -43,6 +43,7 @@ export function Recipe(): JSX.Element {
   const [recipes, setRecipes] = useState<any[]>([]);
   const [explore, setExplore] = useState<any[]>([]);
   const [saved, setSaved] = useState<any[]>([]);
+  const [custom, setCustom] = useState<any[]>([]);
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
@@ -51,25 +52,44 @@ export function Recipe(): JSX.Element {
   );
 
   async function readMeals() {
+    // console.log("reading");
+    // console.log(await readAllMeal());
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
+        let temp2: Meal[] = [];
         meals.map((meal) => {
-          temp.push(
-            new Meal(
-              meal.name,
-              meal.categoryId,
-              meal.instruction,
-              meal.ingredient,
-              meal._id,
-              meal.url,
-              meal.imgSrc
-            )
-          );
+          if (meal.url != "") {
+            temp.push(
+              new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+              )
+            );
+          } else {
+            temp2.push(
+              new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+              )
+            );
+          }
         });
-        setUserData({ ...userData, savedRecipes: temp });
+
+        setUserData({ ...userData, savedRecipes: temp, customRecipes: temp2 });
       })
-      .then(() => genSaved());
+      .then(() => genSaved())
+      .then(() => genCustom());
   }
 
   useEffect(() => {
@@ -104,18 +124,46 @@ export function Recipe(): JSX.Element {
     setSaved(temp);
   }
 
-  function switchList() {
-    if (currentButton === true) {
+  async function genCustom() {
+    const recipeList = userData.customRecipes;
+    var temp: any[] = [];
+    recipeList.map((recipe) => {
+      temp.push({
+        recipe: {
+          id: recipe.getId,
+          label: recipe.getName,
+          image: recipe.getImgSrc,
+          servings: 2,
+          calories: 1000.0,
+          ingredients: ["Cheesse"],
+          cautions: ["None"],
+        },
+      });
+    });
+    setCustom(temp);
+  }
+
+  function switchList(buttonNum: number) {
+    if (buttonNum === 0) {
+      console.log("switch to explore");
       setRecipes(explore);
       sortList();
-    } else {
+    }
+    if (buttonNum === 1) {
+      console.log("switch to saved");
+      console.log(saved);
       setRecipes(saved);
       sortList();
     }
-    setCurrentButton(!currentButton);
+    if (buttonNum === 2) {
+      console.log("switch to custom");
+      setRecipes(custom);
+      sortList();
+    }
+    setCurrentButton(buttonNum);
   }
 
-  const [currentButton, setCurrentButton] = useState(false);
+  const [currentButton, setCurrentButton] = useState(0);
 
   function getCals(recipe: any) {
     console.log(recipe.calories + " " + recipe.yield);
@@ -208,19 +256,19 @@ export function Recipe(): JSX.Element {
         styles.container,
         { backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white },
       ]}
-      edges={['left', 'right', "top"]}
+      edges={["left", "right", "top"]}
     >
       <View style={[styles.buttonContainer]}>
         <TouchableOpacity
           style={[
             {
-              backgroundColor: currentButton === false ? "black" : "white",
+              backgroundColor: currentButton === 0 ? "black" : "white",
             },
             styles.menuButton,
           ]}
-          onPress={() => (currentButton === true ? switchList() : null)}
+          onPress={() => (currentButton != 0 ? switchList(0) : null)}
         >
-          <Text style={{ color: currentButton === false ? "white" : "black" }}>
+          <Text style={{ color: currentButton === 0 ? "white" : "black" }}>
             Explore
           </Text>
         </TouchableOpacity>
@@ -228,13 +276,26 @@ export function Recipe(): JSX.Element {
           style={[
             styles.menuButton,
             {
-              backgroundColor: currentButton === true ? "black" : "white",
+              backgroundColor: currentButton === 1 ? "black" : "white",
             },
           ]}
-          onPress={() => (currentButton === false ? switchList() : null)}
+          onPress={() => (currentButton != 1 ? switchList(1) : null)}
         >
-          <Text style={{ color: currentButton === true ? "white" : "black" }}>
+          <Text style={{ color: currentButton === 1 ? "white" : "black" }}>
             Saved
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.menuButton,
+            {
+              backgroundColor: currentButton === 2 ? "black" : "white",
+            },
+          ]}
+          onPress={() => (currentButton != 2 ? switchList(2) : null)}
+        >
+          <Text style={{ color: currentButton === 2 ? "white" : "black" }}>
+            Custom
           </Text>
         </TouchableOpacity>
       </View>
@@ -249,12 +310,23 @@ export function Recipe(): JSX.Element {
       </View>
       <ScrollView
         style={{ width: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center"}}
+        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
           if (
+            //TODO implement allergies here
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
+            console.log("--------------------");
+            console.log(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]);
+            console.log(recipe["recipe"]["totalNutrients"]["PROCNT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FAT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FASAT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["CHOCDF.net"]);
+            console.log(recipe["recipe"]["totalNutrients"]["SUGAR"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FIBTG"]);
+            console.log(recipe["recipe"]["totalNutrients"]["NA"]);
+
             return (
               <RecipeBox
                 key={key}
@@ -263,9 +335,21 @@ export function Recipe(): JSX.Element {
                 recipeCalories={recipe["recipe"]["calories"]}
                 recipeServings={recipe["recipe"]["yield"]}
                 recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]} 
+                recipeIngredients={recipe["recipe"]["ingredients"]}
                 recipeLink={recipe["recipe"]["url"]}
-                />
+                source={recipe["recipe"]["source"]}
+                nutrition={[
+                  recipe["recipe"]["totalNutrients"]["ENERC_KCAL"],
+                  recipe["recipe"]["totalNutrients"]["PROCNT"],
+                  recipe["recipe"]["totalNutrients"]["FAT"],
+                  recipe["recipe"]["totalNutrients"]["FASAT"],
+                  recipe["recipe"]["totalNutrients"]["CHOCDF.net"],
+                  recipe["recipe"]["totalNutrients"]["SUGAR"],
+                  recipe["recipe"]["totalNutrients"]["FIBTG"],
+                  recipe["recipe"]["totalNutrients"]["NA"],
+                ]}
+                servings={recipe["recipe"]["yield"]}
+              />
             );
           }
         })}

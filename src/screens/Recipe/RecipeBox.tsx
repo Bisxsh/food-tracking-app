@@ -25,13 +25,15 @@ import {
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { requestMicrophonePermissionsAsync } from "expo-camera";
 import CardDetail, { RecipeCardIcon } from "./components/CardDetail";
-import { Meal } from "../../backends/Meal"
+import { Meal } from "../../backends/Meal";
 import { readAllMeal } from "../../backends/Database";
-import * as DB from '../../backends/Database';
+import * as DB from "../../backends/Database";
 import { Ingredient } from "../../backends/Ingredient";
 import { Nutrition } from "../../backends/Nutrition";
 import { UserDataContext } from "../../../src/classes/UserData";
 import { getSaved } from "../../util/GetRecipe";
+import { useNavigation } from "@react-navigation/native";
+import { RecipeContext } from "./RecipeContextProvider";
 
 type Props = {
   recipeName: string;
@@ -39,12 +41,19 @@ type Props = {
   recipeCalories: string;
   recipeServings: string;
   recipeCautions: any;
-  recipeIngredients: string;
+  recipeIngredients: any;
   recipeLink: string;
+  source: string;
+  nutrition: any[];
+  servings: string;
 };
 
 const RecipeBox = (props: Props) => {
   const isDarkMode = false;
+  console.log(props.recipeIngredients);
+  const ingredientStrings = props.recipeIngredients.map(
+    (ingredient: any) => ingredient.text
+  );
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? COLOURS.darker : Colors.lighter,
@@ -52,65 +61,84 @@ const RecipeBox = (props: Props) => {
 
   const [isFavourite, setIsFavourite] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
+  const { recipeContext, setRecipeContext } = useContext(RecipeContext);
+  const navigation = useNavigation<any>();
 
   useEffect(() => {
-    checkFavourite()
-  }, [])
+    checkFavourite();
+  }, []);
 
   async function checkFavourite() {
-    let meals = await readAllMeal()
+    let meals = await readAllMeal();
     meals.map((meal) => {
-      if(meal.name == props.recipeName){
-        setIsFavourite(!isFavourite)
+      if (meal.name == props.recipeName) {
+        setIsFavourite(!isFavourite);
       }
-    })
+    });
   }
 
-  const openURI = async () => {
-    const url = props.recipeLink; //URL to be opened.
-    const supported = await Linking.canOpenURL(url); //To check if URL is supported or not.
-    if (supported) {
-    await Linking.openURL(url); // It will open the URL on browser.
-    } else {
-    Alert.alert(`Don't know how to open this URL: ${url}`);
-    }
-    }
-
-    async function updateFavorite() {
-      //TODO add to favorites
-      // console.log(isFavourite)
-      setIsFavourite(!isFavourite)
-      // console.log(isFavourite)
-      if(isFavourite){
+  async function updateFavorite() {
+    //TODO add to favorites
+    // console.log(isFavourite)
+    setIsFavourite(!isFavourite);
+    // console.log(isFavourite)
+    if (isFavourite) {
       // console.log(await readAllMeal())
-      await DB.deleteMeal(props.recipeName)
-      setUserData({...userData, savedRecipes: await getSaved()});
-      }
-      else{
-        console.log("its favourited")
-        let meal = new Meal(props.recipeName, [], ["what"], [], Math.floor(Math.random() * 1000), props.recipeLink, props.recipeImage)
-        await DB.create(meal)
-        // console.log(await readAllMeal())
-        setUserData({...userData, savedRecipes: await getSaved()});
-        // await DB.deleteMeal(props.recipeName)
-      }
-
-
-      // _id: "int primary key not null",
-      // name: "ntext not null",
-      // url: "ntext",
-      // imgSrc: "ntext",
-      // categoryId: "text",
-      // instruction: "ntext",
-      // ingredient: "ntext",
+      await DB.deleteMeal(props.recipeName);
+      setUserData({ ...userData, savedRecipes: await getSaved() });
+    } else {
+      console.log("its favourited");
+      let meal = new Meal(
+        props.recipeName,
+        [],
+        [],
+        [],
+        Math.floor(Math.random() * 1000),
+        props.recipeLink,
+        props.recipeImage
+      );
+      await DB.create(meal);
+      // console.log(await readAllMeal())
+      setUserData({ ...userData, savedRecipes: await getSaved() });
+      // await DB.deleteMeal(props.recipeName)
     }
 
+    // _id: "int primary key not null",
+    // name: "ntext not null",
+    // url: "ntext",
+    // imgSrc: "ntext",
+    // categoryId: "text",
+    // instruction: "ntext",
+    // ingredient: "ntext",
+  }
 
   return (
     <View style={{ width: "100%", paddingHorizontal: SPACING.medium }}>
-      <TouchableOpacity style={styles.container} onPress={openURI}>
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() => {
+          setRecipeContext({
+            ...recipeContext,
+            viewedRecipeFavourite: isFavourite,
+            viewedRecipeSource: props.source,
+            viewedRecipeIngredients: ingredientStrings,
+            viewedRecipeNutrients: props.nutrition,
+            viewedRecipeServings: Number.parseInt(props.servings),
+            recipeBeingViewed: new Meal(
+              props.recipeName,
+              [],
+              [],
+              [],
+              Math.floor(Math.random() * 1000),
+              props.recipeLink,
+              props.recipeImage
+            ),
+          });
+          navigation.navigate("RecipeInfo");
+        }}
+      >
         <View style={{ position: "relative" }}>
-          <Image source={{ uri: props.recipeImage}} style={styles.foodImage} />
+          <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
           <View style={styles.timeContainer}>
             <MaterialCommunityIcons
               name="clock-outline"
@@ -150,17 +178,21 @@ const RecipeBox = (props: Props) => {
           </View>
         </View>
       </TouchableOpacity>
-      <View style={{ position: "absolute", top:20, right: 30}}>
-          <TouchableOpacity onPress={() => {updateFavorite()}}>
+      <View style={{ position: "absolute", top: 20, right: 30 }}>
+        <TouchableOpacity
+          onPress={() => {
+            updateFavorite();
+          }}
+        >
           <MaterialCommunityIcons
-            name={(isFavourite) ?  "star": "star-outline"}
+            name={isFavourite ? "star" : "star-outline"}
             size={24}
-            color={(isFavourite) ? COLOURS.primary: "black"}
+            color={isFavourite ? COLOURS.primary : "black"}
             style={{ marginLeft: SPACING.small }}
           />
-          </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
       </View>
+    </View>
   );
 };
 export default RecipeBox;

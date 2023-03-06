@@ -17,7 +17,7 @@ import { UserSetting } from "./src/backends/UserSetting";
 import { InitialEntry } from "./src/screens/InitialEntry";
 import registerNNPushToken from "native-notify";
 import * as Notifications from "expo-notifications";
-import { getRecipes, getSaved } from "./src/util/GetRecipe";
+import { getRecipes, getSaved, getCustom } from "./src/util/GetRecipe";
 
 
 const Tab = createBottomTabNavigator();
@@ -35,7 +35,7 @@ function App(): JSX.Element {
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER);
   const init = async () => {
-    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved()});
+    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved(), customRecipes: await getCustom()});
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
