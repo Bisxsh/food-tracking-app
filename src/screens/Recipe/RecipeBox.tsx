@@ -46,6 +46,7 @@ type Props = {
   source: string;
   nutrition: any[];
   servings: string;
+  time: string;
 };
 
 const RecipeBox = (props: Props) => {
@@ -124,6 +125,7 @@ const RecipeBox = (props: Props) => {
             viewedRecipeIngredients: ingredientStrings,
             viewedRecipeNutrients: props.nutrition,
             viewedRecipeServings: Number.parseInt(props.servings),
+            viewedRecipeTime: Number.parseInt(props.time),
             recipeBeingViewed: new Meal(
               props.recipeName,
               [],
@@ -146,7 +148,9 @@ const RecipeBox = (props: Props) => {
               color="black"
             />
             {/* TODO implement time here */}
-            <Text style={{ marginLeft: SPACING.tiny }}>30 mins</Text>
+            <Text style={{ marginLeft: SPACING.tiny }}>
+              {props.time || "?"} mins
+            </Text>
           </View>
         </View>
         <View style={styles.textContainer}>

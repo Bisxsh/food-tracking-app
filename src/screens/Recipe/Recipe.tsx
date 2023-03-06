@@ -3,11 +3,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
   Text,
   View,
-  Button,
-  Image,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved } from "../../util/GetRecipe";
@@ -214,10 +211,18 @@ export function Recipe(): JSX.Element {
   useEffect(() => {
     switch (selectedSort) {
       case RecipeSortingFilter.TimeLowToHigh:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.totalTime - a.recipe.totalTime;
+          })
+        );
         break;
       case RecipeSortingFilter.TimeHighToLow:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.totalTime - b.recipe.totalTime;
+          })
+        );
         break;
       case RecipeSortingFilter.CaloriesLowToHigh:
         setRecipes((r) =>
@@ -344,6 +349,7 @@ export function Recipe(): JSX.Element {
                   recipe?.recipe?.totalNutrients?.NA || "",
                 ]}
                 servings={recipe["recipe"]["yield"]}
+                time={recipe["recipe"]["totalTime"]}
               />
             );
           }
