@@ -140,7 +140,19 @@ const RecipeBox = (props: Props) => {
         }}
       >
         <View style={{ position: "relative" }}>
-          <Image source={{ uri: props.recipeImage }} style={styles.foodImage} />
+          {props.recipeImage ? (
+            <Image
+              source={{ uri: props.recipeImage }}
+              style={styles.foodImage}
+            />
+          ) : (
+            <MaterialCommunityIcons
+              name="image-off"
+              size={100}
+              color={COLOURS.darkGrey}
+              style={{ alignSelf: "center" }}
+            />
+          )}
           <View style={styles.timeContainer}>
             <MaterialCommunityIcons
               name="clock-outline"
