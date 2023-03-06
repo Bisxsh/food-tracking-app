@@ -350,6 +350,7 @@ export function Recipe(): JSX.Element {
                 ]}
                 servings={recipe["recipe"]["yield"]}
                 time={recipe["recipe"]["totalTime"]}
+                ignoreFav={currentButton == 2 ? true : false}
               />
             );
           }

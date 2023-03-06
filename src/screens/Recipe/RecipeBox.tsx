@@ -47,6 +47,7 @@ type Props = {
   nutrition: any[];
   servings: string;
   time: string;
+  ignoreFav: boolean;
 };
 
 const RecipeBox = (props: Props) => {
@@ -195,6 +196,7 @@ const RecipeBox = (props: Props) => {
         </View>
       </TouchableOpacity>
       <View style={{ position: "absolute", top: 20, right: 30 }}>
+        {props.ignoreFav ? null : (
         <TouchableOpacity
           onPress={() => {
             updateFavorite();
@@ -206,7 +208,7 @@ const RecipeBox = (props: Props) => {
             color={isFavourite ? COLOURS.primary : "black"}
             style={{ marginLeft: SPACING.small }}
           />
-        </TouchableOpacity>
+        </TouchableOpacity>)}
       </View>
     </View>
   );
