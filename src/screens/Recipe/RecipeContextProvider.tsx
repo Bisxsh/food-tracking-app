@@ -10,6 +10,7 @@ export interface RecipeContext {
   viewedRecipeIngredients: string[];
   viewedRecipeNutrients: any[];
   viewedRecipeServings: number;
+  viewedRecipeTime: number;
 }
 
 export interface RecipeContextInterface {
@@ -25,6 +26,7 @@ export const DEFAULT_RECIPE_DATA: RecipeContext = {
   viewedRecipeIngredients: [],
   viewedRecipeNutrients: [],
   viewedRecipeServings: 0,
+  viewedRecipeTime: 0,
 };
 
 export const DEFAULT_RECIPE_CONTEXT: RecipeContextInterface = {

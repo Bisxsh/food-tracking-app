@@ -3,11 +3,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
   Text,
   View,
-  Button,
-  Image,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved } from "../../util/GetRecipe";
@@ -214,10 +211,18 @@ export function Recipe(): JSX.Element {
   useEffect(() => {
     switch (selectedSort) {
       case RecipeSortingFilter.TimeLowToHigh:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.recipe.totalTime - a.recipe.totalTime;
+          })
+        );
         break;
       case RecipeSortingFilter.TimeHighToLow:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.recipe.totalTime - b.recipe.totalTime;
+          })
+        );
         break;
       case RecipeSortingFilter.CaloriesLowToHigh:
         setRecipes((r) =>
@@ -318,14 +323,7 @@ export function Recipe(): JSX.Element {
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
             console.log("--------------------");
-            console.log(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]);
-            console.log(recipe["recipe"]["totalNutrients"]["PROCNT"]);
-            console.log(recipe["recipe"]["totalNutrients"]["FAT"]);
-            console.log(recipe["recipe"]["totalNutrients"]["FASAT"]);
-            console.log(recipe["recipe"]["totalNutrients"]["CHOCDF.net"]);
-            console.log(recipe["recipe"]["totalNutrients"]["SUGAR"]);
-            console.log(recipe["recipe"]["totalNutrients"]["FIBTG"]);
-            console.log(recipe["recipe"]["totalNutrients"]["NA"]);
+            console.log(recipe);
 
             return (
               <RecipeBox
@@ -339,16 +337,19 @@ export function Recipe(): JSX.Element {
                 recipeLink={recipe["recipe"]["url"]}
                 source={recipe["recipe"]["source"]}
                 nutrition={[
-                  recipe["recipe"]["totalNutrients"]["ENERC_KCAL"],
-                  recipe["recipe"]["totalNutrients"]["PROCNT"],
-                  recipe["recipe"]["totalNutrients"]["FAT"],
-                  recipe["recipe"]["totalNutrients"]["FASAT"],
-                  recipe["recipe"]["totalNutrients"]["CHOCDF.net"],
-                  recipe["recipe"]["totalNutrients"]["SUGAR"],
-                  recipe["recipe"]["totalNutrients"]["FIBTG"],
-                  recipe["recipe"]["totalNutrients"]["NA"],
+                  recipe?.recipe?.totalNutrients?.ENERC_KCAL || "",
+                  recipe?.recipe?.totalNutrients?.PROCNT || "",
+                  recipe?.recipe?.totalNutrients?.FAT || "",
+                  recipe?.recipe?.totalNutrients?.FASAT || "",
+                  (recipe?.recipe?.totalNutrients &&
+                    recipe?.recipe?.totalNutrients["CHOCDF.net"]) ||
+                    "",
+                  recipe?.recipe?.totalNutrients?.SUGAR || "",
+                  recipe?.recipe?.totalNutrients?.FIBTG || "",
+                  recipe?.recipe?.totalNutrients?.NA || "",
                 ]}
                 servings={recipe["recipe"]["yield"]}
+                time={recipe["recipe"]["totalTime"]}
               />
             );
           }

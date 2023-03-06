@@ -119,7 +119,8 @@ const RecipeInfo = (props: Props) => {
       <View style={styles.contentContainer}>
         <View style={styles.sourceContainer}>
           <Text style={{ fontSize: FONT_SIZES.medium }}>
-            Source: {recipeContext.viewedRecipeSource.replace(".com", "")}
+            Source:{" "}
+            {recipeContext?.viewedRecipeSource?.replace(".com", "") || ""}
           </Text>
           {meal.url && (
             <TouchableOpacity
@@ -202,6 +203,7 @@ const RecipeInfo = (props: Props) => {
 
         {getSeperator()}
         {recipeContext.viewedRecipeIngredients.map((ingredient, index) => {
+          if (ingredient == "" || ingredient == " " || !ingredient) return null;
           const split = ingredient.split(" ");
           console.log(split);
 
