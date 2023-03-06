@@ -48,6 +48,7 @@ type Props = {
   servings: string;
   time: string;
   ignoreFav: boolean;
+  
 };
 
 const RecipeBox = (props: Props) => {
@@ -74,6 +75,9 @@ const RecipeBox = (props: Props) => {
     let meals = await readAllMeal();
     meals.map((meal) => {
       if (meal.name == props.recipeName) {
+        console.log(meal.name)
+        console.log(props.recipeName)
+        console.log("its favourited");
         setIsFavourite(!isFavourite);
       }
     });

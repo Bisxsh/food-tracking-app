@@ -142,18 +142,15 @@ export function Recipe(): JSX.Element {
 
   function switchList(buttonNum: number) {
     if (buttonNum === 0) {
-      console.log("switch to explore");
       setRecipes(explore);
       sortList();
     }
     if (buttonNum === 1) {
-      console.log("switch to saved");
-      console.log(saved);
+
       setRecipes(saved);
       sortList();
     }
     if (buttonNum === 2) {
-      console.log("switch to custom");
       setRecipes(custom);
       sortList();
     }
@@ -322,12 +319,12 @@ export function Recipe(): JSX.Element {
             //TODO implement allergies here
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
-            console.log("--------------------");
-            console.log(recipe);
+            // console.log("--------------------");
+            // console.log(recipe);
 
             return (
               <RecipeBox
-                key={key}
+                key={Math.random()}
                 recipeImage={recipe["recipe"]["image"]}
                 recipeName={recipe["recipe"]["label"]}
                 recipeCalories={recipe["recipe"]["calories"]}
