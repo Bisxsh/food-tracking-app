@@ -21,6 +21,7 @@ import Checkbox from "./Checkbox";
 import { getDaysUntilExpiry, getTimeLeft } from "../util/ExpiryCalc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
+import { UserContext } from "../backends/User";
 
 function RecipeIngredientList() {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
@@ -35,10 +36,12 @@ function RecipeIngredientList() {
   const [ingredientBeingEdited, setIngredientBeingEdited] =
     useState<IngredientBuilder | null>(null);
   const {height, width} = useWindowDimensions()
+  const { user, setUser } = useContext(UserContext);
+  const isDarkMode = user.setting.isDark();
 
   return (
     <>
-      <Text>Ingredients</Text>
+      <Text style={{color: isDarkMode ? COLOURS.white : COLOURS.black}}>Ingredients</Text>
 
       <View style={styles.container}>
         <View style={{ paddingTop: 10 }}>

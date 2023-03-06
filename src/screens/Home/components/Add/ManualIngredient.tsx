@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
+import { COLOURS, ICON_SIZES, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Dimensions } from "react-native";
@@ -28,6 +28,7 @@ import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import { UserContext } from "../../../../backends/User";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Props = {};
 
@@ -86,42 +87,46 @@ const ManualIngredient = (props: Props) => {
 
   function closeManual() {
     setHomeContext({ ...homeContext, ingredientBeingEdited: null });
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Home" }],
-    });
+    navigation.popToTop()
   }
 
+  navigation.setOptions({
+    title: "Add an ingredient",
+    headerTitleAlign: "center",
+    headerLeft: ()=>(
+      <TouchableOpacity
+          onPress={closeManual}
+      >
+          <MaterialCommunityIcons
+              name="arrow-left"
+              size={ICON_SIZES.medium}
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
+          />
+      </TouchableOpacity>
+    ),
+    headerRight: ()=>(
+        <TouchableOpacity
+            onPress={saveIngredient}
+        >
+            <MaterialCommunityIcons
+                name="check"
+                size={ICON_SIZES.medium}
+                color={isDarkMode ? COLOURS.white : COLOURS.black}
+            />
+        </TouchableOpacity>
+    )
+  })
+
   return (
-    <View
+    <SafeAreaView
       style={[
         styles.container,
         {
           backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         },
       ]}
+      edges={['left', 'right']}
     >
-      <View style={styles.menu}>
-        <TouchableOpacity style={styles.button} onPress={closeManual}>
-          <MaterialCommunityIcons
-            name="arrow-left"
-            size={24}
-            color={isDarkMode ? "white" : "black"}
-          />
-        </TouchableOpacity>
-        <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
-          Add an ingredient
-        </Text>
-        <TouchableOpacity style={styles.button}>
-          <MaterialCommunityIcons
-            name="check"
-            size={24}
-            color={isDarkMode ? "white" : "black"}
-            onPress={saveIngredient}
-          />
-        </TouchableOpacity>
-      </View>
-
       <ScrollView>
         <NameAndImage
           onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
@@ -342,7 +347,7 @@ const ManualIngredient = (props: Props) => {
 
         <View style={{ height: SPACING.medium }} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -351,14 +356,12 @@ export default ManualIngredient;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    paddingBottom: SPACING.medium,
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
     bottom: 0,
     backgroundColor: COLOURS.white,
     height: "100%",
     width: "100%",
-    paddingTop: SPACING.large + 16,
   },
 
   menu: {

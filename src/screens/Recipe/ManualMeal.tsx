@@ -1,12 +1,14 @@
 import {
+  KeyboardAvoidingView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { COLOURS, SPACING } from "../../util/GlobalStyles";
+import { COLOURS, ICON_SIZES, SPACING } from "../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Dimensions } from "react-native";
@@ -30,6 +32,8 @@ import { useNavigation } from "@react-navigation/native";
 import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
 import { readAllMeal } from "../../backends/Database";
+import { UserContext } from "../../backends/User";
+import { SafeAreaView } from "react-native-safe-area-context";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
   setMeal?: (meal: MealBuilder | null) => void;
@@ -46,7 +50,9 @@ const ManualMeal = (props: Props) => {
   const [mealBuilder, setMealBuilder] = useState(
     recipeContext.recipeBeingEdited || new MealBuilder()
   );
-
+  const { user, setUser } = useContext(UserContext);
+  const isDarkMode = user.setting.isDark();
+  const {height, width} = useWindowDimensions()
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -95,32 +101,52 @@ const ManualMeal = (props: Props) => {
   function closeManual() {
     // props.setIngredient && props.setIngredient(null);
     setRecipeContext({ ...recipeContext, recipeBeingEdited: null });
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Recipe" }],
-    });
+    navigation.popToTop();
   }
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.menu}>
-        <TouchableOpacity style={styles.button} onPress={closeManual}>
-          <MaterialCommunityIcons name="arrow-left" size={24} color="black" />
-        </TouchableOpacity>
-        <Text>Add a meal</Text>
-        <TouchableOpacity style={styles.button}>
+  navigation.setOptions({
+    title: "Add a meal",
+    headerTitleAlign: "center",
+    headerLeft: ()=>(
+      <TouchableOpacity
+          onPress={closeManual}
+      >
           <MaterialCommunityIcons
-            name="check"
-            size={24}
-            color="black"
-            onPress={saveRecipe}
+              name="arrow-left"
+              size={ICON_SIZES.medium}
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
           />
+      </TouchableOpacity>
+    ),
+    headerRight: ()=>(
+        <TouchableOpacity
+            onPress={saveRecipe}
+        >
+            <MaterialCommunityIcons
+                name="check"
+                size={ICON_SIZES.medium}
+                color={isDarkMode ? COLOURS.white : COLOURS.black}
+            />
         </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1 }}>
-        <ScrollView
-          style={{ width: "100%", height: "100%" }}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
+    )
+  })
+
+  return (
+    <SafeAreaView 
+      style={[
+        styles.container, 
+        {backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,}
+      ]}
+      edges={["left", "right"]}
+    >
+      <ScrollView
+        style={{ width: "100%", height: "100%" }}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
+      >
+        <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          keyboardVerticalOffset={100 - 25 * mealBuilder.getInstruction().length}
+          behavior={"position"}
         >
           <NameAndImage
             onImgChange={(str) => mealBuilder.setImgSrc(str)}
@@ -149,14 +175,19 @@ const ManualMeal = (props: Props) => {
           {getSeperator()}
           <RecipeIngredientList />
           {getSeperator()}
-          <Text style={{ marginBottom: SPACING.tiny }}>Instructions</Text>
+          <Text 
+            style={{ 
+              marginBottom: SPACING.tiny, 
+              color: isDarkMode ? COLOURS.white : COLOURS.black 
+            }}
+          >
+            Instructions
+          </Text>
           <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
           {getSeperator()}
-          <PrimaryButton text="Save" onPress={saveRecipe} />
-          <View style={{ height: SPACING.medium }} />
-        </ScrollView>
-      </View>
-    </View>
+        </KeyboardAvoidingView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -165,14 +196,12 @@ export default ManualMeal;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    paddingBottom: SPACING.medium,
     paddingLeft: SPACING.medium,
     paddingRight: SPACING.medium,
     bottom: 0,
     backgroundColor: COLOURS.white,
     height: "100%",
     width: "100%",
-    paddingTop: SPACING.large + 16,
     flex: 1,
   },
 

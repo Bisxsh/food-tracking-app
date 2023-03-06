@@ -1,11 +1,12 @@
 import { LogBox, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../Home";
 import ManualIngredient from "./Add/ManualIngredient";
 import BarcodeScanner from "./Add/BarcodeScanner";
 import { DEFAULT_HOME_DATA, HomeContext } from "./HomeContextProvider";
 import { COLOURS } from "../../../util/GlobalStyles";
+import { UserContext } from "../../../backends/User";
 
 type Props = {};
 
@@ -15,7 +16,8 @@ const HomeNavigator = (props: Props) => {
   LogBox.ignoreLogs([
     "Non-serializable values were found in the navigation state",
   ]);
-  const isDarkMode = false;
+  const { user, setUser } = useContext(UserContext);
+  const isDarkMode = user.setting.isDark();
   const [homeContext, setHomeContext] = React.useState(DEFAULT_HOME_DATA);
   return (
     <HomeContext.Provider value={{ homeContext, setHomeContext }}>
@@ -27,7 +29,6 @@ const HomeNavigator = (props: Props) => {
           },
           headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
           headerShadowVisible: false,
-          headerShown: false,
         })}
       >
         <Stack.Screen

@@ -355,7 +355,7 @@ export function Recipe(): JSX.Element {
           }
         })}
       </ScrollView>
-      <AddButton onPress={() => navigation.navigate("ManualIngredient")} />
+      <AddButton onPress={() => navigation.navigate("ManualMeal")} />
     </SafeAreaView>
   );
 }

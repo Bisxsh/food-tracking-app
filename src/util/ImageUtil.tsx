@@ -95,21 +95,25 @@ export async function deleteImage(url: string, verbose: string){
 }
 
 export async function deleteAllImage(verbose=false){
-    const dir:string[] = await FileSystem.readDirectoryAsync(imgDirectory)
-    if (dir.filter((v)=>v != "").length != 0){
-        for (const file of dir){
-            await FileSystem.deleteAsync(imgDirectory+file)
-        }
-        if (verbose){
-            if ((await FileSystem.readDirectoryAsync(imgDirectory)).length == 0){
-                console.log("SUCCESS: Delete image")
-            }else{
-                console.log("FAIL: Delete image")
+    try {
+        const dir:string[] = await FileSystem.readDirectoryAsync(imgDirectory)
+        if (dir.filter((v)=>v != "").length != 0){
+            for (const file of dir){
+                await FileSystem.deleteAsync(imgDirectory+file)
+            }
+            if (verbose){
+                if ((await FileSystem.readDirectoryAsync(imgDirectory)).length == 0){
+                    console.log("SUCCESS: Delete image")
+                }else{
+                    console.log("FAIL: Delete image")
+                }
+            }
+        }else{
+            if (verbose){
+                console.log("FAIL: Delete file (No such file)")
             }
         }
-    }else{
-        if (verbose){
-            console.log("FAIL: Delete file (No such file)")
-        }
-    }
+    } catch (error) {
+        console.warn(error)
+    }   
 }

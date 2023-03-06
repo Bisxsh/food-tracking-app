@@ -198,6 +198,7 @@ const IngredientPopup = (props: Props) => {
               ),
             });
             navigation.navigate("ManualIngredient");
+            props.setShowModal(false)
           }}
         >
           <MaterialCommunityIcons name="pencil" size={24} color="black" />
