@@ -41,7 +41,7 @@ function RecipeIngredientList() {
 
   return (
     <>
-      <Text style={{color: isDarkMode ? COLOURS.white : COLOURS.black}}>Ingredients</Text>
+      <Text style={{color: isDarkMode ? COLOURS.white : COLOURS.black, marginBottom: SPACING.small}}>Ingredients</Text>
 
       <View style={styles.container}>
         <View style={{ paddingTop: 10 }}>

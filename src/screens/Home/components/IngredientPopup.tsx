@@ -20,6 +20,7 @@ import SecondaryButton from "../../../components/SecondaryButton";
 import { useNavigation } from "@react-navigation/native";
 import { UserDataContext } from "../../../classes/UserData";
 import { HomeContext } from "./HomeContextProvider";
+import { UserContext } from "../../../backends/User";
 
 type Props = {
   showModal: boolean;
@@ -30,6 +31,8 @@ type Props = {
 const IngredientPopup = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
   const { homeContext, setHomeContext } = useContext(HomeContext);
+  const { user, setUser } = useContext(UserContext);
+  const isDarkMode = user.setting.isDark()
   const navigation = useNavigation<any>();
 
   function Header() {
@@ -37,19 +40,20 @@ const IngredientPopup = (props: Props) => {
       <View style={styles.header}>
         <IngredientTile ingredient={props.ingredient} />
         <View style={{ flexDirection: "column", justifyContent: "center" }}>
-          <Text style={{ fontSize: FONT_SIZES.body, fontWeight: "500" }}>
+          <Text style={{ fontSize: FONT_SIZES.body, fontWeight: "500", color: isDarkMode ? COLOURS.white : COLOURS.black, }}>
             {props.ingredient.name}
           </Text>
           <View style={styles.detailRow}>
             <MaterialCommunityIcons
               name="scale-balance"
               size={24}
-              color="black"
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
             />
             <Text
               style={{
                 marginLeft: SPACING.small,
                 fontSize: FONT_SIZES.small,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
               }}
             >
               {props.ingredient.weight} {props.ingredient.weightType}
@@ -59,12 +63,13 @@ const IngredientPopup = (props: Props) => {
             <MaterialCommunityIcons
               name="calendar-outline"
               size={24}
-              color="black"
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
             />
             <Text
               style={{
                 marginLeft: SPACING.small,
                 fontSize: FONT_SIZES.small,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
               }}
             >{`Use by: ${props.ingredient.expiryDate.toDateString()}`}</Text>
           </View>
@@ -131,7 +136,14 @@ const IngredientPopup = (props: Props) => {
         alignItems: "center",
       }}
     >
-      <View style={styles.container}>
+      <View style={[
+        styles.container,
+        {
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
+          borderColor:  isDarkMode ? COLOURS.darkGrey : COLOURS.white, 
+          borderWidth: 0.5
+        }
+      ]}>
         <Header />
         <View style={styles.categories}>
           {props.ingredient.categories.map((category) => {

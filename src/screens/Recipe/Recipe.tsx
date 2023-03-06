@@ -301,7 +301,7 @@ export function Recipe(): JSX.Element {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ paddingHorizontal: SPACING.medium, width: "100%" }}>
+      <View style={{ paddingLeft: SPACING.small, paddingRight: SPACING.medium, width: "100%" }}>
         <RecipeMenu
           sortFilters={RecipeSortingFilters}
           ingredientsSearch={ingredientsSearch}

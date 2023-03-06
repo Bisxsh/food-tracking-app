@@ -311,21 +311,21 @@ export async function readIngredient(value: any): Promise<any>{
 export async function searchIngredient(name?: string, quantity?: [number, number], categories?: Category[]):Promise<Ingredient[]|[]> {
     var sql: string = "select * from " + IngredientSchema.name
     var arg: any[] = []
-    if (name != undefined || quantity != undefined || categories != undefined){
+    if ((name != undefined && name != "") || quantity != undefined || categories != undefined){
         sql = sql + " where"
     }
     if (name != undefined && name != ""){
         sql = sql + " name like '%"+name+"%'"
     }
     if (quantity != undefined){
-        if (name != undefined){
+        if (name != undefined && name != ""){
             sql = sql + " and"
         }
         sql = sql + " quantity between "+quantity[0]+" AND "+quantity[1]
     }
     if (categories != undefined){
         for (const category of categories) {
-            if (name != undefined || quantity != undefined){
+            if ((name != undefined && name != "") || quantity != undefined){
                 sql = sql + " and"
             }
             sql = sql + " categoryId like '%,"+category._id+",%'"
