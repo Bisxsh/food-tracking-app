@@ -153,6 +153,7 @@ function RecipeIngredientList() {
       >
         <View style={styles.modalContainer}>
           <TextInput
+            placeholderTextColor="grey"
             placeholder={"Quantity"}
             keyboardType={"numeric"}
             style={styles.textInput}

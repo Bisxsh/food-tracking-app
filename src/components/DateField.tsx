@@ -45,22 +45,31 @@ const DateField = (props: Props) => {
   };
   return (
     <TouchableOpacity
-      style={{ position: "relative" }}
+      style={{ position: "relative"}}
       onPress={() => setShowCalendar(true)}
     >
       <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>
-      <Text style={styles(props).container}>{dateString}</Text>
-
-      <MaterialCommunityIcons
-        name="calendar"
-        size={24}
-        color="black"
-        style={styles(props).icon}
-      />
-
+      <View
+        style={[
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignContent: "center",
+          },
+          styles(props).container
+        ]}
+      >
+        <Text style={{margin: 10}}>{dateString}</Text>
+        <MaterialCommunityIcons
+          name="calendar"
+          size={24}
+          color="black"
+          style={{marginRight: 10, alignSelf: "center"}}
+        />
+      </View>
       {showCalendar && (
         <RNDateTimePicker
           value={new Date()}
@@ -81,7 +90,6 @@ const styles = (props: Props) =>
       backgroundColor: "white",
       height: 40,
       borderRadius: RADIUS.tiny,
-      padding: 10,
       borderColor: COLOURS.darkGrey,
       borderWidth: 1,
       marginTop: SPACING.small,
@@ -89,8 +97,8 @@ const styles = (props: Props) =>
     },
 
     icon: {
-      position: "absolute",
+      //position: "absolute",
       right: SPACING.small,
-      top: "50%",
+      //top: "50%",
     },
   });

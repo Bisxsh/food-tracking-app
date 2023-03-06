@@ -20,6 +20,7 @@ import { Ingredient } from '../../../backends/Ingredient';
 import { Nutrition } from '../../../backends/Nutrition';
 import Modal from 'react-native-modal/dist/modal';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 type Months = {
   short: {
@@ -453,7 +454,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             />
           </TouchableOpacity>
         </View>
-        <ScrollView
+        <KeyboardAwareScrollView
           style={{
             flex: 1,
             alignSelf: "stretch",
@@ -844,7 +845,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               }
             </View>
           </View>
-        </ScrollView> 
+        </KeyboardAwareScrollView> 
       </View>
     </SafeAreaView>
   );

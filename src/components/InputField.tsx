@@ -26,6 +26,7 @@ const InputField = (props: Props) => {
         {props.required ? "*" : ""}
       </Text>
       <TextInput
+        placeholderTextColor="grey"
         placeholder={props.textHint ? props.textHint : props.fieldName}
         onChangeText={(value: string) => props.onTextChange(value)}
         style={styles(props).input}

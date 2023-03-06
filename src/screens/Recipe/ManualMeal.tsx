@@ -34,6 +34,7 @@ import { Meal } from "../../backends/Meal";
 import { readAllMeal } from "../../backends/Database";
 import { UserContext } from "../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
   setMeal?: (meal: MealBuilder | null) => void;
@@ -139,54 +140,48 @@ const ManualMeal = (props: Props) => {
       ]}
       edges={["left", "right"]}
     >
-      <ScrollView
+      <KeyboardAwareScrollView
         style={{ width: "100%", height: "100%" }}
         contentContainerStyle={{ flexGrow: 1, paddingBottom: 60 }}
       >
-        <KeyboardAvoidingView
-          style={{ flex: 1 }}
-          keyboardVerticalOffset={100 - 25 * mealBuilder.getInstruction().length}
-          behavior={"position"}
+        <NameAndImage
+          onImgChange={(str) => mealBuilder.setImgSrc(str)}
+          onNameChange={(str) => mealBuilder.setName(str)}
+          imgStr={mealBuilder.getImgSrc()}
+          nameStr={mealBuilder.getName()}
+        />
+        {getSeperator()}
+        <ChipsSelectors
+          fieldName="Categories"
+          categories={categories}
+          setCategories={(categories: Category[]) =>
+            setCategories(categories)
+          }
+          center
+          onAdd={(category: Category) => {
+            setUserData({
+              ...userData,
+              ingredientCategories: [
+                ...userData.ingredientCategories,
+                category,
+              ],
+            });
+          }}
+        />
+        {getSeperator()}
+        <RecipeIngredientList />
+        {getSeperator()}
+        <Text 
+          style={{ 
+            marginBottom: SPACING.tiny, 
+            color: isDarkMode ? COLOURS.white : COLOURS.black 
+          }}
         >
-          <NameAndImage
-            onImgChange={(str) => mealBuilder.setImgSrc(str)}
-            onNameChange={(str) => mealBuilder.setName(str)}
-            imgStr={mealBuilder.getImgSrc()}
-            nameStr={mealBuilder.getName()}
-          />
-          {getSeperator()}
-          <ChipsSelectors
-            fieldName="Categories"
-            categories={categories}
-            setCategories={(categories: Category[]) =>
-              setCategories(categories)
-            }
-            center
-            onAdd={(category: Category) => {
-              setUserData({
-                ...userData,
-                ingredientCategories: [
-                  ...userData.ingredientCategories,
-                  category,
-                ],
-              });
-            }}
-          />
-          {getSeperator()}
-          <RecipeIngredientList />
-          {getSeperator()}
-          <Text 
-            style={{ 
-              marginBottom: SPACING.tiny, 
-              color: isDarkMode ? COLOURS.white : COLOURS.black 
-            }}
-          >
-            Instructions
-          </Text>
-          <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
-          {getSeperator()}
-        </KeyboardAvoidingView>
-      </ScrollView>
+          Instructions
+        </Text>
+        <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
+        {getSeperator()}
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

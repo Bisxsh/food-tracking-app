@@ -43,7 +43,11 @@ const HomeNavigator = (props: Props) => {
           component={ManualMeal}
           options={{}}
         />
-        <Stack.Screen name="RecipeInfo" component={RecipeInfo} />
+        <Stack.Screen 
+          name="RecipeInfo" 
+          component={RecipeInfo} 
+          options={{ headerShown: false }}
+        />
         <Stack.Screen name="BarcodeScanner" component={BarcodeScanner} />
       </Stack.Navigator>
     </RecipeContext.Provider>

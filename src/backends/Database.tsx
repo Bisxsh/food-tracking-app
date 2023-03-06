@@ -314,7 +314,7 @@ export async function searchIngredient(name?: string, quantity?: [number, number
     if (name != undefined || quantity != undefined || categories != undefined){
         sql = sql + " where"
     }
-    if (name != undefined){
+    if (name != undefined && name != ""){
         sql = sql + " name like '%"+name+"%'"
     }
     if (quantity != undefined){

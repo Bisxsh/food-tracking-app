@@ -48,6 +48,7 @@ const Instruction = (props: Props) => {
       <View style={{ flexDirection: "row", alignItems: "center" }}>
         <Text>{number}</Text>
         <TextInput
+          placeholderTextColor="grey"
           style={{ color: COLOURS.black }}
           onChangeText={(text) => setText(text)}
           value={text}

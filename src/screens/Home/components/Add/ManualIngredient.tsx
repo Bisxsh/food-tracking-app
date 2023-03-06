@@ -1,4 +1,6 @@
 import {
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -9,6 +11,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, ICON_SIZES, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { Dimensions } from "react-native";
 
@@ -38,6 +41,7 @@ const ManualIngredient = (props: Props) => {
   const [showNutrition, setShowNutrition] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
+  
 
   const navigation = useNavigation<any>();
   const ingredientBuilder =
@@ -127,7 +131,7 @@ const ManualIngredient = (props: Props) => {
       ]}
       edges={['left', 'right']}
     >
-      <ScrollView>
+      <KeyboardAwareScrollView>
         <NameAndImage
           onImgChange={(str) => ingredientBuilder.setImgSrc(str)}
           onNameChange={(str) => ingredientBuilder.setName(str)}
@@ -344,9 +348,7 @@ const ManualIngredient = (props: Props) => {
             {getSeperator()}
           </View>
         )}
-
-        <View style={{ height: SPACING.medium }} />
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 };

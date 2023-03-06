@@ -53,6 +53,7 @@ const IngredientsFilter = (props: Props) => {
         <View style={styles.modalContainer}>
           <ColourPicker colour={colour} setColour={setColour} />
           <TextInput
+            placeholderTextColor="grey"
             placeholder={"Category name"}
             style={styles.textInput}
             value={categoryName}

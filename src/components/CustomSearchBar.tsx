@@ -15,6 +15,7 @@ const CustomSearchBar = (props: Props) => {
   return (
     <View style={styles(props).container}>
       <TextInput
+        placeholderTextColor="grey"
         placeholder={props.textHint}
         onChangeText={(value: string) => props.setText(value)}
         style={{flexShrink: 1}}

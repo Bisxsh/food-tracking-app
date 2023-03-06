@@ -191,6 +191,7 @@ export function Account(): JSX.Element{
                         }}
                     >Name</Text>
                     <TextInput
+                        placeholderTextColor="grey"
                         style={{
                             backgroundColor: COLOURS.grey,
                             fontSize: FONT_SIZES.medium,
