@@ -207,21 +207,25 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
               if (!value){ 
                 Notifications.cancelAllScheduledNotificationsAsync() 
               }else{
-                // Send push notification at 10pm GMT every day
-                const trigger: Notifications.DailyTriggerInput = {
-                  hour: 22, // 10pm GMT
-                  minute: 0,
-                  //second: 0,
-                  repeats: true, // Send notification every day
-                };
-                
-                Notifications.scheduleNotificationAsync({
-                  content: {
-                    title: "Check your food",
-                    body: "You need to check your food that are expiring soon!",
-                  },
-                  trigger,
-                });
+                Notifications.getAllScheduledNotificationsAsync().then((list)=>{
+                  if (user.setting.notification && list.length == 0){
+                    // Send push notification at 10pm GMT every day
+                    const trigger: Notifications.DailyTriggerInput = {
+                      hour: 22, // 10pm GMT
+                      minute: 0,
+                      //second: 0,
+                      repeats: true, // Send notification every day
+                    };
+                    
+                    Notifications.scheduleNotificationAsync({
+                      content: {
+                        title: "Check your food",
+                        body: "You need to check your food that are expiring soon!",
+                      },
+                      trigger,
+                    });
+                  }
+                })
               }
             }
           )}
