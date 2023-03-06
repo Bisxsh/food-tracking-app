@@ -46,7 +46,7 @@ const HomeNavigator = (props: Props) => {
         <Stack.Screen 
           name="RecipeInfo" 
           component={RecipeInfo} 
-          options={{ headerShown: false }}
+          options={{}}
         />
         <Stack.Screen name="BarcodeScanner" component={BarcodeScanner} />
       </Stack.Navigator>
