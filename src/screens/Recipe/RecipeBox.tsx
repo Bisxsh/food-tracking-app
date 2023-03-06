@@ -56,7 +56,7 @@ const RecipeBox = (props: Props) => {
   );
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: isDarkMode ? COLOURS.darker : Colors.lighter,
   };
 
   const [isFavourite, setIsFavourite] = useState(false);

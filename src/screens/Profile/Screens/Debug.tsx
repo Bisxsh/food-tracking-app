@@ -1,5 +1,4 @@
 import React, {useContext, useState} from 'react';
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 
@@ -33,7 +32,7 @@ export function Debug(): JSX.Element{
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             }}
             edges={['left', 'right']}
         >
@@ -50,7 +49,7 @@ export function Debug(): JSX.Element{
                 >
                     <View
                         style={{
-                            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                             flex: 1,
                             flexDirection: "column",
                             alignItems: "flex-start",
@@ -70,7 +69,7 @@ export function Debug(): JSX.Element{
                             onValueChange={(value, index)=>{setSelectedTable(value)}}
                             style={{
                                 alignSelf:"stretch",
-                                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                                backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                             }}
                         >
                             <Picker.Item label="Ingredient" value="Ingredient" style={{color: isDarkMode ? COLOURS.textTouchable : COLOURS.black,}}/>
@@ -102,7 +101,7 @@ export function Debug(): JSX.Element{
                     </View>
                     <View
                         style={{
-                            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                             justifyContent: "space-around",
                             alignItems: "flex-start",
                             alignContent: "flex-start",

@@ -10,8 +10,6 @@ import {
   Alert, 
   AlertButton,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import * as Updates from 'expo-updates';
 import * as Notifications from "expo-notifications";
 
@@ -188,13 +186,13 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
     <SafeAreaView
       style={{
           flex: 1,
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
       edges={['left', 'right']}
     >
       <ScrollView
         style={{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           flex: 1,
         }}
       >
@@ -209,21 +207,25 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
               if (!value){ 
                 Notifications.cancelAllScheduledNotificationsAsync() 
               }else{
-                // Send push notification at 10pm GMT every day
-                const trigger: Notifications.DailyTriggerInput = {
-                  hour: 22, // 10pm GMT
-                  minute: 0,
-                  //second: 0,
-                  repeats: true, // Send notification every day
-                };
-                
-                Notifications.scheduleNotificationAsync({
-                  content: {
-                    title: "Check your food",
-                    body: "You need to check your food that are expiring soon!",
-                  },
-                  trigger,
-                });
+                Notifications.getAllScheduledNotificationsAsync().then((list)=>{
+                  if (user.setting.notification && list.length == 0){
+                    // Send push notification at 10pm GMT every day
+                    const trigger: Notifications.DailyTriggerInput = {
+                      hour: 22, // 10pm GMT
+                      minute: 0,
+                      //second: 0,
+                      repeats: true, // Send notification every day
+                    };
+                    
+                    Notifications.scheduleNotificationAsync({
+                      content: {
+                        title: "Check your food",
+                        body: "You need to check your food that are expiring soon!",
+                      },
+                      trigger,
+                    });
+                  }
+                })
               }
             }
           )}

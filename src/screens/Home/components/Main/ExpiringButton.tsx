@@ -17,7 +17,6 @@ import {
   RADIUS,
   SPACING,
 } from "../../../../util/GlobalStyles";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import PrimaryButton from "../../../../components/PrimaryButton";
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
     //flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.white,
+    backgroundColor: COLOURS.white,
     padding: SPACING.medium,
     borderRadius: RADIUS.standard,
     ...DROP_SHADOW,

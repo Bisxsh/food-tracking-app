@@ -12,7 +12,6 @@ import RNDateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { COLOURS, RADIUS, SPACING } from "../util/GlobalStyles";
 import { UserContext } from "../backends/User";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 type Props = {
   required?: boolean;
@@ -49,7 +48,7 @@ const DateField = (props: Props) => {
       style={{ position: "relative" }}
       onPress={() => setShowCalendar(true)}
     >
-      <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+      <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
         {props.fieldName}
         {props.required ? "*" : ""}
       </Text>

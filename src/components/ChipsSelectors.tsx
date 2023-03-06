@@ -4,7 +4,6 @@ import Chips from "./Chips";
 import { Category } from "../classes/Categories";
 import IngredientsFilter from "./IngredientsFilter";
 import { COLOURS, SPACING } from "../util/GlobalStyles";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { UserContext } from "../backends/User";
 
 type Props = {
@@ -33,7 +32,7 @@ const ChipsSelectors = (props: Props) => {
       <Text
         style={{
           marginBottom: SPACING.small,
-          color: isDarkMode ? Colors.white : COLOURS.black,
+          color: isDarkMode ? COLOURS.white : COLOURS.black,
         }}
       >
         {props.fieldName}

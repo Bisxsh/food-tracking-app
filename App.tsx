@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { View, Text } from "react-native";
 
-import { Recipe } from "./src/screens/Recipe/Recipe";
 import { COLOURS, FONT_SIZES, SPACING } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
@@ -14,12 +12,10 @@ import HomeNavigator from "./src/screens/Home/components/HomeNavigator";
 import RecipeNavigator from "./src/screens/Recipe/RecipeNavigator";
 import { DEFAULT_USER, UserContext } from "./src/backends/User";
 import * as DB from "./src/backends/Database";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 import { UserSetting } from "./src/backends/UserSetting";
 import { InitialEntry } from "./src/screens/InitialEntry";
 import registerNNPushToken from "native-notify";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { getRecipes, getSaved, getCustom } from "./src/util/GetRecipe";
 
@@ -74,23 +70,26 @@ function App(): JSX.Element {
   const isDarkMode = user.setting.isDark();
 
   useEffect(() => {
-    if (user.setting.notification){
-      // Send push notification at 10pm GMT every day
-      const trigger: Notifications.DailyTriggerInput = {
-        hour: 22, // 10pm GMT
-        minute: 0,
-        //second: 0,
-        repeats: true, // Send notification every day
-      };
-      
-      Notifications.scheduleNotificationAsync({
-        content: {
-          title: "Check your food",
-          body: "You need to check your food that are expiring soon!",
-        },
-        trigger,
-      });
-    }
+    Notifications.getAllScheduledNotificationsAsync().then((list)=>{
+      if (user.setting.notification && list.length == 0){
+        // Send push notification at 10pm GMT every day
+        const trigger: Notifications.DailyTriggerInput = {
+          hour: 22, // 10pm GMT
+          minute: 0,
+          //second: 0,
+          repeats: true, // Send notification every day
+        };
+        
+        Notifications.scheduleNotificationAsync({
+          content: {
+            title: "Check your food",
+            body: "You need to check your food that are expiring soon!",
+          },
+          trigger,
+        });
+      }
+    })
+    
     Notifications.getAllScheduledNotificationsAsync().then((v)=>{
       console.log("Number of notications scheduled: "+v.length)
     })
@@ -99,7 +98,7 @@ function App(): JSX.Element {
   return (
     <ActionSheetProvider>
       <MenuProvider style={{
-        backgroundColor: isDarkMode ? Colors.darker : Colors.white
+        backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white
       }}>
         <UserContext.Provider value={{ user, setUser }}>
           <UserDataContext.Provider value={{ userData, setUserData }}>
@@ -135,8 +134,8 @@ function App(): JSX.Element {
                     headerShown: false,
                     tabBarStyle: {
                       backgroundColor: isDarkMode
-                        ? Colors.darker
-                        : Colors.white,
+                        ? COLOURS.darker
+                        : COLOURS.white,
                     },
                   }}
                 >

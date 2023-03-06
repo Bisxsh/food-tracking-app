@@ -12,7 +12,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
 
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { COLOURS, ICON_SIZES, SPACING } from "../../../util/GlobalStyles";
 import { User, UserContext } from "../../../backends/User";
 import { useNavigation } from "@react-navigation/native";
@@ -114,7 +113,7 @@ const IngredientEdit = (navigation: ScreenProp) => {
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                 position: "absolute",
                 paddingBottom: SPACING.medium,
                 paddingLeft: SPACING.medium,
@@ -227,7 +226,7 @@ const IngredientEdit = (navigation: ScreenProp) => {
                     size={24}
                     color={isDarkMode ? "white" : "black"}
                 />
-                <Text style={{ color: isDarkMode ? Colors.white : Colors.darker }}>
+                <Text style={{ color: isDarkMode ? COLOURS.white : COLOURS.darker }}>
                     Nutritional information
                 </Text>
                 </TouchableOpacity>

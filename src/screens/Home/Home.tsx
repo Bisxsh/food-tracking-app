@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
 
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { UserContext } from "../../backends/User";
 import { UserDataContext } from "../../classes/UserData";
 import AddButton from "../../components/AddButton";
-import { SPACING } from "../../util/GlobalStyles";
+import { COLOURS, SPACING } from "../../util/GlobalStyles";
 import AddMenu from "./components/Add/AddMenu";
 import IndgredientView from "./components/Main/IndgredientView";
 import HomeMenu from "./components/Menu/HomeMenu";
@@ -15,6 +14,7 @@ import {
   HomeSortingFilters,
 } from "./components/Menu/HomeSortingFilters";
 import { differenceInDays, isSameDay } from "date-fns";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function Home(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -70,12 +70,13 @@ export function Home(): JSX.Element {
     <>
       <SafeAreaView
         style={{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: SPACING.extraLarge,
+          paddingTop: SPACING.small,
         }}
+        edges={['left', 'right', "top"]}
       >
         <HomeMenu
           sortFilters={HomeSortingFilters}

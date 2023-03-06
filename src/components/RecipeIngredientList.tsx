@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   TextInput,
+  useWindowDimensions,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import CustomSearchBar from "./CustomSearchBar";
@@ -33,6 +34,7 @@ function RecipeIngredientList() {
   const [showModal, setShowModal] = useState(false);
   const [ingredientBeingEdited, setIngredientBeingEdited] =
     useState<IngredientBuilder | null>(null);
+  const {height, width} = useWindowDimensions()
 
   return (
     <>
@@ -45,7 +47,7 @@ function RecipeIngredientList() {
               textHint={"Search Ingredient"}
               text={ingredientsSearch}
               setText={setIngredientsSearch}
-              width={360}
+              width={width - SPACING.medium*2 - SPACING.small*2}
               height={40}
             />
             {ingredientList

@@ -181,7 +181,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
       <View style={{
         ...styles.header, 
         ...{
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         }
       }}>
         {prop.ingredient.imgSrc != undefined && <Image
@@ -300,8 +300,8 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
       <View style={{
         ...styles.container, 
         ...{
-          backgroundColor: prop.isDarkMode ? Colors.darker : Colors.white,
-          borderColor:  prop.isDarkMode ? COLOURS.darkGrey : Colors.white, 
+          backgroundColor: prop.isDarkMode ? COLOURS.darker : COLOURS.white,
+          borderColor:  prop.isDarkMode ? COLOURS.darkGrey : COLOURS.white, 
           borderWidth: 0.5
         }
       }}>
@@ -420,7 +420,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
     <SafeAreaView
       style={{
         flex: 1,
-        backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+        backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
       edges={['left', 'right', "top"]}
     >
@@ -431,7 +431,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
         }}>
         <View
           style={{
-            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             flexDirection: "row",
             justifyContent: "flex-end",
             margin: SPACING.small,
@@ -524,7 +524,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               margin: SPACING.medium,
               borderColor: COLOURS.grey,
               borderWidth: 1,
-              backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+              backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
               borderRadius: RADIUS.standard,
             }}
           >
@@ -578,8 +578,8 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 hidePointsAtIndex={[]}
                 withShadow={false}
                 chartConfig={{
-                  backgroundGradientFrom: isDarkMode ? Colors.darker : Colors.white,
-                  backgroundGradientTo: isDarkMode ? Colors.darker : Colors.white,
+                  backgroundGradientFrom: isDarkMode ? COLOURS.darker : COLOURS.white,
+                  backgroundGradientTo: isDarkMode ? COLOURS.darker : COLOURS.white,
                   decimalPlaces: 0,
                   color: (opacity = 1) => COLOURS.primary,
                   labelColor: (opacity = 1) => isDarkMode ? COLOURS.white: COLOURS.black,

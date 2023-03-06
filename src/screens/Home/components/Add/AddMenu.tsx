@@ -13,7 +13,7 @@ import { IngredientBuilder } from "../../../../classes/IngredientClass";
 import { useNavigation } from "@react-navigation/native";
 import { HomeContext } from "../HomeContextProvider";
 import { UserContext } from "../../../../backends/User";
-import { Colors } from "react-native/Libraries/NewAppScreen";
+
 
 type Props = {
   showModal: boolean;
@@ -26,7 +26,7 @@ const AddMenu = (props: Props) => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
 
   const navigation = useNavigation<any>();
-
+  
   return (
     <>
       <Modal
@@ -45,7 +45,7 @@ const AddMenu = (props: Props) => {
         <View
           style={[
             styles.container,
-            { backgroundColor: isDarkMode ? COLOURS.grey : Colors.white },
+            { backgroundColor: isDarkMode ? COLOURS.grey : COLOURS.white },
           ]}
         >
           <TouchableOpacity style={[styles.button, styles.primary]}>
@@ -67,7 +67,7 @@ const AddMenu = (props: Props) => {
               styles.button,
               styles.secondary,
               {
-                backgroundColor: isDarkMode ? Colors.grey : Colors.white,
+                backgroundColor: isDarkMode ? COLOURS.grey : COLOURS.white,
               },
             ]}
             onPress={() => {

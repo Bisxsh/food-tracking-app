@@ -14,13 +14,13 @@ export function Help(): JSX.Element{
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             }}
             edges={['left', 'right']}
         >
             <View
                 style={{
-                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                    backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     flex: 1,
                 }}
             >

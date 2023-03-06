@@ -14,7 +14,6 @@ import {
   Pressable,
   useWindowDimensions,
 } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 
 import { User, UserContext, DietReqs } from "../backends/User";
 import {
@@ -143,7 +142,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
     <SafeAreaView
       style={{
           flex: 1,
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
       edges={['left', 'right']}
     >
@@ -152,14 +151,14 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
           flex: 1,
           flexDirection: "column",
           marginTop: SPACING.large,
-          backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         }}
       >
         <Text
           style={{
             fontSize: FONT_SIZES.heading,
             margin: SPACING.medium,
-            color: isDarkMode ? Colors.white : Colors.black,
+            color: isDarkMode ? COLOURS.white : COLOURS.black,
             textAlign: "center",
           }}
         >
@@ -167,7 +166,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
         </Text>
         <ScrollView
           style={{
-            backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             flex: 1,
             alignSelf: "stretch",
           }}
@@ -240,7 +239,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
                 alignSelf: "flex-start",
                 marginTop: SPACING.small,
                 marginHorizontal: SPACING.medium,
-                color: isDarkMode ? Colors.white : Colors.black,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
               }}
             >
               Name
@@ -292,7 +291,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
                 style={{
                   fontSize: FONT_SIZES.medium,
                   alignSelf: "flex-start",
-                  color: isDarkMode ? Colors.white : Colors.black,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
                 }}
               >
                 Dietary Requirements

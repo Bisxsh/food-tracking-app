@@ -122,13 +122,13 @@ export function Account(): JSX.Element{
         <SafeAreaView
             style={{
                 flex: 1,
-                backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             }}
             edges={['left', 'right']}
         >
             <ScrollView
                 style={{
-                    backgroundColor: isDarkMode ? Colors.darker : Colors.white,
+                    backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     flex: 1,
                 }}
             >
@@ -187,7 +187,7 @@ export function Account(): JSX.Element{
                             alignSelf: "flex-start",
                             marginTop: SPACING.small,
                             marginHorizontal: SPACING.medium,
-                            color: isDarkMode ? Colors.white : Colors.black,
+                            color: isDarkMode ? COLOURS.white : COLOURS.black,
                         }}
                     >Name</Text>
                     <TextInput
@@ -235,7 +235,7 @@ export function Account(): JSX.Element{
                             style={{
                                 fontSize: FONT_SIZES.medium,
                                 alignSelf: "flex-start",
-                                color: isDarkMode ? Colors.white : Colors.black,
+                                color: isDarkMode ? COLOURS.white : COLOURS.black,
                             }}
                         >Dietary Requirements</Text>
                     </View>
