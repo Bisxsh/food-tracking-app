@@ -172,8 +172,11 @@ export class IngredientBuilder {
     return this;
   }
 
-  public setQuantity(quantity: number): IngredientBuilder {
+  public setQuantity(quantity: number, setUsed: boolean = false): IngredientBuilder {
     this.quantity = quantity;
+    if (quantity == 0 && setUsed){
+      this.useDate = new Date()
+    }
     return this;
   }
 

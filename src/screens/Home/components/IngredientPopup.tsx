@@ -160,7 +160,7 @@ const IngredientPopup = (props: Props) => {
                 storedIngredients: userData.storedIngredients.map((p) => {
                   if (p.id === props.ingredient.id) {
                     return IngredientBuilder.fromIngredient(props.ingredient)
-                      .setQuantity(0)
+                      .setQuantity(0, true)
                       .build();
                   }
                   return p;
@@ -178,7 +178,7 @@ const IngredientPopup = (props: Props) => {
                 storedIngredients: userData.storedIngredients.map((p) => {
                   if (p.id === props.ingredient.id) {
                     return IngredientBuilder.fromIngredient(props.ingredient)
-                      .setQuantity(p.quantity - 1)
+                      .setQuantity(p.quantity - 1, true)
                       .build();
                   }
                   return p;
