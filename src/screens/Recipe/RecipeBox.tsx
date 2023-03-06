@@ -44,6 +44,8 @@ type Props = {
   recipeIngredients: any;
   recipeLink: string;
   source: string;
+  nutrition: any[];
+  servings: string;
 };
 
 const RecipeBox = (props: Props) => {
@@ -120,6 +122,8 @@ const RecipeBox = (props: Props) => {
             viewedRecipeFavourite: isFavourite,
             viewedRecipeSource: props.source,
             viewedRecipeIngredients: ingredientStrings,
+            viewedRecipeNutrients: props.nutrition,
+            viewedRecipeServings: Number.parseInt(props.servings),
             recipeBeingViewed: new Meal(
               props.recipeName,
               [],

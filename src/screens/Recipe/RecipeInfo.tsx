@@ -27,6 +27,8 @@ const RecipeInfo = (props: Props) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation<any>();
   const meal = recipeContext.recipeBeingViewed || DUMMY_MEALS[0];
+  const [servings, setServings] = useState(recipeContext.viewedRecipeServings);
+  console.log("INFO");
   console.log(recipeContext.recipeBeingViewed);
 
   async function updateFavorite() {
@@ -77,6 +79,10 @@ const RecipeInfo = (props: Props) => {
       Alert.alert(`Don't know how to open this URL: ${url}`);
     }
   };
+
+  function calculateServingValue(num: number) {
+    return Math.round((num / recipeContext.viewedRecipeServings) * servings);
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -144,12 +150,16 @@ const RecipeInfo = (props: Props) => {
         {getSeperator()}
         <View style={[styles.sourceContainer, { marginTop: SPACING.medium }]}>
           <Text style={{ fontSize: FONT_SIZES.medium }}>
-            Calories: {"1057 kcal"}
+            Calories per serving:{" "}
+            {Math.round(
+              recipeContext.viewedRecipeNutrients[0].quantity /
+                recipeContext.viewedRecipeServings
+            )}
           </Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Text style={{ marginRight: SPACING.small }}>Serving Size:</Text>
             <TouchableOpacity
-              onPress={openURI}
+              onPress={() => setServings((i) => i - 1)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -162,9 +172,9 @@ const RecipeInfo = (props: Props) => {
                 color={COLOURS.primary}
               />
             </TouchableOpacity>
-            <Text style={{ marginHorizontal: SPACING.tiny }}>{"4"}</Text>
+            <Text style={{ marginHorizontal: SPACING.tiny }}>{servings}</Text>
             <TouchableOpacity
-              onPress={openURI}
+              onPress={() => setServings((i) => i + 1)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -187,7 +197,7 @@ const RecipeInfo = (props: Props) => {
             marginTop: SPACING.small,
           }}
         >
-          Note: Values provided are estimated and may differ from true values
+          Note: Values provided are estimates only and may not be accurate
         </Text>
 
         {getSeperator()}
@@ -204,7 +214,8 @@ const RecipeInfo = (props: Props) => {
                   fontSize: FONT_SIZES.medium,
                 }}
               >
-                {split.slice(0, 2).join(" ")}{" "}
+                {calculateServingValue(Number.parseInt(split[0])) || split[0]}{" "}
+                {split[1]}{" "}
               </Text>
               <Text
                 style={{
@@ -216,6 +227,25 @@ const RecipeInfo = (props: Props) => {
             </View>
           );
         })}
+        <View style={styles.nutrientContainer}>
+          {recipeContext.viewedRecipeNutrients.map((nutrient, index) => (
+            <View
+              key={index}
+              style={[
+                styles.nutrientRow,
+                index % 2 == 1 ? { backgroundColor: COLOURS.grey } : {},
+                index == recipeContext.viewedRecipeNutrients.length - 1
+                  ? styles.bottomRow
+                  : {},
+              ]}
+            >
+              <Text>{nutrient.label}</Text>
+              <Text>
+                {calculateServingValue(nutrient.quantity)} {nutrient.unit}
+              </Text>
+            </View>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
@@ -266,15 +296,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
-    paddingLeft: SPACING.medium,
-    paddingRight: SPACING.medium,
   },
 
   ingredient: {
     flexDirection: "row",
-    marginHorizontal: SPACING.medium,
     paddingVertical: SPACING.medium,
     borderBottomColor: COLOURS.darkGrey,
     borderBottomWidth: 1,
+  },
+
+  nutrientContainer: {
+    borderColor: COLOURS.darkGrey,
+    borderWidth: 1,
+    borderRadius: RADIUS.standard,
+    marginVertical: SPACING.medium,
+    marginBottom: SPACING.extraLarge,
+  },
+
+  nutrientRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: SPACING.medium,
+    paddingHorizontal: SPACING.medium,
+  },
+
+  topRow: {
+    borderTopLeftRadius: RADIUS.standard,
+    borderTopRightRadius: RADIUS.standard,
+  },
+
+  bottomRow: {
+    borderBottomLeftRadius: RADIUS.standard,
+    borderBottomRightRadius: RADIUS.standard,
   },
 });

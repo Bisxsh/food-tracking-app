@@ -8,6 +8,8 @@ export interface RecipeContext {
   viewedRecipeFavourite: boolean;
   viewedRecipeSource: string;
   viewedRecipeIngredients: string[];
+  viewedRecipeNutrients: any[];
+  viewedRecipeServings: number;
 }
 
 export interface RecipeContextInterface {
@@ -21,6 +23,8 @@ export const DEFAULT_RECIPE_DATA: RecipeContext = {
   viewedRecipeFavourite: false,
   viewedRecipeSource: "",
   viewedRecipeIngredients: [],
+  viewedRecipeNutrients: [],
+  viewedRecipeServings: 0,
 };
 
 export const DEFAULT_RECIPE_CONTEXT: RecipeContextInterface = {

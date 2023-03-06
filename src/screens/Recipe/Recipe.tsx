@@ -52,43 +52,44 @@ export function Recipe(): JSX.Element {
   );
 
   async function readMeals() {
-    console.log("reading")
-    console.log(await readAllMeal())
+    // console.log("reading");
+    // console.log(await readAllMeal());
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
         let temp2: Meal[] = [];
         meals.map((meal) => {
-          if(meal.url != ""){
-          temp.push(
-            new Meal(
-              meal.name,
-              meal.categoryId,
-              meal.instruction,
-              meal.ingredient,
-              meal._id,
-              meal.url,
-              meal.imgSrc
-            )
-          );
-        }
-      else{
-        temp2.push(
-          new Meal(
-            meal.name,
-            meal.categoryId,
-            meal.instruction,
-            meal.ingredient,
-            meal._id,
-            meal.url,
-            meal.imgSrc
-          )
-        );
-      }});
-        
+          if (meal.url != "") {
+            temp.push(
+              new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+              )
+            );
+          } else {
+            temp2.push(
+              new Meal(
+                meal.name,
+                meal.categoryId,
+                meal.instruction,
+                meal.ingredient,
+                meal._id,
+                meal.url,
+                meal.imgSrc
+              )
+            );
+          }
+        });
+
         setUserData({ ...userData, savedRecipes: temp, customRecipes: temp2 });
       })
-      .then(() => genSaved()).then(()=> genCustom());
+      .then(() => genSaved())
+      .then(() => genCustom());
   }
 
   useEffect(() => {
@@ -144,18 +145,18 @@ export function Recipe(): JSX.Element {
 
   function switchList(buttonNum: number) {
     if (buttonNum === 0) {
-      console.log("switch to explore")
+      console.log("switch to explore");
       setRecipes(explore);
       sortList();
     }
     if (buttonNum === 1) {
-      console.log("switch to saved")
-      console.log(saved)
+      console.log("switch to saved");
+      console.log(saved);
       setRecipes(saved);
       sortList();
     }
     if (buttonNum === 2) {
-      console.log("switch to custom")
+      console.log("switch to custom");
       setRecipes(custom);
       sortList();
     }
@@ -316,7 +317,15 @@ export function Recipe(): JSX.Element {
             //TODO implement allergies here
             [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
-            console.log(recipe);
+            console.log("--------------------");
+            console.log(recipe["recipe"]["totalNutrients"]["ENERC_KCAL"]);
+            console.log(recipe["recipe"]["totalNutrients"]["PROCNT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FAT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FASAT"]);
+            console.log(recipe["recipe"]["totalNutrients"]["CHOCDF.net"]);
+            console.log(recipe["recipe"]["totalNutrients"]["SUGAR"]);
+            console.log(recipe["recipe"]["totalNutrients"]["FIBTG"]);
+            console.log(recipe["recipe"]["totalNutrients"]["NA"]);
 
             return (
               <RecipeBox
@@ -329,8 +338,17 @@ export function Recipe(): JSX.Element {
                 recipeIngredients={recipe["recipe"]["ingredients"]}
                 recipeLink={recipe["recipe"]["url"]}
                 source={recipe["recipe"]["source"]}
-                // energy={recipe["recipe"]["ENERC_KCAL"]}
-                // calories={recipe["recipe"]["calories"]}
+                nutrition={[
+                  recipe["recipe"]["totalNutrients"]["ENERC_KCAL"],
+                  recipe["recipe"]["totalNutrients"]["PROCNT"],
+                  recipe["recipe"]["totalNutrients"]["FAT"],
+                  recipe["recipe"]["totalNutrients"]["FASAT"],
+                  recipe["recipe"]["totalNutrients"]["CHOCDF.net"],
+                  recipe["recipe"]["totalNutrients"]["SUGAR"],
+                  recipe["recipe"]["totalNutrients"]["FIBTG"],
+                  recipe["recipe"]["totalNutrients"]["NA"],
+                ]}
+                servings={recipe["recipe"]["yield"]}
               />
             );
           }
