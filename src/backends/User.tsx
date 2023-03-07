@@ -58,6 +58,9 @@ export class User{
     categories: Category[]
 
     constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean, categories?: Category[]){
+        if (_id != undefined){
+            User.count = Math.max(_id, User.count)
+        }
         this._id = (_id != undefined)? _id: User.count ++
         this.name = name
         this.imgSrc = imgSrc

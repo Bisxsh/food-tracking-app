@@ -171,7 +171,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
             alignSelf: "stretch",
           }}
         >
-          {img != undefined && (
+          {img != undefined && img != "" && (
             <TouchableOpacity
               onPress={() => {
                 getPhoto(
@@ -195,7 +195,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
               />
             </TouchableOpacity>
           )}
-          {img == undefined && (
+          {(img == undefined || img == "") && (
             <View
               style={{
                 alignItems: "center",

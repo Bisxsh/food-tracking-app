@@ -1,4 +1,7 @@
 import { Nutrition } from "./Nutrition";
+import * as IngredientClass from "../classes/IngredientClass"
+import * as Categories from "../classes/Categories"
+import * as DB from "./Database"
 
 export class Ingredient {
   _id: number;
@@ -31,6 +34,9 @@ export class Ingredient {
     expiryDate?: Date,
     barcode?: number,
     memo?: string){
+        if (_id != undefined){
+          Ingredient.count = Math.max(_id, Ingredient.count)
+        }
         this._id = (_id != undefined)? _id: Ingredient.count ++
         this.name = name
         this.quantity = quantity
@@ -45,25 +51,43 @@ export class Ingredient {
         this.categoryId = categoryId
         this.barcode = barcode
         this.memo = (memo != undefined)? memo: ""
-    }
+  }
 
-    toList(): any[]{
-        return [
-            this._id, 
-            this.name, 
-            this.quantity, 
-            this.weight, 
-            this.weightUnit, 
-            this.servingSize,
-            this.servingSizeUnit,
-            this.imgSrc, 
-            (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
-            (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
-            JSON.stringify(this.nutrition), 
-            ","+this.categoryId.toString()+",", 
-            this.barcode, 
-            this.memo];
-    }
+  toList(): any[]{
+      return [
+          this._id, 
+          this.name, 
+          this.quantity, 
+          this.weight, 
+          this.weightUnit, 
+          this.servingSize,
+          this.servingSizeUnit,
+          this.imgSrc, 
+          (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
+          (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
+          JSON.stringify(this.nutrition), 
+          ","+this.categoryId.toString()+",", 
+          this.barcode, 
+          this.memo];
+  }
+
+  async toIngredientClass(): Promise<IngredientClass.Ingredient>{
+    var categories = await DB.readAllCategory()
+    return new IngredientClass.Ingredient(
+      this.name,
+      (this.weight == undefined)? 0: this.weight,
+      IngredientClass.weightUnit[this.weightUnit as ("grams" | "kg")],
+      (this.servingSize == undefined)? 0: this.servingSize,
+      IngredientClass.weightUnit[this.servingSizeUnit as ("grams" | "kg")],
+      this.quantity,
+      this.categoryId.map((id)=>categories.find((value)=>value._id==id)!.toCategoryClass()),
+      (this.imgSrc == undefined)? "": this.imgSrc,
+      (this.expiryDate == undefined)? new Date(): this.expiryDate,
+      (this.useDate == undefined)? new Date(): this.useDate,
+      this.nutrition.toNutritionClass(),
+      this._id,
+    )
+  }
 
   //#region getters and setters
 
@@ -112,6 +136,7 @@ export class Ingredient {
   public get getId(): number {
     return this._id;
   }
+
   public set setId(id: number) {
     this._id = id;
   }

@@ -1,3 +1,4 @@
+import * as CategoryClass from "../classes/Categories"
 
 export class Category{
     _id!: number
@@ -6,6 +7,9 @@ export class Category{
     active?: boolean
 
     constructor(name: string, colour: string, _id?:number, active?: boolean){
+        if (_id != undefined){
+            Category.count = Math.max(_id, Category.count)
+        }
         this._id = (_id != undefined)? _id: Category.count ++
         this.name = name
         this.colour = colour
@@ -14,6 +18,10 @@ export class Category{
 
     toList(): any[]{
         return [this._id, this.name, this.colour, this.active];
+    }
+
+    toCategoryClass(): CategoryClass.Category{
+        return {id: this._id, name: this.name, colour: this.colour, active: this.active}
     }
 
     static count = 0;

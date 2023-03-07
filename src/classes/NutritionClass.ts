@@ -1,3 +1,5 @@
+import * as NutritionBack from "../backends/Nutrition"
+
 export class Nutrition {
   private carbs: number;
   private energy: number;
@@ -27,6 +29,29 @@ export class Nutrition {
     this.salt = salt;
     this.sugar = sugar;
   }
+
+  toNutritionBack(): NutritionBack.Nutrition{
+    return new NutritionBack.Nutrition(
+      undefined,
+      this.carbs,
+      undefined,
+      this.energy,
+      undefined,
+      this.protein,
+      undefined,
+      this.fat,
+      undefined,
+      this.saturatedFat,
+      undefined,
+      this.fibre,
+      undefined,
+      this.salt,
+      undefined,
+      this.sugar,
+      undefined
+    )
+  }
+
   //#region Get and Setters
   public get getCarbs(): number {
     return this.carbs;

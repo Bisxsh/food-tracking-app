@@ -1,5 +1,7 @@
-import { Category } from "./Categories";
+import { Category, toCategoryBack } from "./Categories";
 import { Nutrition, NutritionBuilder } from "./NutritionClass";
+import * as IngredientBack from "../backends/Ingredient"
+import * as DB from "../backends/Database"
 
 export enum weightUnit {
   grams = "grams",
@@ -46,6 +48,23 @@ export class Ingredient {
     this.expiryDate = expiryDate;
     this.nutrition = nutrition;
     this.id = id;
+  }
+
+  toIngredientBack(): IngredientBack.Ingredient{
+    return new IngredientBack.Ingredient(
+      this.name,
+      this.quantity,
+      this.weightType,
+      this.servingSizeType,
+      this.nutrition.toNutritionBack(),
+      this.categories.map((v)=>toCategoryBack(v)).map((v)=>v._id),
+      this.id,
+      this.weight,
+      this.servingSize,
+      this.imgSrc,
+      this.useDate,
+      this.expiryDate
+    )
   }
 
   //#region getters and setters
@@ -258,7 +277,7 @@ export class IngredientBuilder {
   }
 
   public build(): Ingredient {
-    return new Ingredient(
+    const ing = new Ingredient(
       this.name,
       this.weight,
       this.weightType,
@@ -272,5 +291,15 @@ export class IngredientBuilder {
       this.nutrition.build(),
       this.id
     );
+
+    DB.readIngredient(this.id).then((value)=>{
+      if (value == undefined){
+        DB.create(ing.toIngredientBack())
+      }else{
+        DB.updateIngredient(ing.toIngredientBack())
+      }
+    })
+    
+    return ing
   }
 }
