@@ -315,9 +315,11 @@ export function Recipe(): JSX.Element {
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
         {recipes.map((recipe, key) => {
+          let dietReq: any = [];
+          dietReq = (getDietReq())
           if (
             //TODO implement allergies here
-            [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
+            dietReq.every((elem: any) => recipe["recipe"]["healthLabels"].includes(elem))
           ) {
             // console.log("--------------------");
             // console.log(recipe);
