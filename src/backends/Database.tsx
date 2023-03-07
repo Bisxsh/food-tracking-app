@@ -241,6 +241,9 @@ export async function create(value: any): Promise<void>{
 // ======== Create records ==============================================================
 
 async function readAll(schema: Schema, property?:string, arg?: any, partial=false): Promise<Object[]>{
+    if (schema == undefined){
+        return []
+    }
     var sql: string = "select * from " + schema.name
     var result
     if (property != undefined && arg != undefined){

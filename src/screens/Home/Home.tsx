@@ -24,6 +24,7 @@ export function Home(): JSX.Element {
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
 
+
   useEffect(() => {
     switch (selectedSort) {
       default:

@@ -18,6 +18,8 @@ import { InitialEntry } from "./src/screens/InitialEntry";
 import registerNNPushToken from "native-notify";
 import * as Notifications from "expo-notifications";
 import { getRecipes, getSaved, getCustom } from "./src/util/GetRecipe";
+import * as IngredientClass from "./src/classes/IngredientClass";
+import * as CategoryClass from "./src/classes/Categories"
 
 
 const Tab = createBottomTabNavigator();
@@ -35,16 +37,29 @@ function App(): JSX.Element {
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER);
   const init = async () => {
-    setUserData({...userData, exploreRecipes: await getRecipes(), savedRecipes: await getSaved(), customRecipes: await getCustom()});
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
+      await user.loadCategories()
       DB.create(user);
       setConsent(false);
     } else {
+      await stored.loadCategories()
       setUser(stored);
       setConsent(stored.consent);
     }
+    const ing: IngredientClass.Ingredient[] = [];
+    for (const v of (await DB.readAllIngredient())) {
+      ing.push(await v.toIngredientClass())
+    }
+    setUserData({
+      ...userData,
+      ingredientCategories: (await DB.readAllCategory()).map((v)=>v.toCategoryClass()),
+      storedIngredients: ing,
+      exploreRecipes: await getRecipes(), 
+      savedRecipes: await getSaved(), 
+      customRecipes: await getCustom()
+    });
     setLoading(false);
   };
 
@@ -60,6 +75,14 @@ function App(): JSX.Element {
       setUser(stored);
       setConsent(stored.consent);
     }
+    setUserData({
+      ...userData,
+      ingredientCategories: [],
+      storedIngredients: [],
+      exploreRecipes: await getRecipes(), 
+      savedRecipes: await getSaved(), 
+      customRecipes: await getCustom()
+    });
     setLoading(false);
   };
 

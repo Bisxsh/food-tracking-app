@@ -75,7 +75,7 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
       }}
       onPress={()=>{setShowModal(true)}}
     >
-      {prop.ingredient.imgSrc != undefined && <Image
+      {prop.ingredient.imgSrc != undefined && prop.ingredient.imgSrc != "" && <Image
         style={{
           alignItems: "center",
           aspectRatio: 1,
@@ -84,7 +84,7 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
         }}
         source={{uri: prop.ingredient.imgSrc}}
       />}
-      {prop.ingredient.imgSrc == undefined && <View
+      {(prop.ingredient.imgSrc == undefined || prop.ingredient.imgSrc == "") && <View
         style={{
           alignItems: "center",
           backgroundColor: COLOURS.darkGrey,
@@ -185,7 +185,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
           backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         }
       }}>
-        {prop.ingredient.imgSrc != undefined && <Image
+        {prop.ingredient.imgSrc != undefined && prop.ingredient.imgSrc != "" && <Image
           style={{
             alignItems: "center",
             aspectRatio: 1,
@@ -195,7 +195,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
           }}
           source={{uri: prop.ingredient.imgSrc}}
         />}
-        {prop.ingredient.imgSrc == undefined && <View
+        {(prop.ingredient.imgSrc == undefined || prop.ingredient.imgSrc == "") && <View
           style={{
             alignItems: "center",
             backgroundColor: COLOURS.darkGrey,
@@ -467,7 +467,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               paddingHorizontal: SPACING.medium,
             }}
           >
-            {img != undefined && <Image
+            {img != undefined && img != "" && <Image
                 style={{
                     alignItems: "center",
                     aspectRatio: 1,
@@ -478,7 +478,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 }}
                 source={{uri: img}}
             />}
-            {img == undefined && <View
+            {(img == undefined || img == "") && <View
                 style={{
                     alignItems: "center",
                     backgroundColor: COLOURS.darkGrey,

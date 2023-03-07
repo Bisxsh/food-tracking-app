@@ -13,6 +13,9 @@ import { Meal } from '../../../backends/Meal';
 import { History } from '../../../backends/Histories';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Dummy from '../../../classes/DummyData'
+import { UserDataContext } from '../../../classes/UserData';
+import { getCustom, getRecipes, getSaved } from '../../../util/GetRecipe';
+import * as IngredientClass from "../../../classes/IngredientClass"
 
 
 export function Debug(): JSX.Element{
@@ -22,6 +25,7 @@ export function Debug(): JSX.Element{
     const [history, setHistory] = useState<History>()
     const [userLocal, setUserLocal] = useState<User>();
     const { user, setUser } = useContext(UserContext);
+    const { userData, setUserData } = useContext(UserDataContext)
     const [selectedTable, setSelectedTable] = useState<string>("Ingredient");
     const [log, setLog] = useState<string>("");
     const [monthCount, setMonthCount] = useState(1)
@@ -133,7 +137,7 @@ export function Debug(): JSX.Element{
                                 for (const i of Dummy.DUMMY_STORED_INGREDIENTS) {
                                     await DB.create(new Ingredient(
                                         i.name, 
-                                        0,
+                                        i.quantity,
                                         i.weightType, 
                                         i.servingSizeType, 
                                         new Nutrition(
@@ -185,8 +189,20 @@ export function Debug(): JSX.Element{
                                     c++
                                 }
                                 setMonthCount(c)
-                                user.loadCategories()
+                                await user.loadCategories()
                                 setUser(user)
+                                const ing: IngredientClass.Ingredient[] = [];
+                                for (const v of (await DB.readAllIngredient())) {
+                                    ing.push(await v.toIngredientClass())
+                                }
+                                setUserData({
+                                    ...userData,
+                                    ingredientCategories: user.categories.map((v)=>v.toCategoryClass()),
+                                    storedIngredients: ing,
+                                    exploreRecipes: await getRecipes(), 
+                                    savedRecipes: await getSaved(), 
+                                    customRecipes: await getCustom()
+                                });
                                 DB.updateUser(user)
                             }}
                         >

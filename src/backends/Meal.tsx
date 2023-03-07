@@ -10,6 +10,9 @@ export class Meal{
     ingredient: Ingredient[]
 
     constructor(name: string, categoryId: number[], instruction: string[], ingredient: Ingredient[], _id?:number, url?: string, imgSrc?: string){
+        if (_id != undefined){
+            Meal.count = Math.max(_id, Meal.count)
+        }
         this._id = (_id != undefined)? _id: Meal.count ++
         this.name = name
         this.url = url

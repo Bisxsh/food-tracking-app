@@ -5,6 +5,7 @@ import { readAllIngredient } from "../backends/Database"
 import { readAllMeal } from "../backends/Database"
 import { UserDataContext } from "../classes/UserData"
 import { Meal } from "../classes/MealClass"
+import * as DB from "../backends/Database"
 
 var APP_ID = "c86047cc"
 var APP_KEY = "a9afdf98df39331609c06cab2fec2b6f"
@@ -97,5 +98,6 @@ export async function getCustom(){
 export async function getDietReq(){
     // console.log(await readAllIngredient())
     //check for user dietary requirements
-    return ["Kosher","Dairy-Free"]
+    let userData = await DB.readUser(0) == null ? [] : (await DB.readUser(0))?.dietReq
+    return userData
 }

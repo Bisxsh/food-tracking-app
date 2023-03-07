@@ -1,3 +1,4 @@
+import * as NutritionClass from "../classes/NutritionClass"
 
 export class Nutrition{
     _id!: number
@@ -19,6 +20,9 @@ export class Nutrition{
     sugarUnit: string
 
     constructor(_id?:number, carbs?: number, carbsUnit?: string, energy?: number, energyUnit?: string, protein?: number, proteinUnit?: string, fat?: number, fatUnit?: string, saturatedFat?: number, saturatedFatUnit?: string, fibre?: number, fibreUnit?: string, salt?: number, saltUnit?: string, sugar?: number, sugarUnit?: string){
+        if (_id != undefined){
+            Nutrition.count = Math.max(_id, Nutrition.count)
+        }
         this._id = (_id != undefined)? _id: Nutrition.count ++
         this.carbs = (carbs != undefined)? carbs: 0
         this.carbsUnit = (carbsUnit != undefined)? carbsUnit: "g"
@@ -58,6 +62,19 @@ export class Nutrition{
             this.sugar,
             this.sugarUnit,
         ]
+    }
+
+    toNutritionClass(): NutritionClass.Nutrition{
+        return new NutritionClass.Nutrition(
+            this.carbs,
+            this.energy,
+            this.protein,
+            this.fat,
+            this.saturatedFat,
+            this.fibre,
+            this.salt,
+            this.sugar
+        )
     }
 
     static count = 0;

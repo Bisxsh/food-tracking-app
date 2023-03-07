@@ -47,6 +47,7 @@ export function Recipe(): JSX.Element {
   const [selectedSort, setSelectedSort] = useState(
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
+  const [dietReq, setDietReq] = useState<[string, boolean][]>([])
 
   async function readMeals() {
     // console.log("reading");
@@ -92,7 +93,11 @@ export function Recipe(): JSX.Element {
   useEffect(() => {
     readMeals();
     genRecipe();
-    getDietReq();
+    getDietReq().then((req)=>{
+      if (req != undefined){
+        setDietReq(req)
+      }
+    })
   }, []);
 
   async function genRecipe() {
@@ -317,7 +322,13 @@ export function Recipe(): JSX.Element {
         {recipes.map((recipe, key) => {
           if (
             //TODO implement allergies here
-            [].every((elem) => recipe["recipe"]["healthLabels"].includes(elem))
+            dietReq.every((elem: any) => {
+              if (elem[1]){
+                return recipe["recipe"]["healthLabels"].includes(elem[0])
+              }else{
+                return true
+              }
+            })
           ) {
             // console.log("--------------------");
             // console.log(recipe);

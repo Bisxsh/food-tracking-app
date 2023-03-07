@@ -132,7 +132,7 @@ export function Account(): JSX.Element{
                     flex: 1,
                 }}
             >
-                {img != undefined && <TouchableOpacity onPress={()=>{getPhoto(showActionSheetWithOptions, user,setUser,setImg)}}>
+                {img != undefined && img != "" && <TouchableOpacity onPress={()=>{getPhoto(showActionSheetWithOptions, user,setUser,setImg)}}>
                     <Image
                         style={{
                             alignItems: "center",
@@ -145,7 +145,7 @@ export function Account(): JSX.Element{
                         source={{uri: img}}
                     />
                 </TouchableOpacity>}
-                {img == undefined && <View
+                {(img == undefined || img == "") && <View
                     style={{
                         alignItems: "center",
                         backgroundColor: COLOURS.darkGrey,

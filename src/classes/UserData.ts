@@ -34,8 +34,8 @@ export interface UserDataContextInterface {
 
 export const DEFAULT_USER_DATA: UserData = {
   //TODO replace with empty arrays
-  storedIngredients: DUMMY_STORED_INGREDIENTS,
-  ingredientCategories: DUMMY_CATEGORIES,
+  storedIngredients: [], // DUMMY_STORED_INGREDIENTS,
+  ingredientCategories: [], //DUMMY_CATEGORIES,
   homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
   recipesPageSort: RecipeSortingFilter.TimeLowToHigh,
   savedRecipes:  DUMMY_MEALS,
