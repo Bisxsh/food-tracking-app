@@ -41,7 +41,11 @@ const HomeNavigator = (props: Props) => {
           component={ManualIngredient}
           options={{}}
         />
-        <Stack.Screen name="BarcodeScanner" component={BarcodeScanner} />
+        <Stack.Screen
+          name="BarcodeScanner"
+          component={BarcodeScanner}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </HomeContext.Provider>
   );
