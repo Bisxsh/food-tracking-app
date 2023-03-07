@@ -5,11 +5,18 @@ import { COLOURS, FONT_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 type Props = {
   text: string;
   onPress: () => void;
+  colour?: string;
 };
 
 const PrimaryButton = (props: Props) => {
   return (
-    <TouchableOpacity onPress={props.onPress} style={styles.container}>
+    <TouchableOpacity
+      onPress={props.onPress}
+      style={[
+        styles.container,
+        props.colour ? { backgroundColor: props.colour } : {},
+      ]}
+    >
       <Text
         style={{
           textAlign: "center",

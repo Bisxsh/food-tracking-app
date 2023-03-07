@@ -10,7 +10,8 @@ export const COLOURS = {
   textTouchable: "#06BCEE",
   white: "#FFFFFF",
   black: "#000000",
-  darker: '#222'
+  darker: "#222",
+  red: "#dd471a",
 };
 
 export const FONT_SIZES = {
