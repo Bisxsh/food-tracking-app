@@ -11,7 +11,13 @@ import {
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { RecipeContext } from "./RecipeContextProvider";
-import { COLOURS, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from "../../util/GlobalStyles";
+import {
+  COLOURS,
+  FONT_SIZES,
+  ICON_SIZES,
+  RADIUS,
+  SPACING,
+} from "../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Meal } from "../../backends/Meal";
@@ -33,7 +39,7 @@ const RecipeInfo = (props: Props) => {
   const [servings, setServings] = useState(recipeContext.viewedRecipeServings);
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
-  const {height, width} = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
   console.log("INFO");
   console.log(recipeContext.recipeBeingViewed);
 
@@ -93,24 +99,22 @@ const RecipeInfo = (props: Props) => {
   navigation.setOptions({
     title: meal.name,
     headerTitleAlign: "center",
-    headerRight: ()=>(
-        <TouchableOpacity
-            onPress={updateFavorite}
-        >
-            <MaterialCommunityIcons
-                name={isFavourite ? "star" : "star-outline"}
-                size={ICON_SIZES.medium}
-                color={isFavourite ? COLOURS.primary : ((isDarkMode)? "white" :"black")}
-            />
-        </TouchableOpacity>
-    )
-  })
+    headerRight: () => (
+      <TouchableOpacity onPress={updateFavorite}>
+        <MaterialCommunityIcons
+          name={isFavourite ? "star" : "star-outline"}
+          size={ICON_SIZES.medium}
+          color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
+        />
+      </TouchableOpacity>
+    ),
+  });
 
   return (
     <SafeAreaView
       style={[
-        styles.container, 
-        {backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,}
+        styles.container,
+        { backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white },
       ]}
       edges={["left", "right"]}
     >
@@ -119,7 +123,12 @@ const RecipeInfo = (props: Props) => {
 
         <View style={styles.contentContainer}>
           <View style={styles.sourceContainer}>
-            <Text style={{ fontSize: FONT_SIZES.medium, color: isDarkMode ? COLOURS.white : COLOURS.black}}>
+            <Text
+              style={{
+                fontSize: FONT_SIZES.medium,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
+              }}
+            >
               Source:{" "}
               {recipeContext?.viewedRecipeSource?.replace(".com", "") || ""}
             </Text>
@@ -150,9 +159,13 @@ const RecipeInfo = (props: Props) => {
             )}
           </View>
           {getSeperator()}
-
           <View style={[styles.sourceContainer, { marginTop: SPACING.medium }]}>
-            <Text style={{ fontSize: FONT_SIZES.medium, color: isDarkMode ? COLOURS.white : COLOURS.black}}>
+            <Text
+              style={{
+                fontSize: FONT_SIZES.medium,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
+              }}
+            >
               Calories per serving:{" "}
               {Math.round(
                 recipeContext.viewedRecipeNutrients[0].quantity /
@@ -160,18 +173,21 @@ const RecipeInfo = (props: Props) => {
               )}
             </Text>
           </View>
-          <Text
+          <View
             style={{
-              textAlign: "center",
-              fontStyle: "italic",
-              color: COLOURS.darkGrey,
-              marginTop: SPACING.small,
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: SPACING.medium,
             }}
           >
-            Note: Values provided are estimates only and may not be accurate
-          </Text>
-          <View style={{ flexDirection: "row", alignItems: "center", marginTop: SPACING.medium }}>
-            <Text style={{ marginRight: SPACING.small, color: isDarkMode ? COLOURS.white : COLOURS.black}}>Serving Size:</Text>
+            <Text
+              style={{
+                marginRight: SPACING.small,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
+              }}
+            >
+              Serving Size:
+            </Text>
             <TouchableOpacity
               onPress={() => setServings((i) => i - 1)}
               style={{
@@ -186,7 +202,14 @@ const RecipeInfo = (props: Props) => {
                 color={COLOURS.primary}
               />
             </TouchableOpacity>
-            <Text style={{ marginHorizontal: SPACING.tiny, color: isDarkMode ? COLOURS.white : COLOURS.black}}>{servings}</Text>
+            <Text
+              style={{
+                marginHorizontal: SPACING.tiny,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
+              }}
+            >
+              {servings}
+            </Text>
             <TouchableOpacity
               onPress={() => setServings((i) => i + 1)}
               style={{
@@ -202,9 +225,22 @@ const RecipeInfo = (props: Props) => {
               />
             </TouchableOpacity>
           </View>
+          {servings != recipeContext.viewedRecipeServings && (
+            <Text
+              style={{
+                textAlign: "center",
+                fontStyle: "italic",
+                color: COLOURS.darkGrey,
+                marginTop: SPACING.small,
+              }}
+            >
+              Note: Values provided are estimates only and may not be accurate
+            </Text>
+          )}
           {getSeperator()}
           {recipeContext.viewedRecipeIngredients.map((ingredient, index) => {
-            if (ingredient == "" || ingredient == " " || !ingredient) return null;
+            if (ingredient == "" || ingredient == " " || !ingredient)
+              return null;
             const split = ingredient.split(" ");
             console.log(split);
 
@@ -222,9 +258,9 @@ const RecipeInfo = (props: Props) => {
                 </Text>
                 <Text
                   style={{
-                    fontSize: FONT_SIZES.medium, 
+                    fontSize: FONT_SIZES.medium,
                     color: isDarkMode ? COLOURS.white : COLOURS.black,
-                    flexShrink: 1
+                    flexShrink: 1,
                   }}
                 >
                   {split.slice(2).join(" ")}
@@ -238,12 +274,21 @@ const RecipeInfo = (props: Props) => {
                 key={index}
                 style={[
                   styles.nutrientRow,
-                  { 
-                    backgroundColor: (index % 2 == 1)? COLOURS.grey : COLOURS.white,
-                    borderTopLeftRadius: (index == 0)? RADIUS.standard: undefined,
-                    borderTopRightRadius: (index == 0)? RADIUS.standard: undefined,
-                    borderBottomLeftRadius: (index == recipeContext.viewedRecipeNutrients.length - 1)? RADIUS.standard: undefined,
-                    borderBottomRightRadius: (index == recipeContext.viewedRecipeNutrients.length - 1)? RADIUS.standard: undefined,
+                  {
+                    backgroundColor:
+                      index % 2 == 1 ? COLOURS.grey : COLOURS.white,
+                    borderTopLeftRadius:
+                      index == 0 ? RADIUS.standard : undefined,
+                    borderTopRightRadius:
+                      index == 0 ? RADIUS.standard : undefined,
+                    borderBottomLeftRadius:
+                      index == recipeContext.viewedRecipeNutrients.length - 1
+                        ? RADIUS.standard
+                        : undefined,
+                    borderBottomRightRadius:
+                      index == recipeContext.viewedRecipeNutrients.length - 1
+                        ? RADIUS.standard
+                        : undefined,
                   },
                 ]}
               >
