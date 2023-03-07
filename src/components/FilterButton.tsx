@@ -22,6 +22,8 @@ import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
 import { Category } from "../classes/Categories";
 import ColourPicker from "./ColourPicker";
+import * as DB from "../backends/Database"
+import * as CategoryBack from "../backends/Category";
 
 type Props = {
   options: Category[];
@@ -223,6 +225,7 @@ const FilterButton = (props: Props) => {
                   ...props.options,
                   { colour, name: categoryName, active: false },
                 ];
+                DB.create(new CategoryBack.Category(categoryName, colour, undefined, false))
                 props.setOptions(newOptions);
                 if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
               }}

@@ -9,8 +9,10 @@ export class Category{
     constructor(name: string, colour: string, _id?:number, active?: boolean){
         if (_id != undefined){
             Category.count = Math.max(_id, Category.count)
+        }else{
+            Category.count += 1
         }
-        this._id = (_id != undefined)? _id: Category.count ++
+        this._id = (_id != undefined)? _id: Category.count
         this.name = name
         this.colour = colour
         this.active = (active != undefined)? active: true
