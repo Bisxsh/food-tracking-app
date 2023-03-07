@@ -1,6 +1,6 @@
 import { Nutrition } from "./Nutrition";
 import * as IngredientClass from "../classes/IngredientClass"
-import * as Categories from "../classes/Categories"
+import * as CategoryClass from "../classes/Categories"
 import * as DB from "./Database"
 
 export class Ingredient {
@@ -72,7 +72,15 @@ export class Ingredient {
   }
 
   async toIngredientClass(): Promise<IngredientClass.Ingredient>{
-    var categories = await DB.readAllCategory()
+    const categories = await DB.readAllCategory()
+    const cats: CategoryClass.Category[] = []
+    for (const id of this.categoryId) {
+      for (const category of categories) {
+        if (category._id == id){
+          cats.push(category.toCategoryClass())
+        }
+      }
+    }
     return new IngredientClass.Ingredient(
       this.name,
       (this.weight == undefined)? 0: this.weight,
@@ -80,7 +88,7 @@ export class Ingredient {
       (this.servingSize == undefined)? 0: this.servingSize,
       IngredientClass.weightUnit[this.servingSizeUnit as ("grams" | "kg")],
       this.quantity,
-      this.categoryId.map((id)=>categories.find((value)=>value._id==id)!.toCategoryClass()),
+      cats,
       (this.imgSrc == undefined)? "": this.imgSrc,
       (this.expiryDate == undefined)? new Date(): this.expiryDate,
       (this.useDate == undefined)? new Date(): this.useDate,

@@ -3,6 +3,7 @@ import {
   Dimensions,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -14,25 +15,30 @@ import {
   FONT_SIZES,
   RADIUS,
   SPACING,
+  USER_COLOURS,
 } from "../util/GlobalStyles";
 import CustomSearchBar from "./CustomSearchBar";
 import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
 import { Category } from "../classes/Categories";
+import ColourPicker from "./ColourPicker";
 
 type Props = {
   options: Category[];
   width?: number;
   textHint?: string;
-  onAdd?: (str: string) => void; //Method to run in add section if search returns no results
-  setOptions?: (options: Category[]) => void;
+  onAdd: (arg: Category) => void; //Method to run in add section if search returns no results
+  setOptions: (options: Category[]) => void;
   plusSymbol?: boolean;
   center?: boolean;
 };
 
 const FilterButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
+  const [showInnerModal, setShowInnerModal] = useState(false);
   const [searchText, setSearchText] = useState("");
+  const [colour, setColour] = useState(USER_COLOURS[0]);
+  const [categoryName, setCategoryName] = useState("");
   //TODO synchronize with filters
   const [filters, setFilters] = useState<Category[]>(
     props.options
@@ -127,7 +133,9 @@ const FilterButton = (props: Props) => {
         key="add"
         style={styles(props).modalOption}
         onPress={() => {
-          props.onAdd && props.onAdd(searchText);
+          //props.onAdd && props.onAdd(searchText);
+          setCategoryName(searchText)
+          setShowInnerModal(true)
         }}
       >
         <MaterialCommunityIcons name="plus" size={24} color="black" />
@@ -187,6 +195,40 @@ const FilterButton = (props: Props) => {
             <View style={{ height: SPACING.medium }} />
           )}
         </Animated.ScrollView>
+        
+        <Modal
+          isVisible={showInnerModal}
+          onBackdropPress={() => setShowInnerModal(false)}
+          backdropOpacity={0.5}
+          animationIn="zoomIn"
+          animationOut="zoomOut"
+          style={StyleSheet.absoluteFill}
+        >
+          <View style={styles(props).modalContainer}>
+            <ColourPicker colour={colour} setColour={setColour} />
+            <TextInput
+              placeholderTextColor="grey"
+              placeholder={"Category name"}
+              style={styles(props).textInput}
+              value={categoryName}
+              onChangeText={(text) => setCategoryName(text)}
+            />
+            <MaterialCommunityIcons
+              name="arrow-right-thin"
+              style={styles(props).confirmButton}
+              size={SPACING.medium}
+              onPress={() => {
+                setShowInnerModal(false);
+                let newOptions = [
+                  ...props.options,
+                  { colour, name: categoryName, active: false },
+                ];
+                props.setOptions(newOptions);
+                if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
+              }}
+            />
+          </View>
+        </Modal>
       </Modal>
     </>
   );
@@ -231,5 +273,25 @@ const styles = (props: Props) =>
       flexDirection: "row",
       justifyContent: "flex-start",
       alignItems: "center",
+    },
+    
+    modalContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: COLOURS.white,
+      padding: SPACING.medium,
+      borderRadius: RADIUS.standard,
+      ...DROP_SHADOW,
+    },
+  
+    textInput: {
+      minWidth: 200,
+      marginLeft: SPACING.small,
+    },
+  
+    confirmButton: {
+      borderRadius: RADIUS.circle,
+      padding: SPACING.small,
     },
   });

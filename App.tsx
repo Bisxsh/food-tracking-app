@@ -54,7 +54,7 @@ function App(): JSX.Element {
     }
     setUserData({
       ...userData,
-      ingredientCategories: user.categories.map((v)=>v.toCategoryClass()),
+      ingredientCategories: (await DB.readAllCategory()).map((v)=>v.toCategoryClass()),
       storedIngredients: ing,
       exploreRecipes: await getRecipes(), 
       savedRecipes: await getSaved(), 
