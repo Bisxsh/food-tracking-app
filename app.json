@@ -2,29 +2,7 @@
   "expo": {
     "slug": "foodtrackingapp",
     "name": "foodtrackingapp",
-    "sdkVersion": "47.0.0",
-    "plugins": [
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to access your photos."
-        }
-      ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "d5393ef5-1861-4d74-afac-477fbe4e06c6"
-      }
-    },
-    "android": {
-      "package": "com.group.six.foodtrackingapp",
-      "versionCode": 1,
-      "permission": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
-      ]
-    }
+    "sdkVersion": "47.0.0"
   },
   "name": "foodtrackingapp"
 }

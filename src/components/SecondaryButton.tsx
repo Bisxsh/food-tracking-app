@@ -6,15 +6,22 @@ type Props = {
   text: string;
   width?: number;
   onPress: () => void;
+  colour?: string;
 };
 
 const SecondaryButton = (props: Props) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={props.onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        props.colour ? { borderColor: props.colour } : {},
+      ]}
+      onPress={props.onPress}
+    >
       <Text
         style={{
           textAlign: "center",
-          color: COLOURS.primary,
+          color: props.colour || COLOURS.primary,
           fontSize: FONT_SIZES.small,
         }}
       >

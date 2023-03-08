@@ -39,7 +39,7 @@ const ExpiringButton: React.FC<ExpiringButtonProps> = ({ label }) => {
         backdropOpacity={0.3}
         animationIn="fadeIn"
         animationOut="fadeOut"
-        style={{justifyContent: "center", flexDirection: "column"}}
+        style={{ justifyContent: "center", flexDirection: "column" }}
       >
         {/* <View style={{ flex: 1 }} /> */}
         <View style={styles.modalContainer}>
@@ -64,7 +64,7 @@ const ExpiringButton: React.FC<ExpiringButtonProps> = ({ label }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#dd471a",
+    backgroundColor: COLOURS.red,
     padding: SPACING.small,
     borderRadius: RADIUS.circle,
     ...DROP_SHADOW,
