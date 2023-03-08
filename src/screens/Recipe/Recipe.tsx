@@ -23,6 +23,7 @@ import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
 import { Meal } from "../../classes/MealClass";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TabNaviContext } from './RecipeNavigator';
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -48,6 +49,22 @@ export function Recipe(): JSX.Element {
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
   const [dietReq, setDietReq] = useState<[string, boolean][]>([])
+  const { tabNavi, setTabNavi } = useContext(TabNaviContext)
+
+  useEffect(
+    ()=>{
+      const unsubscribe = (tabNavi != undefined)? tabNavi.addListener("focus", async ()=>{
+        setUserData({
+          ...userData,
+          exploreRecipes: await getRecipes()
+        })
+        genRecipe()
+      }): ()=>{}
+      return unsubscribe
+    }, 
+    [tabNavi]
+  )
+
 
   async function readMeals() {
     // console.log("reading");

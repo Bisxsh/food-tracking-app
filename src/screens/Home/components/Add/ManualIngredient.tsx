@@ -12,7 +12,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, ICON_SIZES, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import { getRecipes, getSaved, getCustom } from "../../../../util/GetRecipe";
 import { Dimensions } from "react-native";
 
 import {
@@ -65,7 +65,7 @@ const ManualIngredient = (props: Props) => {
     return <View style={{ height: SPACING.medium }} />;
   }
 
-  function saveIngredient() {
+  async function saveIngredient() {
     if (!ingredientBuilder.allRequiredFieldsSet()) {
       alert("All required fields must be set");
       return;

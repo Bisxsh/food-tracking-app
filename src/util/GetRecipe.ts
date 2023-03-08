@@ -98,6 +98,6 @@ export async function getCustom(){
 export async function getDietReq(){
     // console.log(await readAllIngredient())
     //check for user dietary requirements
-    let userData = await DB.readUser(0) == null ? [] : (await DB.readUser(0))?.dietReq
+    let userData = await DB.readUser(0) == undefined ? [] : (await DB.readUser(0))?.dietReq
     return userData
 }
