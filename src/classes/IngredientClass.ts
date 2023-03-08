@@ -17,6 +17,7 @@ export class Ingredient {
   quantity: number;
   categories: Category[];
   imgSrc: string;
+  addDate: Date;
   useDate: Date;
   expiryDate: Date;
   nutrition: Nutrition;
@@ -34,7 +35,8 @@ export class Ingredient {
     expiryDate: Date,
     useDate: Date,
     nutrition: Nutrition,
-    id: number
+    id: number,
+    addDate?: Date
   ) {
     this.name = name;
     this.weight = weight;
@@ -44,6 +46,7 @@ export class Ingredient {
     this.quantity = quantity;
     this.categories = categories;
     this.imgSrc = imgSrc;
+    this.addDate = (addDate != undefined)? addDate: new Date()
     this.useDate = useDate;
     this.expiryDate = expiryDate;
     this.nutrition = nutrition;
@@ -62,6 +65,7 @@ export class Ingredient {
       this.weight,
       this.servingSize,
       this.imgSrc,
+      this.addDate,
       this.useDate,
       this.expiryDate
     )
@@ -129,6 +133,7 @@ export class IngredientBuilder {
   private quantity: number;
   private categories: Category[];
   private imgSrc: string;
+  private addDate: Date;
   private useDate: Date;
   private expiryDate: Date;
   private nutrition: NutritionBuilder;
@@ -143,6 +148,7 @@ export class IngredientBuilder {
     this.quantity = 0;
     this.categories = [];
     this.imgSrc = "";
+    this.addDate = new Date()
     this.useDate = new Date();
     this.expiryDate = new Date();
     this.nutrition = new NutritionBuilder();
@@ -159,6 +165,7 @@ export class IngredientBuilder {
     builder.quantity = ingredient.quantity;
     builder.categories = ingredient.categories;
     builder.imgSrc = ingredient.imgSrc;
+    builder.addDate = ingredient.addDate;
     builder.useDate = ingredient.useDate;
     builder.expiryDate = ingredient.expiryDate;
     builder.nutrition = NutritionBuilder.fromNutrition(ingredient.nutrition);
@@ -289,7 +296,8 @@ export class IngredientBuilder {
       this.expiryDate,
       this.useDate,
       this.nutrition.build(),
-      this.id
+      this.id,
+      this.addDate
     );
 
     DB.readIngredient(this.id).then((value)=>{

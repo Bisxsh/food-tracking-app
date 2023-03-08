@@ -25,6 +25,7 @@ const IngredientSchema: Schema = {
         servingSize: "int",
         servingSizeUnit: "ntext not null",
         imgSrc: "ntext",
+        addDate: "date",
         useDate: "date",
         expiryDate: "date",
         nutrition: "ntext not null",
@@ -114,6 +115,12 @@ const MealSchema: Schema = {
         categoryId: "text",
         instruction: "ntext",
         ingredient: "ntext",
+        source: "ntext",
+        caution: "ntext",
+        nutrition: "ntext not null",
+        servings: "int not null",
+        time: "int not null",
+        favourite: "boolean"
     }
 }
 

@@ -122,7 +122,6 @@ const IndgredientView = (props: Props) => {
           flexDirection: "column",
           alignItems: "flex-start",
           flex: 1,
-          paddingTop: SPACING.medium,
         }}
       >
         {expiredIngredients.length > 0 && (

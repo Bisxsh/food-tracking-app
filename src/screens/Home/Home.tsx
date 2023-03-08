@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { UserContext } from "../../backends/User";
 import { UserDataContext } from "../../classes/UserData";
@@ -92,16 +92,21 @@ export function Home(): JSX.Element {
               i.quantity > 0
           )}
         />
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
+        <ScrollView 
+          style={{height: "100%", width: "100%", marginTop: SPACING.tiny}}
         >
-          <IndgredientView ingredientsSearch={ingredientsSearch} />
-        </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <IndgredientView ingredientsSearch={ingredientsSearch} />
+          </View>
+          <View style={{height: SPACING.medium}}/>
+        </ScrollView>
       </SafeAreaView>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />

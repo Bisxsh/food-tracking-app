@@ -46,7 +46,7 @@ export async function getRecipes(){
 
             // })
         }))
-        
+        //console.log(JSON.stringify(recipeList[0]))
         return recipeList
     }
 }

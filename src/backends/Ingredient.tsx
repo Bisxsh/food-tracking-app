@@ -12,6 +12,7 @@ export class Ingredient {
   servingSize?: number;
   servingSizeUnit: string;
   imgSrc?: string;
+  addDate: Date;
   useDate?: Date;
   expiryDate?: Date;
   nutrition: Nutrition;
@@ -30,14 +31,17 @@ export class Ingredient {
     weight?: number,
     servingSize?: number,
     imgSrc?: string,
+    addDate?: Date,
     useDate?: Date,
     expiryDate?: Date,
     barcode?: number,
     memo?: string){
         if (_id != undefined){
           Ingredient.count = Math.max(_id, Ingredient.count)
+        }else{
+          Ingredient.count += 1
         }
-        this._id = (_id != undefined)? _id: Ingredient.count ++
+        this._id = (_id != undefined)? _id: Ingredient.count
         this.name = name
         this.quantity = quantity
         this.weight = weight
@@ -45,6 +49,7 @@ export class Ingredient {
         this.servingSize = servingSize
         this.servingSizeUnit = servingSizeUnit
         this.imgSrc = imgSrc
+        this.addDate = (addDate != undefined)? addDate: new Date()
         this.useDate = useDate
         this.expiryDate = expiryDate
         this.nutrition = nutrition
@@ -63,6 +68,7 @@ export class Ingredient {
           this.servingSize,
           this.servingSizeUnit,
           this.imgSrc, 
+          (this.addDate != undefined)? this.addDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
           (this.useDate != undefined)? this.useDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
           (this.expiryDate != undefined)? this.expiryDate.toISOString().replace("T", " ").replace("Z", ""): undefined, 
           JSON.stringify(this.nutrition), 
@@ -94,6 +100,7 @@ export class Ingredient {
       (this.useDate == undefined)? new Date(): this.useDate,
       this.nutrition.toNutritionClass(),
       this._id,
+      this.addDate
     )
   }
 
@@ -158,16 +165,17 @@ export class Ingredient {
           properties[2],  // quantity
           properties[4],  // weightUnit
           properties[6],  // servingSizeUnit
-          Nutrition.fromList(Object.values(JSON.parse(properties[10]))),  // Nutrition
-          (properties[11] as string).substring(1,(properties[11] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
+          Nutrition.fromList(Object.values(JSON.parse(properties[11]))),  // Nutrition
+          (properties[12] as string).substring(1,(properties[11] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
           properties[0],  // _id
           properties[3],  // weight
           properties[5],  // servingSize
           properties[7],  // imgSrc
-          (properties[8] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // useDate
-          (properties[9] != undefined)? new Date(properties[9].replace(" ", "T")+"Z"): undefined,  // expiryDate
-          properties[12],  // barcode
-          properties[13],  // memo
+          (properties[8] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // addDate
+          (properties[9] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // useDate
+          (properties[10] != undefined)? new Date(properties[9].replace(" ", "T")+"Z"): undefined,  // expiryDate
+          properties[13],  // barcode
+          properties[14],  // memo
       )
   }
   
