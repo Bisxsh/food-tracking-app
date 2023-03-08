@@ -96,6 +96,7 @@ const IndgredientView = (props: Props) => {
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
+          marginTop: SPACING.medium,
         }}
       >
         <NoDataSvg

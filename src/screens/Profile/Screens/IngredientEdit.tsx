@@ -95,7 +95,7 @@ const IngredientEdit = (navigation: ScreenProp) => {
                         })
                     }else{
                         DB.updateIngredient(tempIngredient)
-                    navigation.navigation.goBack()
+                        navigation.navigation.goBack()
                     }
                 }}
                 disabled={!edited}

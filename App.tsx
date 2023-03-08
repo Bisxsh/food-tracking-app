@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -20,6 +20,7 @@ import * as Notifications from "expo-notifications";
 import { getRecipes, getSaved, getCustom } from "./src/util/GetRecipe";
 import * as IngredientClass from "./src/classes/IngredientClass";
 import * as CategoryClass from "./src/classes/Categories"
+import React from "react";
 
 
 const Tab = createBottomTabNavigator();

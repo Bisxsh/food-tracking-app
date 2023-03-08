@@ -223,6 +223,7 @@ const IngredientPopup = (props: Props) => {
                   return p;
                 }),
               });
+              
               const weight =
                 props.ingredient.weight *
                 (props.ingredient.weightType === weightUnit.grams ? 1 : 1000);
