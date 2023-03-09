@@ -172,8 +172,8 @@ export class Ingredient {
           properties[5],  // servingSize
           properties[7],  // imgSrc
           (properties[8] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // addDate
-          (properties[9] != undefined)? new Date(properties[8].replace(" ", "T")+"Z"): undefined,  // useDate
-          (properties[10] != undefined)? new Date(properties[9].replace(" ", "T")+"Z"): undefined,  // expiryDate
+          (properties[9] != undefined)? new Date(properties[9].replace(" ", "T")+"Z"): undefined,  // useDate
+          (properties[10] != undefined)? new Date(properties[10].replace(" ", "T")+"Z"): undefined,  // expiryDate
           properties[13],  // barcode
           properties[14],  // memo
       )

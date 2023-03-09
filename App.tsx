@@ -29,7 +29,7 @@ var firstTime = true;
 
 function App(): JSX.Element {
   registerNNPushToken(6535, "xdrqfHr09cuuEeUjH1MATl");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [consent, setConsent] = useState(true);
 
   //TODO load user data from database and set it here

@@ -91,29 +91,31 @@ const IndgredientView = (props: Props) => {
         : "You don't have any ingredients that \n match the search criteria 😢";
 
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          marginTop: SPACING.medium,
-        }}
-      >
-        <NoDataSvg
-          width={200}
-          height={200}
-          style={{ marginBottom: SPACING.medium }}
-        />
-        <Text
+      <ScrollView style={{width: "100%", flexGrow: 1}}>
+        <View
           style={{
-            textAlign: "center",
-            fontSize: FONT_SIZES.small,
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
+            marginTop: SPACING.medium,
           }}
         >
-          {message}
-        </Text>
-      </View>
+          <NoDataSvg
+            width={200}
+            height={200}
+            style={{ marginBottom: SPACING.medium }}
+          />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: FONT_SIZES.small,
+            }}
+          >
+            {message}
+          </Text>
+        </View>
+      </ScrollView>
     );
   }
 
