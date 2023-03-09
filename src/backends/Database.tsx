@@ -132,7 +132,7 @@ function openDB(): sq.WebSQLDatabase{
     return db
 }
 
-async function transaction(sql:string, arg:any[], description?:string, verbose = true):Promise<sq.SQLResultSet | undefined>{
+async function transaction(sql:string, arg:any[], description?:string, verbose = false):Promise<sq.SQLResultSet | undefined>{
     var db = openDB()
     var result: sq.SQLResultSet | undefined;
     

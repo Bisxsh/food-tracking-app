@@ -69,6 +69,7 @@ const IngredientEdit = (navigation: ScreenProp) => {
         };
         })
     );
+    const {height, width} = useWindowDimensions()
 
     function getSeperator() {
         return <View style={{ height: SPACING.medium }} />;
@@ -106,7 +107,7 @@ const IngredientEdit = (navigation: ScreenProp) => {
                     color={isDarkMode ? COLOURS.white : COLOURS.black}
                 />
             </TouchableOpacity>
-        )
+        ),
     })
 
     return (

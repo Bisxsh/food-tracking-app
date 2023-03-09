@@ -69,7 +69,7 @@ export class Meal{
         ];
     }
 
-    static count = 0;
+    static count = -1;
 
     static fromList(properties:any[]):Meal{
         console.log(properties)

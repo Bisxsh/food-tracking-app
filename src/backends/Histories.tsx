@@ -16,6 +16,8 @@ export class History{
     constructor(userId: number, date: Date, mass: number, cost:number, _id?: number){
         if (_id != undefined){
             History.count = Math.max(_id, History.count)
+        }else{
+            History.count += 1
         }
         this._id = (_id != undefined)? _id: History.count ++
         this.userId = userId
@@ -28,7 +30,7 @@ export class History{
         return [this._id, this.userId, this.date.toISOString().replace("T", " ").replace("Z", ""), this.mass, this.cost];
     }
 
-    static count = 0;
+    static count = -1;
 
     static fromList(properties:any[]):History{
         return new History(

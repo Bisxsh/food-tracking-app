@@ -98,7 +98,6 @@ const RecipeInfo = (props: Props) => {
 
   navigation.setOptions({
     title: meal.name,
-    headerTitleAlign: "center",
     headerRight: () => (
       <TouchableOpacity onPress={updateFavorite}>
         <MaterialCommunityIcons

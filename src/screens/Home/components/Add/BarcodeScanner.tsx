@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
+//import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
 import { Camera, FlashMode } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
@@ -49,14 +49,18 @@ const BarcodeScanner = (props: Props) => {
       });
   };
 
+  if (!permission?.granted){
+    requestPermission()
+  }
+
   if (scanning) return <View style={{ backgroundColor: "red" }}></View>;
 
   return (
     <View style={styles.container}>
-      <LinearGradient
+      {/* <LinearGradient
         colors={["rgba(0,0,0,0.6)", "transparent"]}
         style={styles.gradient}
-      />
+      /> */}
       <View style={styles.menuBar}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}

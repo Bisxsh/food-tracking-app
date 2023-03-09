@@ -144,13 +144,12 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
           flex: 1,
           backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
-      edges={['left', 'right']}
+      edges={['left', 'right', 'top']}
     >
       <View
         style={{
           flex: 1,
           flexDirection: "column",
-          marginTop: SPACING.large,
           backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         }}
       >

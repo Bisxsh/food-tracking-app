@@ -22,6 +22,8 @@ export class Nutrition{
     constructor(_id?:number, carbs?: number, carbsUnit?: string, energy?: number, energyUnit?: string, protein?: number, proteinUnit?: string, fat?: number, fatUnit?: string, saturatedFat?: number, saturatedFatUnit?: string, fibre?: number, fibreUnit?: string, salt?: number, saltUnit?: string, sugar?: number, sugarUnit?: string){
         if (_id != undefined){
             Nutrition.count = Math.max(_id, Nutrition.count)
+        }else{
+            Nutrition.count += 1
         }
         this._id = (_id != undefined)? _id: Nutrition.count ++
         this.carbs = (carbs != undefined)? carbs: 0
@@ -77,7 +79,7 @@ export class Nutrition{
         )
     }
 
-    static count = 0;
+    static count = -1;
 
     static fromList(properties:any[]):Nutrition{
         return new Nutrition(

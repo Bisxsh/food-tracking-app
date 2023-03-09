@@ -157,7 +157,7 @@ export class Ingredient {
   }
   //#endregion
 
-  static count: number = 0;
+  static count: number = -1;
 
   static fromList(properties:any[]): Ingredient{
       return new Ingredient(

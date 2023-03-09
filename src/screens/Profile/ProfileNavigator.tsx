@@ -68,6 +68,7 @@ export function ProfileNavigator(): JSX.Element{
                     },
                     headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
                     headerShadowVisible: false,
+                    headerBackTitleVisible: false,
                 })}
                 
             >

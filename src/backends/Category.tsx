@@ -26,7 +26,7 @@ export class Category{
         return {id: this._id, name: this.name, colour: this.colour, active: this.active}
     }
 
-    static count = 0;
+    static count = -1;
 
     static fromList(properties:any[]):Category{
         return new Category(properties[1], properties[2], properties[0], properties[3]);

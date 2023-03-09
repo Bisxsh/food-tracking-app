@@ -108,9 +108,14 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
           flexDirection: "column",
           padding: SPACING.small,
           alignItems: "flex-start",
+          flexShrink: 1
         }}
       >
-        <Text style={{fontSize: FONT_SIZES.small}}>
+        <Text 
+          style={{fontSize: FONT_SIZES.small}}
+          ellipsizeMode={"tail"}
+          numberOfLines={1}
+        >
           {prop.ingredient.name}
         </Text>
         <Text style={{fontSize: FONT_SIZES.tiny}}>
@@ -176,6 +181,7 @@ type ingredientPopupProp = {
 
 const IngredientPopup = (prop: ingredientPopupProp) => {
   const { user, setUser } = useContext(UserContext);
+  const { height, width } = useWindowDimensions()
 
   function Header(isDarkMode:boolean) {
     return (
@@ -214,8 +220,16 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             }}
           />
         </View>}
-        <View style={{ flexDirection: "column", justifyContent: "center", paddingLeft: SPACING.small }}>
-          <Text style={{ fontSize: FONT_SIZES.body, fontWeight: "500", color: (isDarkMode)?COLOURS.white: COLOURS.black }}>
+        <View style={{ flexDirection: "column", flexShrink: 1, justifyContent: "center", marginLeft: SPACING.small}}>
+          <Text
+            style={{
+              fontSize: FONT_SIZES.body,
+              fontWeight: "500",
+              color: isDarkMode ? COLOURS.white : COLOURS.black,
+            }}
+            ellipsizeMode={"tail"}
+            numberOfLines={2}
+          >
             {prop.ingredient.name}
           </Text>
           <View style={styles.detailRow}>
@@ -226,7 +240,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             />
             <Text
               style={{
-                marginLeft: SPACING.small,
+                marginLeft: SPACING.tiny,
                 fontSize: FONT_SIZES.small,
                 color: (isDarkMode)?COLOURS.white: COLOURS.black,
               }}
@@ -242,7 +256,7 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             />
             <Text
               style={{
-                marginLeft: SPACING.small,
+                marginLeft: SPACING.tiny,
                 fontSize: FONT_SIZES.small,
                 color: (isDarkMode)?COLOURS.white: COLOURS.black,
               }}
@@ -303,31 +317,35 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
         ...{
           backgroundColor: prop.isDarkMode ? COLOURS.darker : COLOURS.white,
           borderColor:  prop.isDarkMode ? COLOURS.darkGrey : COLOURS.white, 
-          borderWidth: 0.5
+          borderWidth: 0.5,
+          maxWidth: width - SPACING.small*2,
+          maxHeight: height - SPACING.medium*2,
         }
       }}>
-        {Header(prop.isDarkMode)}
-        <View style={styles.categories}>
-          {prop.ingredient.categoryId.map((id) => {
-            const category = user.findCategory(id)
-            if (category != undefined){
-              return (
-                <View
-                  style={[
-                    styles.category,
-                    {
-                      backgroundColor: category.colour,
-                    },
-                  ]}
-                  key={category.name}
-                >
-                  <Text>{category.name}</Text>
-                </View>
-              );
-            }
-          })}
-        </View>
-        {Nutrition(prop.ingredient.nutrition)}        
+        <ScrollView style={{flexGrow: 0}}>
+          {Header(prop.isDarkMode)}
+          {prop.ingredient.categoryId.length > 0 && <View style={styles.categories}>
+            {prop.ingredient.categoryId.map((id) => {
+              const category = user.findCategory(id)
+              if (category != undefined){
+                return (
+                  <View
+                    style={[
+                      styles.category,
+                      {
+                        backgroundColor: category.colour,
+                      },
+                    ]}
+                    key={category.name}
+                  >
+                    <Text>{category.name}</Text>
+                  </View>
+                );
+              }
+            })}
+          </View>}
+          {Nutrition(prop.ingredient.nutrition)}     
+        </ScrollView>
         <TouchableOpacity
           style={styles.edit}
           onPress={() => {
@@ -430,30 +448,6 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
           flex: 1,
           flexDirection: "column",
         }}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
-            flexDirection: "row",
-            justifyContent: "flex-end",
-            margin: SPACING.small,
-          }}>
-          <TouchableOpacity
-            style={{
-              alignItems: "center",
-            }}
-            onPress={()=>{
-              navigation.navigate("Setting")
-            }}
-          >
-            <MaterialIcons 
-              name="settings" 
-              color={
-                (isDarkMode)?COLOURS.white: COLOURS.black
-              } 
-              size={ICON_SIZES.medium} 
-            />
-          </TouchableOpacity>
-        </View>
         <KeyboardAwareScrollView
           style={{
             flex: 1,
@@ -847,6 +841,33 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             </View>
           </View>
         </KeyboardAwareScrollView> 
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            right: SPACING.small,
+            backgroundColor: "transparent",
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            margin: SPACING.small,
+          }}>
+          <TouchableOpacity
+            style={{
+              alignItems: "center",
+            }}
+            onPress={()=>{
+              navigation.navigate("Setting")
+            }}
+          >
+            <MaterialIcons 
+              name="settings" 
+              color={
+                (isDarkMode)?COLOURS.white: COLOURS.black
+              } 
+              size={ICON_SIZES.medium} 
+            />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

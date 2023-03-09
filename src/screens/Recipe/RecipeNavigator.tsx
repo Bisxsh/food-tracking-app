@@ -50,6 +50,7 @@ const HomeNavigator = (props: Props) => {
           },
           headerTintColor: isDarkMode ? COLOURS.white : COLOURS.black,
           headerShadowVisible: false,
+          headerBackTitleVisible: false,
         })}
       >
         <Stack.Screen
