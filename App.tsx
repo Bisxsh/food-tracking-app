@@ -21,6 +21,7 @@ import { getRecipes, getSaved, getCustom } from "./src/util/GetRecipe";
 import * as IngredientClass from "./src/classes/IngredientClass";
 import * as CategoryClass from "./src/classes/Categories"
 import React from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
 const Tab = createBottomTabNavigator();
@@ -29,7 +30,7 @@ var firstTime = true;
 
 function App(): JSX.Element {
   registerNNPushToken(6535, "xdrqfHr09cuuEeUjH1MATl");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [consent, setConsent] = useState(true);
 
   //TODO load user data from database and set it here
@@ -120,101 +121,103 @@ function App(): JSX.Element {
   }, []);
 
   return (
-    <ActionSheetProvider>
-      <MenuProvider style={{
-        backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white
-      }}>
-        <UserContext.Provider value={{ user, setUser }}>
-          <UserDataContext.Provider value={{ userData, setUserData }}>
-            {loading && (
-              <View
-                style={{
-                  flex: 1,
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Text 
+    <SafeAreaProvider>
+      <ActionSheetProvider>
+        <MenuProvider style={{
+          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white
+        }}>
+          <UserContext.Provider value={{ user, setUser }}>
+            <UserDataContext.Provider value={{ userData, setUserData }}>
+              {loading && (
+                <View
                   style={{
-                    fontSize: FONT_SIZES.heading, 
-                    color: isDarkMode ? COLOURS.white : COLOURS.black
-                  }}
-                >Welcome</Text>
-              </View>
-            )}
-            {!loading && !consent && (
-              <InitialEntry
-                user={user}
-                setUser={setUser}
-                setConsent={setConsent}
-              />
-            )}
-            {!loading && consent && (
-              <NavigationContainer>
-                <Tab.Navigator
-                  initialRouteName="HomeNavigator"
-                  screenOptions={{
-                    tabBarActiveTintColor: COLOURS.primary,
-                    headerShown: false,
-                    tabBarStyle: {
-                      backgroundColor: isDarkMode
-                        ? COLOURS.darker
-                        : COLOURS.white,
-                    },
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
                   }}
                 >
-                  <Tab.Screen
-                    name="HomeNavigator"
-                    component={HomeNavigator}
-                    options={{
-                      tabBarShowLabel: false,
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                          name="home"
-                          color={color}
-                          size={size}
-                        />
-                      ),
-                      unmountOnBlur: true,
+                  <Text 
+                    style={{
+                      fontSize: FONT_SIZES.heading, 
+                      color: isDarkMode ? COLOURS.white : COLOURS.black
                     }}
-                  />
-                  <Tab.Screen
-                    name="Recipe"
-                    component={RecipeNavigator}
-                    options={{
-                      tabBarShowLabel: false,
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                          name="food"
-                          color={color}
-                          size={size}
-                        />
-                      ),
-                      unmountOnBlur: true,
+                  >Welcome</Text>
+                </View>
+              )}
+              {!loading && !consent && (
+                <InitialEntry
+                  user={user}
+                  setUser={setUser}
+                  setConsent={setConsent}
+                />
+              )}
+              {!loading && consent && (
+                <NavigationContainer>
+                  <Tab.Navigator
+                    initialRouteName="HomeNavigator"
+                    screenOptions={{
+                      tabBarActiveTintColor: COLOURS.primary,
+                      headerShown: false,
+                      tabBarStyle: {
+                        backgroundColor: isDarkMode
+                          ? COLOURS.darker
+                          : COLOURS.white,
+                      },
                     }}
-                  />
-                  <Tab.Screen
-                    name="ProfileNavigator"
-                    component={ProfileNavigator}
-                    options={{
-                      tabBarShowLabel: false,
-                      tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons
-                          name="account"
-                          color={color}
-                          size={size}
-                        />
-                      ),
-                      unmountOnBlur: true,
-                    }}
-                  />
-                </Tab.Navigator>
-              </NavigationContainer>
-            )}
-          </UserDataContext.Provider>
-        </UserContext.Provider>
-      </MenuProvider>
-    </ActionSheetProvider>
+                  >
+                    <Tab.Screen
+                      name="HomeNavigator"
+                      component={HomeNavigator}
+                      options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: ({ color, size }) => (
+                          <MaterialCommunityIcons
+                            name="home"
+                            color={color}
+                            size={size}
+                          />
+                        ),
+                        unmountOnBlur: true,
+                      }}
+                    />
+                    <Tab.Screen
+                      name="Recipe"
+                      component={RecipeNavigator}
+                      options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: ({ color, size }) => (
+                          <MaterialCommunityIcons
+                            name="food"
+                            color={color}
+                            size={size}
+                          />
+                        ),
+                        unmountOnBlur: true,
+                      }}
+                    />
+                    <Tab.Screen
+                      name="ProfileNavigator"
+                      component={ProfileNavigator}
+                      options={{
+                        tabBarShowLabel: false,
+                        tabBarIcon: ({ color, size }) => (
+                          <MaterialCommunityIcons
+                            name="account"
+                            color={color}
+                            size={size}
+                          />
+                        ),
+                        unmountOnBlur: true,
+                      }}
+                    />
+                  </Tab.Navigator>
+                </NavigationContainer>
+              )}
+            </UserDataContext.Provider>
+          </UserContext.Provider>
+        </MenuProvider>
+      </ActionSheetProvider>
+    </SafeAreaProvider>
   );
 }
 

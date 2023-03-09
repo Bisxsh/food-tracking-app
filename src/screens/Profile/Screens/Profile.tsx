@@ -459,6 +459,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             style={{
               flexDirection: "row",
               paddingHorizontal: SPACING.medium,
+              marginTop: SPACING.small,
             }}
           >
             {img != undefined && img != "" && <Image

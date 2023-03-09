@@ -30,7 +30,7 @@ import {
   useActionSheet,
 } from "@expo/react-native-action-sheet";
 import Checkbox from "../components/Checkbox";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 type selectRowProp = {
   text: string;
@@ -137,7 +137,6 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
   const isDarkMode = prop.user.setting.isDark();
   const { showActionSheetWithOptions } = useActionSheet();
   const {height, width} = useWindowDimensions()
-
   return (
     <SafeAreaView
       style={{
@@ -156,7 +155,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
         <Text
           style={{
             fontSize: FONT_SIZES.heading,
-            margin: SPACING.medium,
+            margin: SPACING.small,
             color: isDarkMode ? COLOURS.white : COLOURS.black,
             textAlign: "center",
           }}
@@ -170,6 +169,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
             alignSelf: "stretch",
           }}
         >
+          
           {img != undefined && img != "" && (
             <TouchableOpacity
               onPress={() => {
