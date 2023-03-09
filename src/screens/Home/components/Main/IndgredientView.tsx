@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -117,8 +118,8 @@ const IndgredientView = (props: Props) => {
 
   return (
     <>
-      <View
-        style={{
+      <ScrollView
+        contentContainerStyle={{
           flexDirection: "column",
           alignItems: "flex-start",
           flex: 1,
@@ -148,7 +149,7 @@ const IndgredientView = (props: Props) => {
         )}
 
         {getMainIngredients()}
-      </View>
+      </ScrollView>
       {ingredientShown && (
         <IngredientPopup
           showModal={true}

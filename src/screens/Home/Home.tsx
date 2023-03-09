@@ -24,7 +24,6 @@ export function Home(): JSX.Element {
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(userData.homePageSort || 0);
 
-
   useEffect(() => {
     switch (selectedSort) {
       default:
@@ -77,7 +76,7 @@ export function Home(): JSX.Element {
           alignItems: "center",
           paddingTop: SPACING.small,
         }}
-        edges={['left', 'right', "top"]}
+        edges={["left", "right", "top"]}
       >
         <HomeMenu
           sortFilters={HomeSortingFilters}
@@ -92,21 +91,17 @@ export function Home(): JSX.Element {
               i.quantity > 0
           )}
         />
-        <ScrollView 
-          style={{height: "100%", width: "100%", marginTop: SPACING.tiny}}
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
         >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <IndgredientView ingredientsSearch={ingredientsSearch} />
-          </View>
-          <View style={{height: SPACING.medium}}/>
-        </ScrollView>
+          <IndgredientView ingredientsSearch={ingredientsSearch} />
+        </View>
       </SafeAreaView>
       <AddButton onPress={() => setShowAddMenu(true)} />
       <AddMenu showModal={showAddMenu} setShowModal={setShowAddMenu} />
