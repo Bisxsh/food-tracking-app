@@ -58,6 +58,7 @@ export function Recipe(): JSX.Element {
           ...userData,
           exploreRecipes: await getRecipes()
         })
+        console.log("its happening here")
         genRecipe()
       }): ()=>{}
       return unsubscribe

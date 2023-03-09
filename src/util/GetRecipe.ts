@@ -21,25 +21,31 @@ export async function getRecipes(){
     //need to check for duplicate recipes
     //
     let ingredients = await readAllIngredient()
-    var currentIngredientsNames: string[] = [] 
+
+    var currentIngredientsTuple: any[] = []
+
     ingredients.map((ingredient)=>{
         if(ingredient.expiryDate != undefined){
             if(differenceInDays(ingredient.expiryDate, new Date()) > 0){
-                currentIngredientsNames.push(ingredient.name)
+                currentIngredientsTuple.push([ingredient.name, differenceInDays(ingredient.expiryDate, new Date())])
             }
         }
     })
-    // console.log("current name are")
-    // console.log(currentIngredientsNames)
-    //probalby only query ingredient close to expiring 
-    if(currentIngredientsNames.length == 0){
+    currentIngredientsTuple = currentIngredientsTuple.sort((a,b)=>{return a[1] - b[1]})
+
+    if (currentIngredientsTuple.length > 9){
+        currentIngredientsTuple = currentIngredientsTuple.slice(0,9)
+    }
+
+
+    if(currentIngredientsTuple.length == 0){
         return recipeList;
     }
     else{
 
 
-        await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
-            const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
+        await Promise.all(currentIngredientsTuple.map(async (ingredientName) => {
+            const url = `https://api.edamam.com/search?q=${ingredientName[0]}&app_id=${APP_ID}&app_key=${APP_KEY}`;
             const data = await Axios.get(url);
             data.data.hits.map( async (recipe: any) => {
                 await Image.prefetch(recipe["recipe"]["image"])
