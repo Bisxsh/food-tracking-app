@@ -53,7 +53,7 @@ type Props = {
 
 const RecipeBox = (props: Props) => {
   const isDarkMode = false;
-  console.log(props.recipeIngredients);
+
   const ingredientStrings = props.recipeIngredients.map(
     (ingredient: any) => ingredient.text
   );
