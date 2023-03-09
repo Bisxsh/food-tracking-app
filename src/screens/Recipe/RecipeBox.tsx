@@ -48,7 +48,7 @@ type Props = {
   servings: string;
   time: string;
   ignoreFav: boolean;
-  
+  savedRecipe: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 const RecipeBox = (props: Props) => {
@@ -75,25 +75,40 @@ const RecipeBox = (props: Props) => {
     let meals = await readAllMeal();
     meals.map((meal) => {
       if (meal.name == props.recipeName) {
-        console.log(meal.name)
-        console.log(props.recipeName)
-        console.log("its favourited");
         setIsFavourite(!isFavourite);
       }
     });
   }
 
+  async function genSaved(recipes: any) {
+    const recipeList = recipes;
+    var temp: any[] = [];
+    recipeList.map((recipe: { getId: any; getName: any; getImgSrc: any; }) => {
+      temp.push({
+        recipe: {
+          id: recipe.getId,
+          label: recipe.getName,
+          image: recipe.getImgSrc,
+          servings: 2,
+          calories: 1000.0,
+          ingredients: ["Cheesse"],
+          cautions: ["None"],
+        },
+      });
+    });
+    props.savedRecipe(temp);
+  }
+
   async function updateFavorite() {
     //TODO add to favorites
-    // console.log(isFavourite)
+
     setIsFavourite(!isFavourite);
-    // console.log(isFavourite)
+
     if (isFavourite) {
-      // console.log(await readAllMeal())
+
       await DB.deleteMeal(props.recipeName);
-      setUserData({ ...userData, savedRecipes: await getSaved() });
+      await getSaved().then((res) => {setUserData({ ...userData, savedRecipes: res }); genSaved(res);});
     } else {
-      console.log("its favourited");
       let meal = new Meal(
         props.recipeName,
         [],
@@ -104,8 +119,7 @@ const RecipeBox = (props: Props) => {
         props.recipeImage
       );
       await DB.create(meal);
-      // console.log(await readAllMeal())
-      setUserData({ ...userData, savedRecipes: await getSaved() });
+      await getSaved().then((res) => {setUserData({ ...userData, savedRecipes: res }); genSaved(res);});
       // await DB.deleteMeal(props.recipeName)
     }
 

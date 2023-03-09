@@ -40,20 +40,20 @@ const RecipeInfo = (props: Props) => {
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
   const { height, width } = useWindowDimensions();
-  console.log("INFO");
-  console.log(recipeContext.recipeBeingViewed);
+
+
 
   async function updateFavorite() {
     //TODO add to favorites
-    // console.log(isFavourite)
+
     setIsFavourite(!isFavourite);
-    // console.log(isFavourite)
+
     if (isFavourite) {
-      // console.log(await readAllMeal())
+
       await DB.deleteMeal(meal.name);
       setUserData({ ...userData, savedRecipes: await getSaved() });
     } else {
-      console.log("its favourited");
+
       let newMeal = new Meal(
         meal.name,
         [],
@@ -64,7 +64,7 @@ const RecipeInfo = (props: Props) => {
         meal.imgSrc
       );
       await DB.create(newMeal);
-      // console.log(await readAllMeal())
+
       setUserData({ ...userData, savedRecipes: await getSaved() });
       // await DB.deleteMeal(props.recipeName)
     }
@@ -241,7 +241,7 @@ const RecipeInfo = (props: Props) => {
             if (ingredient == "" || ingredient == " " || !ingredient)
               return null;
             const split = ingredient.split(" ");
-            console.log(split);
+
 
             return (
               <View key={index} style={styles.ingredient}>

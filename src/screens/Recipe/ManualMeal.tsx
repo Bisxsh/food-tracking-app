@@ -69,7 +69,7 @@ const ManualMeal = (props: Props) => {
     if (mealBuilder.getId() == 0 && userData.customRecipes.length > 0) {
       mealBuilder.setId(userData.customRecipes.length); //change to meal id
     }
-    console.log("ID: ", mealBuilder.getId());
+
     // if (
     //   userData.storedIngredients.find(
     //     (ing) => ing.id === mealBuilder.getId()

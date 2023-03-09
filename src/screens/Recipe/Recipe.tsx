@@ -51,21 +51,6 @@ export function Recipe(): JSX.Element {
   const [dietReq, setDietReq] = useState<[string, boolean][]>([])
   const { tabNavi, setTabNavi } = useContext(TabNaviContext)
 
-  useEffect(
-    ()=>{
-      const unsubscribe = (tabNavi != undefined)? tabNavi.addListener("focus", async ()=>{
-        setUserData({
-          ...userData,
-          exploreRecipes: await getRecipes()
-        })
-        console.log("its happening here")
-        genRecipe()
-      }): ()=>{}
-      return unsubscribe
-    }, 
-    [tabNavi]
-  )
-
 
   async function readMeals() {
 
@@ -117,11 +102,11 @@ export function Recipe(): JSX.Element {
     })
   }, []);
 
+
+
   async function genRecipe() {
-    const recipeList = userData.exploreRecipes;
-    setRecipes(recipeList);
-    setExplore(recipeList);
-    sortList();
+    await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
+
   }
 
   async function genSaved() {
@@ -375,6 +360,7 @@ export function Recipe(): JSX.Element {
                 servings={recipe["recipe"]["yield"]}
                 time={recipe["recipe"]["totalTime"]}
                 ignoreFav={currentButton == 2 ? true : false}
+                savedRecipe = {setSaved}
               />
             );
           }

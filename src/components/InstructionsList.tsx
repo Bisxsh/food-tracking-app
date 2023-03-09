@@ -28,9 +28,6 @@ const InstructionsList = (props: Props) => {
     onChangeText("");
   }
 
-  useEffect(() => {
-    console.log(instructionList);
-  }, [instructionList]);
 
   return (
     <>
