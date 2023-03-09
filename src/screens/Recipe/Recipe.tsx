@@ -67,8 +67,7 @@ export function Recipe(): JSX.Element {
 
 
   async function readMeals() {
-    // console.log("reading");
-    // console.log(await readAllMeal());
+
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
@@ -182,7 +181,7 @@ export function Recipe(): JSX.Element {
   const [currentButton, setCurrentButton] = useState(0);
 
   function getCals(recipe: any) {
-    console.log(recipe.calories + " " + recipe.yield);
+
     return Math.round(
       parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
     );
@@ -347,8 +346,7 @@ export function Recipe(): JSX.Element {
               }
             })
           ) {
-            // console.log("--------------------");
-            // console.log(recipe);
+
 
             return (
               <RecipeBox

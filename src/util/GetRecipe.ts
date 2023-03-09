@@ -5,6 +5,7 @@ import { readAllIngredient } from "../backends/Database"
 import { readAllMeal } from "../backends/Database"
 import { UserDataContext } from "../classes/UserData"
 import { Meal } from "../classes/MealClass"
+import { differenceInDays, isSameDay } from "date-fns";
 import * as DB from "../backends/Database"
 
 var APP_ID = "c86047cc"
@@ -22,7 +23,11 @@ export async function getRecipes(){
     let ingredients = await readAllIngredient()
     var currentIngredientsNames: string[] = [] 
     ingredients.map((ingredient)=>{
-        currentIngredientsNames.push(ingredient.name)
+        if(ingredient.expiryDate != undefined){
+            if(differenceInDays(ingredient.expiryDate, new Date()) > 0){
+                currentIngredientsNames.push(ingredient.name)
+            }
+        }
     })
     // console.log("current name are")
     // console.log(currentIngredientsNames)
@@ -31,7 +36,8 @@ export async function getRecipes(){
         return recipeList;
     }
     else{
-        console.log(currentIngredientsNames)
+
+
         await Promise.all(currentIngredientsNames.map(async (ingredientName) => {
             const url = `https://api.edamam.com/search?q=${ingredientName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
             const data = await Axios.get(url);
