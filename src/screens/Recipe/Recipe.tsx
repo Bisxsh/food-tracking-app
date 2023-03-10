@@ -96,16 +96,16 @@ export function Recipe(): JSX.Element {
   }
 
   useEffect(() => {
-    if(userData.refreshExplore){
-      setLoading(true)
-    }
+    setLoading(true)
     readMeals();
     genRecipe();
     getDietReq().then((req)=>{
       if (req != undefined){
         setDietReq(req)
       }
+      setLoading(false)
     })
+
   }, []);
 
 
@@ -114,13 +114,11 @@ export function Recipe(): JSX.Element {
     if(userData.refreshExplore){
       await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
       setUserData({ ...userData, refreshExplore: false })
-      setLoading(false)
     }
     else{
       setRecipes(userData.exploreRecipes);
       setExplore(userData.exploreRecipes);
       sortList();
-      setLoading(false);
     }
     
 
@@ -342,15 +340,13 @@ export function Recipe(): JSX.Element {
           if (
             //TODO implement allergies here
             dietReq.every((elem: any) => {
-              if (elem[1]){
+              if (elem[1] && (recipe["recipe"]["healthLabels"] != undefined)){
                 return recipe["recipe"]["healthLabels"].includes(elem[0])
               }else{
                 return true
               }
             })
           ) {
-
-
             return (
               <RecipeBox
                 key={Math.random()}
@@ -409,7 +405,7 @@ export function Recipe(): JSX.Element {
                       textAlign: "center",
                       fontSize: FONT_SIZES.medium,
                     }}
-                  >{"Loading new recipes"}</Text>
+                  >{"Loading Recipes"}</Text>
                 </View>
               )}
       <AddButton onPress={() => navigation.navigate("ManualMeal")} />
