@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text } from "react-native";
+import { View, Text, Image, useWindowDimensions } from "react-native";
 
-import { COLOURS, FONT_SIZES, SPACING } from "./src/util/GlobalStyles";
+import { COLOURS, FONT_SIZES, ICON_SIZES, SPACING } from "./src/util/GlobalStyles";
 import { DEFAULT_USER_DATA, UserDataContext } from "./src/classes/UserData";
 import { MenuProvider } from "react-native-popup-menu";
 import { ProfileNavigator } from "./src/screens/Profile/ProfileNavigator";
@@ -24,6 +24,7 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 
+
 const Tab = createBottomTabNavigator();
 
 var firstTime = true;
@@ -32,6 +33,7 @@ function App(): JSX.Element {
   registerNNPushToken(6535, "xdrqfHr09cuuEeUjH1MATl");
   const [loading, setLoading] = useState(true);
   const [consent, setConsent] = useState(true);
+  const {height, width} = useWindowDimensions()
 
   //TODO load user data from database and set it here
   const [userData, setUserData] = useState(DEFAULT_USER_DATA);
@@ -136,12 +138,20 @@ function App(): JSX.Element {
                     justifyContent: "center",
                   }}
                 >
+                  <Image
+                    style={{
+                      height: Math.min(height, width)/2,
+                      width:  Math.min(height, width)/2,
+                    }}
+                    source={require("./src/assets/LauncherIcon_v4_1.png")}
+                  />
                   <Text 
                     style={{
                       fontSize: FONT_SIZES.heading, 
-                      color: isDarkMode ? COLOURS.white : COLOURS.black
+                      color: isDarkMode ? COLOURS.white : COLOURS.black,
+                      textAlign: "center"
                     }}
-                  >Welcome</Text>
+                  >{"Welcome to\nWasteX"}</Text>
                 </View>
               )}
               {!loading && !consent && (
