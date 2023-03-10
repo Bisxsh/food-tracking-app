@@ -19,6 +19,7 @@ export interface UserData {
   customRecipes: Meal[];
   recipesPageSort: RecipeSortingFilter;
   exploreRecipes: any[];
+  refreshExplore: boolean;
   //TODO implement
   // recipeCategories: RecipeCategory[];
   // dietaryRequriements: DietaryRequirement[];
@@ -41,6 +42,7 @@ export const DEFAULT_USER_DATA: UserData = {
   savedRecipes:  DUMMY_MEALS,
   customRecipes: [],
   exploreRecipes: <any>[],
+  refreshExplore: false,
 };
 
 export const DEFAULT_USER_DATA_CONTEXT: UserDataContextInterface = {

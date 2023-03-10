@@ -105,7 +105,16 @@ export function Recipe(): JSX.Element {
 
 
   async function genRecipe() {
-    await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
+    if(userData.refreshExplore){
+      await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
+      setUserData({ ...userData, refreshExplore: false })
+    }
+    else{
+      setRecipes(userData.exploreRecipes);
+      setExplore(userData.exploreRecipes);
+      sortList();
+    }
+    
 
   }
 
