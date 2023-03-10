@@ -211,7 +211,7 @@ const IngredientPopup = (props: Props) => {
                 const weight =
                   props.ingredient.weight *
                   (props.ingredient.weightType === weightUnit.grams ? 1 : 1000);
-                DB.create(new History(0, new Date(), weight, 0));
+                DB.create(new History(0, new Date(), props.ingredient.quantity * weight, 0));
               }}
             />
             <View style={{ width: SPACING.medium }} />
@@ -238,7 +238,7 @@ const IngredientPopup = (props: Props) => {
                   new History(
                     0,
                     new Date(),
-                    props.ingredient.quantity * weight,
+                    weight,
                     0
                   )
                 );
