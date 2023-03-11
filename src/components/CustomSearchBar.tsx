@@ -9,15 +9,26 @@ type Props = {
   setText: (text: string) => void; // From useState
   width?: number;
   height?: number;
+  setSearch?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+
 const CustomSearchBar = (props: Props) => {
+
+  function keyDown(e: any) {
+    console.log("done editing");
+    if (props.setSearch != undefined){
+      props.setSearch(true)
+    }
+  }
+
   return (
     <View style={styles(props).container}>
       <TextInput
         placeholderTextColor="grey"
         placeholder={props.textHint}
         onChangeText={(value: string) => props.setText(value)}
+        onSubmitEditing={keyDown}
         style={{flexShrink: 1}}
       />
       <MaterialCommunityIcons

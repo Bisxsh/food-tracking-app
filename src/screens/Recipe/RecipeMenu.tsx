@@ -11,16 +11,18 @@ type Props = {
   sort: number;
   setSort: (sort: number) => void;
   sortFilters: any[];
+  setSearch?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const RecipeMenu = (props: Props) => {
   return (
     <View style={styles.menu}>
       <CustomSearchBar
-        textHint="Search stored ingredients"
+        textHint="Search for any recipe"
         text={props.ingredientsSearch}
         setText={props.setIngredientsSearch}
         width={300}
+        setSearch={props.setSearch}
       />
       <SortButton
         options={props.sortFilters}
