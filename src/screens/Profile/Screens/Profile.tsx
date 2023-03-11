@@ -828,7 +828,7 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             <View
               style={{paddingHorizontal: SPACING.medium}}
             > 
-              {loadingChart && <ActivityIndicator size="large" color={COLOURS.primary} />}
+              {loadingIng && <ActivityIndicator size="large" color={COLOURS.primary} />}
               {!loadingIng &&
                 ingredients.map((value)=>
                   <IngredientRow 

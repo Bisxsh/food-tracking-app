@@ -115,12 +115,12 @@ export function Debug(): JSX.Element{
                             style={styles.pressable}
                             onPress={async ()=>{
                                 let categories: {[name:string]:number} = {}
-                                for (const i of Dummy.DUMMY_CATEGORIES){
+                                for (let index = 0; index < Dummy.DUMMY_CATEGORIES.length; index++){
                                     await DB.create(new Category(
-                                        i.name,
-                                        i.colour,
-                                        undefined,
-                                        i.active
+                                        Dummy.DUMMY_CATEGORIES[index].name,
+                                        Dummy.DUMMY_CATEGORIES[index].colour,
+                                        index,
+                                        Dummy.DUMMY_CATEGORIES[index].active
                                     ))
                                 }
                                 for (const cat of await DB.readAllCategory()){
@@ -156,6 +156,7 @@ export function Debug(): JSX.Element{
                                         i.weight, 
                                         i.servingSize, 
                                         i.imgSrc, 
+                                        undefined,
                                         i.useDate, 
                                         i.expiryDate
                                     ))
@@ -174,8 +175,8 @@ export function Debug(): JSX.Element{
                                 var c = monthCount
                                 for (let i = 0; i < 100; i++) {
                                     const date = new Date()
-                                    date.setMonth(Math.floor(c/2) % 12)
-                                    date.setFullYear(date.getFullYear() - Math.floor(Math.floor(c/2)/12))
+                                    date.setMonth((date.getMonth() - Math.floor(c/2) + 12*(Math.floor(c/12)+1)) % 12)
+                                    date.setFullYear(date.getFullYear() - Math.floor((Math.floor(c/2) + 11 -date.getMonth())/12))
                                     const newHistory = new History(0, date, Math.random() * 100, Math.random() * 100)
                                     await DB.create(newHistory)
                                     c++

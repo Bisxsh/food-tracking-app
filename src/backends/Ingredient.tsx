@@ -166,7 +166,7 @@ export class Ingredient {
           properties[4],  // weightUnit
           properties[6],  // servingSizeUnit
           Nutrition.fromList(Object.values(JSON.parse(properties[11]))),  // Nutrition
-          (properties[12] as string).substring(1,(properties[11] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
+          (properties[12] as string).substring(1,(properties[12] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // CategoryID
           properties[0],  // _id
           properties[3],  // weight
           properties[5],  // servingSize

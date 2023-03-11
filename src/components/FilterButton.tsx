@@ -46,7 +46,6 @@ const FilterButton = (props: Props) => {
     props.options
       ? props.options.map((o, index) => {
           return {
-            id: index,
             ...o,
           };
         })
@@ -75,7 +74,6 @@ const FilterButton = (props: Props) => {
     setFilters(
       props.options.map((o, index) => {
         return {
-          id: index,
           ...o,
         };
       })
@@ -87,7 +85,6 @@ const FilterButton = (props: Props) => {
       setFilters(
         props.options.map((o, index) => {
           return {
-            id: index,
             ...o,
           };
         })
@@ -223,8 +220,9 @@ const FilterButton = (props: Props) => {
                 setShowInnerModal(false);
                 let newOptions = [
                   ...props.options,
-                  { colour, name: categoryName, active: false },
+                  { colour, name: categoryName, active: false, id: props.options.length },
                 ];
+                console.log(newOptions)
                 DB.create(new CategoryBack.Category(categoryName, colour, undefined, false))
                 props.setOptions(newOptions);
                 if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);

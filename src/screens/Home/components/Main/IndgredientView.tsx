@@ -41,12 +41,11 @@ const IndgredientView = (props: Props) => {
   );
 
   const activeFilters = userData.ingredientCategories.filter((i) => i.active);
-
   const activeIngredients = userData.storedIngredients
     .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
     .filter((i) => {
       for (let filter of activeFilters) {
-        if (!i.categories.includes(filter)) return false;
+        if (i.categories.filter((v)=>v.name == filter.name).length == 0 ) return false;
       }
       return true;
     })

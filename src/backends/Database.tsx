@@ -786,7 +786,11 @@ async function deleteCSVFile(verbose=false){
     if ((await FileSystem.getInfoAsync(csvDirectory)).exists){
         const dir:string[] = await FileSystem.readDirectoryAsync(csvDirectory)
         for (const file of dir){
-            await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/"+file)
+            try {
+                await FileSystem.deleteAsync(csvDirectory+file)
+            } catch (error) {
+                
+            }
         }
         if (verbose){
             if ((await FileSystem.readDirectoryAsync(csvDirectory)).length == 0){
