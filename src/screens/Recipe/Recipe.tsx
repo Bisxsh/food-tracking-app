@@ -7,6 +7,7 @@ import {
   View,
   Image,
   useWindowDimensions,
+  ActivityIndicator,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved, getSearchRecipe } from "../../util/GetRecipe";
@@ -121,7 +122,6 @@ export function Recipe(): JSX.Element {
     })
 
   }, []);
-
 
 
   async function genRecipe() {
@@ -348,7 +348,7 @@ export function Recipe(): JSX.Element {
           setSearch={setSearchIngBut}
         />
       </View>
-      <ScrollView
+      {!loading && <ScrollView
         style={{ width: "100%" }}
         contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
       >
@@ -394,29 +394,28 @@ export function Recipe(): JSX.Element {
             );
           }
         })}
-      </ScrollView>
+      </ScrollView>}
       {loading && (
                 <View
                   style={{
-                    position: "relative",
+                    flex: 1,
                     width: "100%",
-                    height: "85%",
                     backgroundColor: COLOURS.darker,
                     opacity: 0.5,
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <Image
+                  <ActivityIndicator 
+                    size={"large"} 
+                    color={COLOURS.white}
                     style={{
-                      height: Math.min(height, width)/3,
-                      width:  Math.min(height, width)/3,
-                      margin: SPACING.small,
+                      transform: [{scale: 2}]
                     }}
-                    source={require("../../assets/LoadingGif.gif")}
                   />
                   <Text 
                     style={{
+                      marginTop: 36,
                       color: COLOURS.white,
                       textAlign: "center",
                       fontSize: FONT_SIZES.medium,
