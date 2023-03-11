@@ -416,7 +416,7 @@ export function Recipe(): JSX.Element {
                   <Text 
                     style={{
                       marginTop: 36,
-                      color: COLOURS.white,
+                      color: isDarkMode ? COLOURS.white : COLOURS.darker,
                       textAlign: "center",
                       fontSize: FONT_SIZES.medium,
                     }}
