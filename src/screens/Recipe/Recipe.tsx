@@ -9,7 +9,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-import { getRecipes, getSaved } from "../../util/GetRecipe";
+import { getRecipes, getSaved, getSearchRecipe } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
 import { COLOURS, DROP_SHADOW, FONT_SIZES, RADIUS, SPACING } from "../../util/GlobalStyles";
 import RecipeBox from "./RecipeBox";
@@ -40,6 +40,7 @@ export function Recipe(): JSX.Element {
   });
 
   const navigation = useNavigation<any>();
+  const [searchIngBut, setSearchIngBut] = useState(false);
   const [loading, setLoading] = useState(true);
   const [recipes, setRecipes] = useState<any[]>([]);
   const [explore, setExplore] = useState<any[]>([]);
@@ -53,6 +54,19 @@ export function Recipe(): JSX.Element {
   );
   const [dietReq, setDietReq] = useState<[string, boolean][]>([])
   const {height, width} = useWindowDimensions()
+
+  useEffect(() => {
+    //search for typed ingredient
+    console.log("the indgredients search is: " + ingredientsSearch)
+    if (ingredientsSearch != "") {
+      setLoading(true)
+      getSearchRecipe(ingredientsSearch).then((recipeList) => {setRecipes(recipeList)}).then(()=>setLoading(false))
+    }
+    else{
+      setRecipes(explore)
+    }
+    setSearchIngBut(false)
+  }, [searchIngBut]);
 
 
   async function readMeals() {
@@ -227,6 +241,7 @@ export function Recipe(): JSX.Element {
     }
   }
 
+
   useEffect(() => {
     switch (selectedSort) {
       case RecipeSortingFilter.TimeLowToHigh:
@@ -330,6 +345,7 @@ export function Recipe(): JSX.Element {
           sort={RecipeSortingFilters.indexOf(selectedSort)}
           setIngredientsSearch={setIngredientsSearch}
           setSort={(i: number) => setSelectedSort(RecipeSortingFilters[i])}
+          setSearch={setSearchIngBut}
         />
       </View>
       <ScrollView

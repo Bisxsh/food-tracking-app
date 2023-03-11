@@ -113,3 +113,15 @@ export async function getDietReq(){
     let userData = await DB.readUser(0) == undefined ? [] : (await DB.readUser(0))?.dietReq
     return userData
 }
+
+export async function getSearchRecipe(recipeName: string){
+    var recipeList: any[]= []
+
+    const url = `https://api.edamam.com/search?q=${recipeName}&app_id=${APP_ID}&app_key=${APP_KEY}`;
+    const data = await Axios.get(url);
+    data.data.hits.map( async (recipe: any) => {
+        await Image.prefetch(recipe["recipe"]["image"])
+    })
+    recipeList = recipeList.concat(data.data.hits);
+    return recipeList
+    }
