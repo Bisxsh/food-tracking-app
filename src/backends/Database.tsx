@@ -1,5 +1,6 @@
 import * as sq from "expo-sqlite";
 import * as FileSystem from 'expo-file-system';
+import * as MailComposer from 'expo-mail-composer'
 
 import { Ingredient } from "./Ingredient";
 import { Category } from "./Category";
@@ -721,6 +722,74 @@ export async function deleteFile(verbose=false){
         }
         if (verbose){
             if ((await FileSystem.readDirectoryAsync(FileSystem.documentDirectory+"/SQLite/")).length == 0){
+                console.log("SUCCESS: Delete file")
+            }else{
+                console.log("FAIL: Delete file")
+            }
+        }
+    }else{
+        if (verbose){
+            console.log("FAIL: Delete file (No such file)")
+        }
+    }
+    await deleteCSVFile(verbose)
+}
+
+// ======== Export DB file ==============================================================
+
+const csvDirectory = FileSystem.documentDirectory + "csv/"
+
+
+async function createCSVFile(verbose=false): Promise<string>{
+    const ings = await readAllIngredient()
+
+    if (ings.length == 0){
+        return ""
+    }
+
+    var txt = "addDate,expiryDate,useDate"
+    const fileUri = csvDirectory + (new Date()).toISOString() + ".csv"
+    for (const ing of ings) {
+        txt = txt +"\n"
+            + ing.addDate.toLocaleDateString()+","
+            + ((ing.expiryDate == undefined)? "undefined": ing.expiryDate?.toLocaleDateString()) + ","
+            + ((ing.useDate == undefined)? "undefined": ing.useDate?.toLocaleDateString())
+    }       
+
+    await FileSystem.getInfoAsync(csvDirectory).then(async (info)=>{
+        if (!info.exists){
+            await FileSystem.makeDirectoryAsync(csvDirectory)
+        }
+    })
+    await FileSystem.writeAsStringAsync(fileUri, txt)
+
+    return fileUri
+}
+
+export async function exportCSVFile(verbose=false): Promise<boolean> {
+    if (!(await MailComposer.isAvailableAsync())){
+        return false
+    }
+    const status = await MailComposer.composeAsync({
+        attachments: [await createCSVFile()],
+        body: "Please send this email without editing anything except your email account to send.\nThe collected data will be analysed anonymously.\nYour email will not be stored, and the attached file does not contain any your personal data.\nThank you for your participation.",
+        recipients: ["ys2445@bath.ac.uk"],
+        subject: "Food Tracking App - Exported Data"
+    })
+    if (status.status == MailComposer.MailComposerStatus.SENT){
+        return true
+    }
+    return false
+}
+
+async function deleteCSVFile(verbose=false){
+    if ((await FileSystem.getInfoAsync(csvDirectory)).exists){
+        const dir:string[] = await FileSystem.readDirectoryAsync(csvDirectory)
+        for (const file of dir){
+            await FileSystem.deleteAsync(FileSystem.documentDirectory+"/SQLite/"+file)
+        }
+        if (verbose){
+            if ((await FileSystem.readDirectoryAsync(csvDirectory)).length == 0){
                 console.log("SUCCESS: Delete file")
             }else{
                 console.log("FAIL: Delete file")

@@ -113,14 +113,6 @@ export function Debug(): JSX.Element{
                     >
                         <Pressable
                             style={styles.pressable}
-                            onPress={()=>{
-                                DB.init();
-                            }}
-                        >
-                            <Text>Open DB</Text>
-                        </Pressable>
-                        <Pressable
-                            style={styles.pressable}
                             onPress={async ()=>{
                                 let categories: {[name:string]:number} = {}
                                 for (const i of Dummy.DUMMY_CATEGORIES){
@@ -207,6 +199,24 @@ export function Debug(): JSX.Element{
                             }}
                         >
                             <Text>Load Dummy Data</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                DB.exportCSVFile().then((v)=>{
+                                    setLog("exported: "+String(v))
+                                })
+                            }}
+                        >
+                            <Text>Export data</Text>
+                        </Pressable>
+                        <Pressable
+                            style={styles.pressable}
+                            onPress={()=>{
+                                DB.init();
+                            }}
+                        >
+                            <Text>Open DB</Text>
                         </Pressable>
                         <Pressable
                             style={styles.pressable}
