@@ -83,9 +83,10 @@ const ManualIngredient = (props: Props) => {
         ...userData,
         storedIngredients: userData.storedIngredients.map((ing) =>
           ing.id === ingredientBuilder.getId() ? ingredientBuilder.build() : ing
-        ),
+        ), 
       });
     } else userData.storedIngredients.push(ingredientBuilder.build());
+    setUserData({ ...userData, refreshExplore: true });
     closeManual();
   }
 

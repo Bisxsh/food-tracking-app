@@ -5,11 +5,13 @@ import {
   ScrollView,
   Text,
   View,
+  Image,
+  useWindowDimensions,
 } from "react-native";
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
-import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../../util/GlobalStyles";
+import { COLOURS, DROP_SHADOW, FONT_SIZES, RADIUS, SPACING } from "../../util/GlobalStyles";
 import RecipeBox from "./RecipeBox";
 import RecipeMenu from "./RecipeMenu";
 import { useNavigation } from "@react-navigation/native";
@@ -25,6 +27,7 @@ import { Meal } from "../../classes/MealClass";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TabNaviContext } from './RecipeNavigator';
 
+
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
 
@@ -37,7 +40,7 @@ export function Recipe(): JSX.Element {
   });
 
   const navigation = useNavigation<any>();
-
+  const [loading, setLoading] = useState(true);
   const [recipes, setRecipes] = useState<any[]>([]);
   const [explore, setExplore] = useState<any[]>([]);
   const [saved, setSaved] = useState<any[]>([]);
@@ -49,7 +52,7 @@ export function Recipe(): JSX.Element {
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
   const [dietReq, setDietReq] = useState<[string, boolean][]>([])
-  const { tabNavi, setTabNavi } = useContext(TabNaviContext)
+  const {height, width} = useWindowDimensions()
 
 
   async function readMeals() {
@@ -93,19 +96,31 @@ export function Recipe(): JSX.Element {
   }
 
   useEffect(() => {
+    setLoading(true)
     readMeals();
     genRecipe();
     getDietReq().then((req)=>{
       if (req != undefined){
         setDietReq(req)
       }
+      setLoading(false)
     })
+
   }, []);
 
 
 
   async function genRecipe() {
-    await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
+    if(userData.refreshExplore){
+      await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
+      setUserData({ ...userData, refreshExplore: false })
+    }
+    else{
+      setRecipes(userData.exploreRecipes);
+      setExplore(userData.exploreRecipes);
+      sortList();
+    }
+    
 
   }
 
@@ -325,15 +340,13 @@ export function Recipe(): JSX.Element {
           if (
             //TODO implement allergies here
             dietReq.every((elem: any) => {
-              if (elem[1]){
+              if (elem[1] && (recipe["recipe"]["healthLabels"] != undefined)){
                 return recipe["recipe"]["healthLabels"].includes(elem[0])
               }else{
                 return true
               }
             })
           ) {
-
-
             return (
               <RecipeBox
                 key={Math.random()}
@@ -366,6 +379,35 @@ export function Recipe(): JSX.Element {
           }
         })}
       </ScrollView>
+      {loading && (
+                <View
+                  style={{
+                    position: "relative",
+                    width: "100%",
+                    height: "85%",
+                    backgroundColor: COLOURS.darker,
+                    opacity: 0.5,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image
+                    style={{
+                      height: Math.min(height, width)/3,
+                      width:  Math.min(height, width)/3,
+                      margin: SPACING.small,
+                    }}
+                    source={require("../../assets/LoadingGif.gif")}
+                  />
+                  <Text 
+                    style={{
+                      color: COLOURS.white,
+                      textAlign: "center",
+                      fontSize: FONT_SIZES.medium,
+                    }}
+                  >{"Loading Recipes"}</Text>
+                </View>
+              )}
       <AddButton onPress={() => navigation.navigate("ManualMeal")} />
     </SafeAreaView>
   );
