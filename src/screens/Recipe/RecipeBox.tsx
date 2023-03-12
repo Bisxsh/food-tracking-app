@@ -36,31 +36,14 @@ import { useNavigation } from "@react-navigation/native";
 import { RecipeContext } from "./RecipeContextProvider";
 
 type Props = {
-  recipeName: string;
-  recipeImage: string;
-  recipeCalories: string;
-  recipeServings: string;
-  recipeCautions: any;
-  recipeIngredients: any;
-  recipeLink: string;
-  source: string;
-  nutrition: any[];
-  servings: string;
-  time: string;
+  recipe: Meal;
   ignoreFav: boolean;
   savedRecipe: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 const RecipeBox = (props: Props) => {
   const isDarkMode = false;
-
-  const ingredientStrings = props.recipeIngredients.map(
-    (ingredient: any) => ingredient.text
-  );
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? COLOURS.darker : Colors.lighter,
-  };
+  const recipe = props.recipe;
 
   const [isFavourite, setIsFavourite] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
@@ -74,7 +57,7 @@ const RecipeBox = (props: Props) => {
   async function checkFavourite() {
     let meals = await readAllMeal();
     meals.map((meal) => {
-      if (meal.name == props.recipeName) {
+      if (meal.name == recipe.name) {
         setIsFavourite(!isFavourite);
       }
     });
@@ -83,7 +66,7 @@ const RecipeBox = (props: Props) => {
   async function genSaved(recipes: any) {
     const recipeList = recipes;
     var temp: any[] = [];
-    recipeList.map((recipe: { getId: any; getName: any; getImgSrc: any; }) => {
+    recipeList.map((recipe: { getId: any; getName: any; getImgSrc: any }) => {
       temp.push({
         recipe: {
           id: recipe.getId,
@@ -105,22 +88,18 @@ const RecipeBox = (props: Props) => {
     setIsFavourite(!isFavourite);
 
     if (isFavourite) {
-
-      await DB.deleteMeal(props.recipeName);
-      await getSaved().then((res) => {setUserData({ ...userData, savedRecipes: res }); genSaved(res);});
+      await DB.deleteMeal(recipe.name);
+      await getSaved().then((res) => {
+        setUserData({ ...userData, savedRecipes: res });
+        genSaved(res);
+      });
     } else {
-      let meal = new Meal(
-        props.recipeName,
-        [],
-        [],
-        [],
-        Math.floor(Math.random() * 1000),
-        props.recipeLink,
-        props.recipeImage
-      );
-      await DB.create(meal);
-      await getSaved().then((res) => {setUserData({ ...userData, savedRecipes: res }); genSaved(res);});
-      // await DB.deleteMeal(props.recipeName)
+      await DB.create(recipe);
+      await getSaved().then((res) => {
+        setUserData({ ...userData, savedRecipes: res });
+        genSaved(res);
+      });
+      // await DB.deleteMeal(recipe.name)
     }
 
     // _id: "int primary key not null",
@@ -140,30 +119,14 @@ const RecipeBox = (props: Props) => {
           setRecipeContext({
             ...recipeContext,
             viewedRecipeFavourite: isFavourite,
-            viewedRecipeSource: props.source,
-            viewedRecipeIngredients: ingredientStrings,
-            viewedRecipeNutrients: props.nutrition,
-            viewedRecipeServings: Number.parseInt(props.servings),
-            viewedRecipeTime: Number.parseInt(props.time),
-            recipeBeingViewed: new Meal(
-              props.recipeName,
-              [],
-              [],
-              [],
-              Math.floor(Math.random() * 1000),
-              props.recipeLink,
-              props.recipeImage
-            ),
+            recipeBeingViewed: recipe,
           });
           navigation.navigate("RecipeInfo");
         }}
       >
         <View style={{ position: "relative" }}>
-          {props.recipeImage ? (
-            <Image
-              source={{ uri: props.recipeImage }}
-              style={styles.foodImage}
-            />
+          {recipe.imgSrc ? (
+            <Image source={{ uri: recipe.imgSrc }} style={styles.foodImage} />
           ) : (
             <MaterialCommunityIcons
               name="image-off"
@@ -180,13 +143,13 @@ const RecipeBox = (props: Props) => {
             />
             {/* TODO implement time here */}
             <Text style={{ marginLeft: SPACING.tiny }}>
-              {props.time || "?"} mins
+              {recipe.time || "?"} mins
             </Text>
           </View>
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.textHeading} numberOfLines={1}>
-            {props.recipeName}
+            {recipe.name}
           </Text>
           <View
             style={{
@@ -199,34 +162,39 @@ const RecipeBox = (props: Props) => {
             <CardDetail
               icon={RecipeCardIcon.CALORIES}
               text={`${Math.round(
-                parseInt(props.recipeCalories) / parseInt(props.recipeServings) //need to add calorie to class
+                (recipe.nutrition?.energy || 0) / recipe.servings //need to add calorie to class
               )} Calories`}
             />
             <CardDetail
               icon={RecipeCardIcon.ALLERGENS}
-              text={`Contains ${props.recipeCautions.join(", ")}`}
+              text={
+                recipe.cautions
+                  ? `Contains ${recipe.cautions?.join(", ")}`
+                  : "No Allergens"
+              }
             />
             <CardDetail
               icon={RecipeCardIcon.INGREDIENTS}
-              text={`${props.recipeIngredients.length} ingredients`}
+              text={`${recipe.ingredient?.length || "?"} ingredients`}
             />
           </View>
         </View>
       </TouchableOpacity>
       <View style={{ position: "absolute", top: 20, right: 30 }}>
         {props.ignoreFav ? null : (
-        <TouchableOpacity
-          onPress={() => {
-            updateFavorite();
-          }}
-        >
-          <MaterialCommunityIcons
-            name={isFavourite ? "star" : "star-outline"}
-            size={24}
-            color={isFavourite ? COLOURS.primary : "black"}
-            style={{ marginLeft: SPACING.small }}
-          />
-        </TouchableOpacity>)}
+          <TouchableOpacity
+            onPress={() => {
+              updateFavorite();
+            }}
+          >
+            <MaterialCommunityIcons
+              name={isFavourite ? "star" : "star-outline"}
+              size={24}
+              color={isFavourite ? COLOURS.primary : "black"}
+              style={{ marginLeft: SPACING.small }}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

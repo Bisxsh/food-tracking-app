@@ -1,69 +1,118 @@
-import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
-import React, {useContext, useEffect, useState} from 'react';
-import {Text, View, ScrollView, TouchableOpacity, Image, ActivityIndicator, useWindowDimensions, StyleSheet} from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { LineChart } from 'react-native-chart-kit';
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  ActivityIndicator,
+  useWindowDimensions,
+  StyleSheet,
+} from "react-native";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
+import { LineChart } from "react-native-chart-kit";
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
-import { COLOURS, DROP_SHADOW, FONT_SIZES, ICON_SIZES, RADIUS, SPACING } from '../../../util/GlobalStyles';
-import { UserContext } from '../../../backends/User';
-import { ScreenProp, StackParams, TabNaviContext } from '../ProfileNavigator';
-import { getMonthlyData, getMonthlyDataSet } from '../../../backends/Histories'
-import CustomSearchBar from '../../../components/CustomSearchBar';
-import SortButton from '../../../components/SortButton';
-import IngredientsFilter from '../../../components/IngredientsFilter';
-import { Category } from '../../../backends/Category';
-import * as Categories from '../../../classes/Categories';
-import * as DB from '../../../backends/Database'
-import { Ingredient } from '../../../backends/Ingredient';
-import { Nutrition } from '../../../backends/Nutrition';
-import Modal from 'react-native-modal/dist/modal';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import {
+  COLOURS,
+  DROP_SHADOW,
+  FONT_SIZES,
+  ICON_SIZES,
+  RADIUS,
+  SPACING,
+} from "../../../util/GlobalStyles";
+import { UserContext } from "../../../backends/User";
+import { ScreenProp, StackParams, TabNaviContext } from "../ProfileNavigator";
+import { getMonthlyData, getMonthlyDataSet } from "../../../backends/Histories";
+import CustomSearchBar from "../../../components/CustomSearchBar";
+import SortButton from "../../../components/SortButton";
+import IngredientsFilter from "../../../components/IngredientsFilter";
+import { Category } from "../../../backends/Category";
+import * as Categories from "../../../classes/Categories";
+import * as DB from "../../../backends/Database";
+import { Ingredient } from "../../../backends/Ingredient";
+import { Nutrition } from "../../../backends/Nutrition";
+import Modal from "react-native-modal/dist/modal";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 type Months = {
   short: {
-    0: string[],
-    1: string[],
-    2: string[],
-  },
+    0: string[];
+    1: string[];
+    2: string[];
+  };
   long: {
-    0: string[],
-    1: string[],
-    2: string[],
-  }
-}
+    0: string[];
+    1: string[];
+    2: string[];
+  };
+};
 
 const months: Months = {
   short: {
-    0: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    0: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     1: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     2: ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
   },
   long: {
-    0: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    0: [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ],
     1: ["January", "February", "March", "April", "May", "June"],
     2: ["July", "August", "September", "October", "November", "December"],
-  }
-}
+  },
+};
 
 const sortOrders = {
   0: "Name: A to Z",
   1: "Name: Z to A",
   2: "Date Used: Old to Latest",
   3: "Date Used: Latest to Old",
-}
+};
 
 type ingredientRowProp = {
-  ingredient: Ingredient
-  dimension: [number, number]
-  isDarkMode: boolean
-  navigation: NativeStackNavigationProp<StackParams, keyof StackParams, undefined>
-}
+  ingredient: Ingredient;
+  dimension: [number, number];
+  isDarkMode: boolean;
+  navigation: NativeStackNavigationProp<
+    StackParams,
+    keyof StackParams,
+    undefined
+  >;
+};
 
-function IngredientRow(prop: ingredientRowProp): JSX.Element{
-  const [showModal, setShowModal] = useState(false)
+function IngredientRow(prop: ingredientRowProp): JSX.Element {
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <TouchableOpacity
@@ -73,53 +122,63 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
         flexDirection: "row",
         marginBottom: SPACING.small,
       }}
-      onPress={()=>{setShowModal(true)}}
+      onPress={() => {
+        setShowModal(true);
+      }}
     >
-      {prop.ingredient.imgSrc != undefined && prop.ingredient.imgSrc != "" && <Image
-        style={{
-          alignItems: "center",
-          aspectRatio: 1,
-          justifyContent: "center",
-          borderRadius: RADIUS.standard,
-        }}
-        source={{uri: prop.ingredient.imgSrc}}
-      />}
-      {(prop.ingredient.imgSrc == undefined || prop.ingredient.imgSrc == "") && <View
-        style={{
-          alignItems: "center",
-          backgroundColor: COLOURS.darkGrey,
-          aspectRatio: 1,
-          justifyContent: "center",
-          borderRadius: RADIUS.standard,
-        }}
-      >
-        <MaterialIcons 
-          name="image-not-supported" 
-          color={COLOURS.white} 
-          size={ICON_SIZES.medium} 
+      {prop.ingredient.imgSrc != undefined && prop.ingredient.imgSrc != "" && (
+        <Image
           style={{
-              textAlign: 'center'
+            alignItems: "center",
+            aspectRatio: 1,
+            justifyContent: "center",
+            borderRadius: RADIUS.standard,
           }}
+          source={{ uri: prop.ingredient.imgSrc }}
         />
-      </View>}
+      )}
+      {(prop.ingredient.imgSrc == undefined ||
+        prop.ingredient.imgSrc == "") && (
+        <View
+          style={{
+            alignItems: "center",
+            backgroundColor: COLOURS.darkGrey,
+            aspectRatio: 1,
+            justifyContent: "center",
+            borderRadius: RADIUS.standard,
+          }}
+        >
+          <MaterialIcons
+            name="image-not-supported"
+            color={COLOURS.white}
+            size={ICON_SIZES.medium}
+            style={{
+              textAlign: "center",
+            }}
+          />
+        </View>
+      )}
       <View
         style={{
-          flex:1,
+          flex: 1,
           flexDirection: "column",
           padding: SPACING.small,
           alignItems: "flex-start",
-          flexShrink: 1
+          flexShrink: 1,
         }}
       >
-        <Text 
-          style={{fontSize: FONT_SIZES.small}}
+        <Text
+          style={{ fontSize: FONT_SIZES.small }}
           ellipsizeMode={"tail"}
           numberOfLines={1}
         >
           {prop.ingredient.name}
         </Text>
-        <Text style={{fontSize: FONT_SIZES.tiny}}>
-          {"Used on "+ ((prop.ingredient.useDate != undefined)? prop.ingredient.useDate?.toLocaleDateString(): "Unknown")}
+        <Text style={{ fontSize: FONT_SIZES.tiny }}>
+          {"Used on " +
+            (prop.ingredient.useDate != undefined
+              ? prop.ingredient.useDate?.toLocaleDateString()
+              : "Unknown")}
         </Text>
       </View>
       <IngredientPopup
@@ -131,7 +190,7 @@ function IngredientRow(prop: ingredientRowProp): JSX.Element{
         navigation={prop.navigation}
       />
     </TouchableOpacity>
-  )
+  );
 }
 
 type searchMenuProp = {
@@ -141,8 +200,8 @@ type searchMenuProp = {
   setSort: (sort: number) => void;
   sortFilters: any[];
   showExpiringButton?: boolean;
-  option: Category[]
-  setOption: (category: Category[]) => void
+  option: Category[];
+  setOption: (category: Category[]) => void;
 };
 
 const SearchMenu = (props: searchMenuProp) => {
@@ -161,9 +220,17 @@ const SearchMenu = (props: searchMenuProp) => {
       />
       <IngredientsFilter
         options={props.option}
-        setOptions={(options) =>{
-          const categories = options.map((value:Categories.Category)=>new Category(value.name, value.colour, (value as Category)._id, value.active))
-          props.setOption(categories)
+        setOptions={(options) => {
+          const categories = options.map(
+            (value: Categories.Category) =>
+              new Category(
+                value.name,
+                value.colour,
+                (value as Category)._id,
+                value.active
+              )
+          );
+          props.setOption(categories);
         }}
       />
     </View>
@@ -174,53 +241,72 @@ type ingredientPopupProp = {
   showModal: boolean;
   setShowModal: (show: boolean) => void;
   ingredient: Ingredient;
-  dimension: [number, number]
-  isDarkMode: boolean
-  navigation: NativeStackNavigationProp<StackParams, keyof StackParams, undefined>
+  dimension: [number, number];
+  isDarkMode: boolean;
+  navigation: NativeStackNavigationProp<
+    StackParams,
+    keyof StackParams,
+    undefined
+  >;
 };
 
 const IngredientPopup = (prop: ingredientPopupProp) => {
   const { user, setUser } = useContext(UserContext);
-  const { height, width } = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
 
-  function Header(isDarkMode:boolean) {
+  function Header(isDarkMode: boolean) {
     return (
-      <View style={{
-        ...styles.header, 
-        ...{
-          backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
-        }
-      }}>
-        {prop.ingredient.imgSrc != undefined && prop.ingredient.imgSrc != "" && <Image
+      <View
+        style={{
+          ...styles.header,
+          ...{
+            backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
+          },
+        }}
+      >
+        {prop.ingredient.imgSrc != undefined &&
+          prop.ingredient.imgSrc != "" && (
+            <Image
+              style={{
+                alignItems: "center",
+                aspectRatio: 1,
+                justifyContent: "center",
+                borderRadius: RADIUS.standard,
+                width: Math.min(...prop.dimension) / 4,
+              }}
+              source={{ uri: prop.ingredient.imgSrc }}
+            />
+          )}
+        {(prop.ingredient.imgSrc == undefined ||
+          prop.ingredient.imgSrc == "") && (
+          <View
+            style={{
+              alignItems: "center",
+              backgroundColor: COLOURS.darkGrey,
+              aspectRatio: 1,
+              justifyContent: "center",
+              borderRadius: RADIUS.standard,
+              width: Math.min(...prop.dimension) / 4,
+            }}
+          >
+            <MaterialIcons
+              name="image-not-supported"
+              color={COLOURS.white}
+              size={ICON_SIZES.medium}
+              style={{
+                textAlign: "center",
+              }}
+            />
+          </View>
+        )}
+        <View
           style={{
-            alignItems: "center",
-            aspectRatio: 1,
+            flexDirection: "column",
+            flexShrink: 1,
             justifyContent: "center",
-            borderRadius: RADIUS.standard,
-            width: Math.min(...prop.dimension)/4
-          }}
-          source={{uri: prop.ingredient.imgSrc}}
-        />}
-        {(prop.ingredient.imgSrc == undefined || prop.ingredient.imgSrc == "") && <View
-          style={{
-            alignItems: "center",
-            backgroundColor: COLOURS.darkGrey,
-            aspectRatio: 1,
-            justifyContent: "center",
-            borderRadius: RADIUS.standard,
-            width: Math.min(...prop.dimension)/4
+            marginLeft: SPACING.small,
           }}
         >
-          <MaterialIcons 
-            name="image-not-supported" 
-            color={COLOURS.white} 
-            size={ICON_SIZES.medium} 
-            style={{
-                textAlign: 'center'
-            }}
-          />
-        </View>}
-        <View style={{ flexDirection: "column", flexShrink: 1, justifyContent: "center", marginLeft: SPACING.small}}>
           <Text
             style={{
               fontSize: FONT_SIZES.body,
@@ -236,13 +322,13 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             <MaterialCommunityIcons
               name="scale-balance"
               size={24}
-              color={(isDarkMode)?COLOURS.white: COLOURS.black }
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
             />
             <Text
               style={{
                 marginLeft: SPACING.tiny,
                 fontSize: FONT_SIZES.small,
-                color: (isDarkMode)?COLOURS.white: COLOURS.black,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
               }}
             >
               {prop.ingredient.weight} {prop.ingredient.weightUnit}
@@ -252,15 +338,20 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
             <MaterialCommunityIcons
               name="calendar-outline"
               size={24}
-              color={(isDarkMode)?COLOURS.white: COLOURS.black }
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
             />
             <Text
               style={{
                 marginLeft: SPACING.tiny,
                 fontSize: FONT_SIZES.small,
-                color: (isDarkMode)?COLOURS.white: COLOURS.black,
+                color: isDarkMode ? COLOURS.white : COLOURS.black,
               }}
-            >{"Used on: "+ ((prop.ingredient.useDate != undefined)? prop.ingredient.useDate?.toLocaleDateString(): "Unknown")}</Text>
+            >
+              {"Used on: " +
+                (prop.ingredient.useDate != undefined
+                  ? prop.ingredient.useDate?.toLocaleDateString()
+                  : "Unknown")}
+            </Text>
           </View>
         </View>
       </View>
@@ -312,45 +403,49 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
         alignItems: "center",
       }}
     >
-      <View style={{
-        ...styles.container, 
-        ...{
-          backgroundColor: prop.isDarkMode ? COLOURS.darker : COLOURS.white,
-          borderColor:  prop.isDarkMode ? COLOURS.darkGrey : COLOURS.white, 
-          borderWidth: 0.5,
-          maxWidth: width - SPACING.small*2,
-          maxHeight: height - SPACING.medium*2,
-        }
-      }}>
-        <ScrollView style={{flexGrow: 0}}>
+      <View
+        style={{
+          ...styles.container,
+          ...{
+            backgroundColor: prop.isDarkMode ? COLOURS.darker : COLOURS.white,
+            borderColor: prop.isDarkMode ? COLOURS.darkGrey : COLOURS.white,
+            borderWidth: 0.5,
+            maxWidth: width - SPACING.small * 2,
+            maxHeight: height - SPACING.medium * 2,
+          },
+        }}
+      >
+        <ScrollView style={{ flexGrow: 0 }}>
           {Header(prop.isDarkMode)}
-          {prop.ingredient.categoryId.length > 0 && <View style={styles.categories}>
-            {prop.ingredient.categoryId.map((id) => {
-              const category = user.findCategory(id)
-              if (category != undefined){
-                return (
-                  <View
-                    style={[
-                      styles.category,
-                      {
-                        backgroundColor: category.colour,
-                      },
-                    ]}
-                    key={category.name}
-                  >
-                    <Text>{category.name}</Text>
-                  </View>
-                );
-              }
-            })}
-          </View>}
-          {Nutrition(prop.ingredient.nutrition)}     
+          {prop.ingredient.categoryId.length > 0 && (
+            <View style={styles.categories}>
+              {prop.ingredient.categoryId.map((id) => {
+                const category = user.findCategory(id);
+                if (category != undefined) {
+                  return (
+                    <View
+                      style={[
+                        styles.category,
+                        {
+                          backgroundColor: category.colour,
+                        },
+                      ]}
+                      key={category.name}
+                    >
+                      <Text>{category.name}</Text>
+                    </View>
+                  );
+                }
+              })}
+            </View>
+          )}
+          {Nutrition(prop.ingredient.nutrition)}
         </ScrollView>
         <TouchableOpacity
           style={styles.edit}
           onPress={() => {
-            prop.navigation.navigate("IngredientEdit", prop.ingredient)
-            prop.setShowModal(false)
+            prop.navigation.navigate("IngredientEdit", prop.ingredient);
+            prop.setShowModal(false);
           }}
         >
           <MaterialCommunityIcons name="pencil" size={24} color="black" />
@@ -360,79 +455,84 @@ const IngredientPopup = (prop: ingredientPopupProp) => {
   );
 };
 
-var init = true
+var init = true;
 
-export function Profile({navigation, route}:ScreenProp): JSX.Element {
+export function Profile({ navigation, route }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
-  const { tabNavi, setTabNavi } = useContext(TabNaviContext)
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark())
-  const [name, setName] = useState(user.name)
-  const [img, setImg] = useState(user.imgSrc)
-  const [loadingChart, setloadingChart] = useState(true)
+  const { tabNavi, setTabNavi } = useContext(TabNaviContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
+  const [name, setName] = useState(user.name);
+  const [img, setImg] = useState(user.imgSrc);
+  const [loadingChart, setloadingChart] = useState(true);
 
-  const [date, setDate] = useState(new Date())
-  const [dataType, setDataType] = useState("mass")
-  const [halfYear, setHalfYear] = useState<keyof Months["short"]>((date.getMonth() < 6)? 1 :2)
-  const [waste, setWaste] = useState<number>()
-  const [dataSet, setDataSet] = useState<number[]>([])
+  const [date, setDate] = useState(new Date());
+  const [dataType, setDataType] = useState("mass");
+  const [halfYear, setHalfYear] = useState<keyof Months["short"]>(
+    date.getMonth() < 6 ? 1 : 2
+  );
+  const [waste, setWaste] = useState<number>();
+  const [dataSet, setDataSet] = useState<number[]>([]);
 
-  const [sort, setSort] = useState<number>(0)
-  const [option, setOption] = useState(user.categories.copyWithin(user.categories.length, 0))
-  const [searchText, setSearchText] = useState<string>("")
-  const [ingredients, setIngredients] = useState<Ingredient[]>([])
-  const [loadingIng, setLoadingIng] = useState(true)
+  const [sort, setSort] = useState<number>(0);
+  const [option, setOption] = useState(
+    user.categories.copyWithin(user.categories.length, 0)
+  );
+  const [searchText, setSearchText] = useState<string>("");
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [loadingIng, setLoadingIng] = useState(true);
 
-  const {height, width} = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
 
-  const today = new Date()
+  const today = new Date();
 
-  if (init){
-    init = false
-    initLoad()
+  if (init) {
+    init = false;
+    initLoad();
   }
 
-  async function initLoad(){
-    const data = await getMonthlyData(date.getFullYear(), date.getMonth()+1)
-    const dataSet = await getMonthlyDataSet(date.getFullYear(), halfYear)
-    if (dataType == "mass"){
-      setWaste(Number(data[0].toFixed(2)))
-      setDataSet(dataSet[0])
-    }else if (dataType == "cost"){
-      setWaste(Number(data[1].toFixed(2)))
-      setDataSet(dataSet[1])
+  async function initLoad() {
+    const data = await getMonthlyData(date.getFullYear(), date.getMonth() + 1);
+    const dataSet = await getMonthlyDataSet(date.getFullYear(), halfYear);
+    if (dataType == "mass") {
+      setWaste(Number(data[0].toFixed(2)));
+      setDataSet(dataSet[0]);
+    } else if (dataType == "cost") {
+      setWaste(Number(data[1].toFixed(2)));
+      setDataSet(dataSet[1]);
     }
-    setloadingChart(false)
-    await user.loadCategories()
-    const ing = await DB.searchIngredient(searchText, [0,0], option.filter((v)=>v.active))
-    setIngredients(ing)
-    setLoadingIng(false)
+    setloadingChart(false);
+    await user.loadCategories();
+    const ing = await DB.searchIngredient(
+      searchText,
+      [0, 0],
+      option.filter((v) => v.active)
+    );
+    setIngredients(ing);
+    setLoadingIng(false);
   }
 
-  useEffect(
-    ()=>{
-      const unsubscribe = navigation.addListener("focus", ()=>{
-        init = true
-        setIsDarkMode(user.setting.isDark())
-        setName(user.name)
-        setImg(user.imgSrc)
-      })
-      return unsubscribe
-    }, 
-    [navigation]
-  )
-  
-  useEffect(
-    ()=>{
-      const unsubscribe = (tabNavi != undefined)? tabNavi.addListener("focus", ()=>{
-        initLoad()
-      }): ()=>{}
-      return unsubscribe
-    }, 
-    [tabNavi]
-  )
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      init = true;
+      setIsDarkMode(user.setting.isDark());
+      setName(user.name);
+      setImg(user.imgSrc);
+    });
+    return unsubscribe;
+  }, [navigation]);
 
-  function getDateInMiliSec(ingredient: Ingredient): number{
-    return (ingredient.useDate != undefined)? ingredient.useDate.getTime(): 0
+  useEffect(() => {
+    const unsubscribe =
+      tabNavi != undefined
+        ? tabNavi.addListener("focus", () => {
+            initLoad();
+          })
+        : () => {};
+    return unsubscribe;
+  }, [tabNavi]);
+
+  function getDateInMiliSec(ingredient: Ingredient): number {
+    return ingredient.useDate != undefined ? ingredient.useDate.getTime() : 0;
   }
 
   return (
@@ -441,13 +541,14 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
         flex: 1,
         backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
       }}
-      edges={['left', 'right', "top"]}
+      edges={["left", "right", "top"]}
     >
       <View
         style={{
           flex: 1,
           flexDirection: "column",
-        }}>
+        }}
+      >
         <KeyboardAwareScrollView
           style={{
             flex: 1,
@@ -462,55 +563,65 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               marginTop: SPACING.small,
             }}
           >
-            {img != undefined && img != "" && <Image
+            {img != undefined && img != "" && (
+              <Image
                 style={{
-                    alignItems: "center",
-                    aspectRatio: 1,
-                    width: Math.min(height, width)*0.2,
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    borderRadius: 100
+                  alignItems: "center",
+                  aspectRatio: 1,
+                  width: Math.min(height, width) * 0.2,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  borderRadius: 100,
                 }}
-                source={{uri: img}}
-            />}
-            {(img == undefined || img == "") && <View
+                source={{ uri: img }}
+              />
+            )}
+            {(img == undefined || img == "") && (
+              <View
                 style={{
-                    alignItems: "center",
-                    backgroundColor: COLOURS.darkGrey,
-                    aspectRatio: 1,
-                    width: Math.min(height, width)*0.2,
-                    justifyContent: "center",
-                    alignSelf: "center",
-                    borderRadius: 100
+                  alignItems: "center",
+                  backgroundColor: COLOURS.darkGrey,
+                  aspectRatio: 1,
+                  width: Math.min(height, width) * 0.2,
+                  justifyContent: "center",
+                  alignSelf: "center",
+                  borderRadius: 100,
                 }}
-            >
-              <Text
-                style={{
-                  color: COLOURS.white,
-                  fontSize: FONT_SIZES.heading
-                }}
-              >{user.name.charAt(0)}</Text>
-            </View>}
+              >
+                <Text
+                  style={{
+                    color: COLOURS.white,
+                    fontSize: FONT_SIZES.heading,
+                  }}
+                >
+                  {user.name.charAt(0)}
+                </Text>
+              </View>
+            )}
             <View
               style={{
                 flex: 1,
-                flexDirection:"column",
-                paddingHorizontal:SPACING.medium,
+                flexDirection: "column",
+                paddingHorizontal: SPACING.medium,
                 justifyContent: "center",
               }}
             >
               <Text
                 style={{
                   color: isDarkMode ? COLOURS.white : COLOURS.black,
-                  fontSize: FONT_SIZES.body
+                  fontSize: FONT_SIZES.body,
                 }}
-              >{name}</Text>
+              >
+                {name}
+              </Text>
               <Text
                 style={{
                   color: isDarkMode ? COLOURS.white : COLOURS.black,
-                  fontSize: FONT_SIZES.small
+                  fontSize: FONT_SIZES.small,
                 }}
-              >Saving food since {user.dateOfReg.toLocaleDateString()}</Text>
+              >
+                Saving food since {user.dateOfReg.toLocaleDateString()}
+              </Text>
             </View>
           </View>
           <View
@@ -524,25 +635,30 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               borderRadius: RADIUS.standard,
             }}
           >
-            {loadingChart? <ActivityIndicator size="large" color={COLOURS.primary} />:
-            <React.Fragment>
-              <Text
-                style={{
-                  color: isDarkMode ? COLOURS.white : COLOURS.black,
-                  fontSize: FONT_SIZES.medium,
-                }}
-              >
+            {loadingChart ? (
+              <ActivityIndicator size="large" color={COLOURS.primary} />
+            ) : (
+              <React.Fragment>
                 <Text
                   style={{
-                    color: COLOURS.primary,
-                    fontWeight: "bold",
+                    color: isDarkMode ? COLOURS.white : COLOURS.black,
+                    fontSize: FONT_SIZES.medium,
                   }}
                 >
-                  {((dataType=="cost")?"£":"")+waste+((dataType=="mass")?"g":"")+" "}
+                  <Text
+                    style={{
+                      color: COLOURS.primary,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {(dataType == "cost" ? "£" : "") +
+                      waste +
+                      (dataType == "mass" ? "g" : "") +
+                      " "}
+                  </Text>
+                  {"wasted in " + months.long[0][date.getMonth()]}
                 </Text>
-                {"wasted in "+months.long[0][date.getMonth()]}
-              </Text>
-              {/* <Text
+                {/* <Text
                 style={{
                   color: isDarkMode ? COLOURS.white : COLOURS.black,
                   fontSize: FONT_SIZES.medium,
@@ -551,99 +667,125 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
               >
                 {date.getFullYear()}
               </Text> */}
-              <LineChart
-                data={{
-                  labels: months.short[halfYear],
-                  datasets: [
-                    {
-                      data: [0,0,0,0,0,0],
-                      color: (opacity = 0) => `rgba(0, 255, 0, 0)`,
-                      withDots: false,
-                    },
-                    {
-                      data: dataSet,
-                    },
-                    
-                  ],
-                }}
-                width={width - SPACING.medium*2 - SPACING.small*2 - useSafeAreaInsets().right - useSafeAreaInsets().left}
-                height={(width - useSafeAreaInsets().right - useSafeAreaInsets().left)/2}
-                yAxisSuffix={(dataType == "mass")?"g":undefined}
-                yAxisLabel={(dataType == "cost")?"£":undefined}
-                yAxisInterval={1}
-                hidePointsAtIndex={[]}
-                withShadow={false}
-                chartConfig={{
-                  backgroundGradientFrom: isDarkMode ? COLOURS.darker : COLOURS.white,
-                  backgroundGradientTo: isDarkMode ? COLOURS.darker : COLOURS.white,
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => COLOURS.primary,
-                  labelColor: (opacity = 1) => isDarkMode ? COLOURS.white: COLOURS.black,
-                  style: {
-                    borderRadius: 16
-                  },
-                  propsForDots: {
-                    r: "4",
-                    strokeWidth: "2",
-                    stroke: COLOURS.primary
+                <LineChart
+                  data={{
+                    labels: months.short[halfYear],
+                    datasets: [
+                      {
+                        data: [0, 0, 0, 0, 0, 0],
+                        color: (opacity = 0) => `rgba(0, 255, 0, 0)`,
+                        withDots: false,
+                      },
+                      {
+                        data: dataSet,
+                      },
+                    ],
+                  }}
+                  width={
+                    width -
+                    SPACING.medium * 2 -
+                    SPACING.small * 2 -
+                    useSafeAreaInsets().right -
+                    useSafeAreaInsets().left
                   }
-                }}
-                onDataPointClick={(data)=>{
-                  date.setMonth((halfYear-1)*6 + data.index)
-                  setWaste(Number(data.value.toFixed(2)))
-                }}
-                style={{
-                  marginVertical: SPACING.small,
-                  borderRadius: 16,
-                  alignSelf: "center"
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={()=>{
-                    var newHalf: 1|2 = 1
-                    if (halfYear == 1){
-                      date.setFullYear(date.getFullYear() - 1)
-                      setHalfYear(2)
-                      newHalf = 2
-                    }else{
-                      setHalfYear(1)
-                      newHalf = 1
-                    }
-                    setloadingChart(true)
-                    getMonthlyDataSet(date.getFullYear(), newHalf).then((value)=>{
-                      if (value[0].length != 0){
-                        if (dataType == "mass"){
-                          setDataSet(value[0])
-                          date.setMonth((newHalf-1)*6+value[0].length-1)
-                          setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
-                          console.log()
-                        }else if (dataType == "cost"){
-                          setDataSet(value[1])
-                          setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
-                          date.setMonth((newHalf-1)*6+value[1].length-1)
-                        }
-                      }else{
-                        setDataSet([])
-                        setWaste(0)
-                        date.setMonth((newHalf-1)*6+value[1].length-1)
-                      }
-                      setloadingChart(false)
-                    })
+                  height={
+                    (width -
+                      useSafeAreaInsets().right -
+                      useSafeAreaInsets().left) /
+                    2
+                  }
+                  yAxisSuffix={dataType == "mass" ? "g" : undefined}
+                  yAxisLabel={dataType == "cost" ? "£" : undefined}
+                  yAxisInterval={1}
+                  hidePointsAtIndex={[]}
+                  withShadow={false}
+                  chartConfig={{
+                    backgroundGradientFrom: isDarkMode
+                      ? COLOURS.darker
+                      : COLOURS.white,
+                    backgroundGradientTo: isDarkMode
+                      ? COLOURS.darker
+                      : COLOURS.white,
+                    decimalPlaces: 0,
+                    color: (opacity = 1) => COLOURS.primary,
+                    labelColor: (opacity = 1) =>
+                      isDarkMode ? COLOURS.white : COLOURS.black,
+                    style: {
+                      borderRadius: 16,
+                    },
+                    propsForDots: {
+                      r: "4",
+                      strokeWidth: "2",
+                      stroke: COLOURS.primary,
+                    },
+                  }}
+                  onDataPointClick={(data) => {
+                    date.setMonth((halfYear - 1) * 6 + data.index);
+                    setWaste(Number(data.value.toFixed(2)));
+                  }}
+                  style={{
+                    marginVertical: SPACING.small,
+                    borderRadius: 16,
+                    alignSelf: "center",
+                  }}
+                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-evenly",
                   }}
                 >
-                  <MaterialIcons 
-                    name="arrow-left" 
-                    color={isDarkMode ? COLOURS.white: COLOURS.black} 
-                    size={ICON_SIZES.large} 
-                  />
-                </TouchableOpacity>
-                {/* <TouchableOpacity
+                  <TouchableOpacity
+                    onPress={() => {
+                      var newHalf: 1 | 2 = 1;
+                      if (halfYear == 1) {
+                        date.setFullYear(date.getFullYear() - 1);
+                        setHalfYear(2);
+                        newHalf = 2;
+                      } else {
+                        setHalfYear(1);
+                        newHalf = 1;
+                      }
+                      setloadingChart(true);
+                      getMonthlyDataSet(date.getFullYear(), newHalf).then(
+                        (value) => {
+                          if (value[0].length != 0) {
+                            if (dataType == "mass") {
+                              setDataSet(value[0]);
+                              date.setMonth(
+                                (newHalf - 1) * 6 + value[0].length - 1
+                              );
+                              setWaste(
+                                Number(value[0][value[0].length - 1].toFixed(2))
+                              );
+                            } else if (dataType == "cost") {
+                              setDataSet(value[1]);
+                              setWaste(
+                                Number(value[1][value[1].length - 1].toFixed(2))
+                              );
+                              date.setMonth(
+                                (newHalf - 1) * 6 + value[1].length - 1
+                              );
+                            }
+                          } else {
+                            setDataSet([]);
+                            setWaste(0);
+                            date.setMonth(
+                              (newHalf - 1) * 6 + value[1].length - 1
+                            );
+                          }
+                          setloadingChart(false);
+                        }
+                      );
+                    }}
+                  >
+                    <MaterialIcons
+                      name="arrow-left"
+                      color={isDarkMode ? COLOURS.white : COLOURS.black}
+                      size={ICON_SIZES.large}
+                    />
+                  </TouchableOpacity>
+                  {/* <TouchableOpacity
                   style={{
                     backgroundColor: (dataType == "mass")? COLOURS.primary: COLOURS.grey,
                     paddingVertical: SPACING.tiny,
@@ -683,56 +825,68 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 >
                   <Text style={{flex:1, alignSelf:"center"}}>Cost</Text>
                 </TouchableOpacity> */}
-                <Text
-                  style={{
-                    color: isDarkMode ? COLOURS.white : COLOURS.black,
-                    fontSize: FONT_SIZES.medium,
-                    textAlign: "center",
-                  }}
-                >
-                  {date.getFullYear()}
-                </Text>
-                <TouchableOpacity
-                  onPress={()=>{
-                    var newHalf: 1|2 = 1 
-                    if (halfYear == 2){
-                      date.setFullYear(date.getFullYear() + 1)
-                      setHalfYear(1)
-                      newHalf = 1
-                    }else{
-                      setHalfYear(2)
-                      newHalf = 2
-                    }
-                    setloadingChart(true)
-                    getMonthlyDataSet(date.getFullYear(), newHalf).then((value)=>{
-                      if (value[0].length != 0){
-                        if (dataType == "mass"){
-                          setDataSet(value[0])
-                          setWaste(Number(value[0][value[0].length - 1].toFixed(2)))
-                          date.setMonth((newHalf-1)*6+value[0].length-1)
-                        }else if (dataType == "cost"){
-                          setDataSet(value[1])
-                          setWaste(Number(value[1][value[1].length - 1].toFixed(2)))
-                          date.setMonth((newHalf-1)*6+value[1].length-1)
-                        }
-                      }else{
-                        setDataSet([])
-                        setWaste(0)
-                        date.setMonth((newHalf-1)*6+value[1].length-1)
+                  <Text
+                    style={{
+                      color: isDarkMode ? COLOURS.white : COLOURS.black,
+                      fontSize: FONT_SIZES.medium,
+                      textAlign: "center",
+                    }}
+                  >
+                    {date.getFullYear()}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      var newHalf: 1 | 2 = 1;
+                      if (halfYear == 2) {
+                        date.setFullYear(date.getFullYear() + 1);
+                        setHalfYear(1);
+                        newHalf = 1;
+                      } else {
+                        setHalfYear(2);
+                        newHalf = 2;
                       }
-                      setloadingChart(false)
-                    })
-                  }}
-                >
-                  <MaterialIcons 
-                    name="arrow-right" 
-                    color={isDarkMode ? COLOURS.white: COLOURS.black} 
-                    size={ICON_SIZES.large} 
-                  />
-                </TouchableOpacity>
-              </View>
-            </React.Fragment>
-            }
+                      setloadingChart(true);
+                      getMonthlyDataSet(date.getFullYear(), newHalf).then(
+                        (value) => {
+                          if (value[0].length != 0) {
+                            if (dataType == "mass") {
+                              setDataSet(value[0]);
+                              setWaste(
+                                Number(value[0][value[0].length - 1].toFixed(2))
+                              );
+                              date.setMonth(
+                                (newHalf - 1) * 6 + value[0].length - 1
+                              );
+                            } else if (dataType == "cost") {
+                              setDataSet(value[1]);
+                              setWaste(
+                                Number(value[1][value[1].length - 1].toFixed(2))
+                              );
+                              date.setMonth(
+                                (newHalf - 1) * 6 + value[1].length - 1
+                              );
+                            }
+                          } else {
+                            setDataSet([]);
+                            setWaste(0);
+                            date.setMonth(
+                              (newHalf - 1) * 6 + value[1].length - 1
+                            );
+                          }
+                          setloadingChart(false);
+                        }
+                      );
+                    }}
+                  >
+                    <MaterialIcons
+                      name="arrow-right"
+                      color={isDarkMode ? COLOURS.white : COLOURS.black}
+                      size={ICON_SIZES.large}
+                    />
+                  </TouchableOpacity>
+                </View>
+              </React.Fragment>
+            )}
           </View>
           <View
             style={{
@@ -744,104 +898,123 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
                 paddingRight: SPACING.medium,
                 paddingLeft: SPACING.small,
                 paddingBottom: SPACING.medium,
-              }}  
+              }}
             >
               <SearchMenu
                 sort={sort}
                 sortFilters={Object.values(sortOrders)}
-                setSort={(value)=>{
-                  setLoadingIng(true)
-                  switch (value){
+                setSort={(value) => {
+                  setLoadingIng(true);
+                  switch (value) {
                     case 0:
-                      ingredients.sort((a,b)=>(a.name < b.name? -1:1))
+                      ingredients.sort((a, b) => (a.name < b.name ? -1 : 1));
                       break;
                     case 1:
-                      ingredients.sort((a,b)=>(a.name > b.name? -1:1))
+                      ingredients.sort((a, b) => (a.name > b.name ? -1 : 1));
                       break;
                     case 2:
-                      ingredients.sort((a,b)=>(getDateInMiliSec(a) < getDateInMiliSec(b)? -1:1))
+                      ingredients.sort((a, b) =>
+                        getDateInMiliSec(a) < getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                     case 3:
-                      ingredients.sort((a,b)=>(getDateInMiliSec(a) > getDateInMiliSec(b)? -1:1))
+                      ingredients.sort((a, b) =>
+                        getDateInMiliSec(a) > getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                   }
-                  setIngredients(ingredients)
-                  setSort(value)
-                  setLoadingIng(false)
+                  setIngredients(ingredients);
+                  setSort(value);
+                  setLoadingIng(false);
                 }}
                 ingredientsSearch={searchText}
-                setIngredientsSearch={async (text)=>{
-                  setLoadingIng(true)
-                  const ing = await DB.searchIngredient(searchText, [0,0], option.filter((v)=>v.active))
-                  switch (sort){
+                setIngredientsSearch={async (text) => {
+                  setLoadingIng(true);
+                  const ing = await DB.searchIngredient(
+                    searchText,
+                    [0, 0],
+                    option.filter((v) => v.active)
+                  );
+                  switch (sort) {
                     case 0:
-                      ing.sort((a,b)=>(a.name < b.name? -1:1))
+                      ing.sort((a, b) => (a.name < b.name ? -1 : 1));
                       break;
                     case 1:
-                      ing.sort((a,b)=>(a.name > b.name? -1:1))
+                      ing.sort((a, b) => (a.name > b.name ? -1 : 1));
                       break;
                     case 2:
-                      ing.sort((a,b)=>(getDateInMiliSec(a) < getDateInMiliSec(b)? -1:1))
+                      ing.sort((a, b) =>
+                        getDateInMiliSec(a) < getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                     case 3:
-                      ing.sort((a,b)=>(getDateInMiliSec(a) > getDateInMiliSec(b)? -1:1))
+                      ing.sort((a, b) =>
+                        getDateInMiliSec(a) > getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                   }
-                  setIngredients(ing)
-                  setSearchText(text)
-                  setLoadingIng(false)
+                  setIngredients(ing);
+                  setSearchText(text);
+                  setLoadingIng(false);
                 }}
                 option={option}
-                setOption={async (category)=>{
-                  setLoadingIng(true)
+                setOption={async (category) => {
+                  setLoadingIng(true);
                   for (const cat of category) {
-                    if (user.findCategory(cat.name) == undefined){
-                      DB.create(cat)
-                    }else{
-                      DB.updateCategory(cat)
+                    if (user.findCategory(cat.name) == undefined) {
+                      DB.create(cat);
+                    } else {
+                      DB.updateCategory(cat);
                     }
                   }
-                  user.categories = category.copyWithin(category.length, 0)
-                  console.log(category.filter((v)=>v.active))
-                  const ing = await DB.searchIngredient(searchText, [0,0], category.filter((v)=>v.active))
-                  switch (sort){
+                  user.categories = category.copyWithin(category.length, 0);
+                  // console.log(category.filter((v)=>v.active))
+                  const ing = await DB.searchIngredient(
+                    searchText,
+                    [0, 0],
+                    category.filter((v) => v.active)
+                  );
+                  switch (sort) {
                     case 0:
-                      ing.sort((a,b)=>(a.name < b.name? -1:1))
+                      ing.sort((a, b) => (a.name < b.name ? -1 : 1));
                       break;
                     case 1:
-                      ing.sort((a,b)=>(a.name > b.name? -1:1))
+                      ing.sort((a, b) => (a.name > b.name ? -1 : 1));
                       break;
                     case 2:
-                      ing.sort((a,b)=>(getDateInMiliSec(a) < getDateInMiliSec(b)? -1:1))
+                      ing.sort((a, b) =>
+                        getDateInMiliSec(a) < getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                     case 3:
-                      ing.sort((a,b)=>(getDateInMiliSec(a) > getDateInMiliSec(b)? -1:1))
+                      ing.sort((a, b) =>
+                        getDateInMiliSec(a) > getDateInMiliSec(b) ? -1 : 1
+                      );
                       break;
                   }
-                  setUser(user)
-                  setIngredients(ing)
-                  setOption(option)
-                  setLoadingIng(false)
+                  setUser(user);
+                  setIngredients(ing);
+                  setOption(option);
+                  setLoadingIng(false);
                 }}
               />
             </View>
-            <View
-              style={{paddingHorizontal: SPACING.medium}}
-            > 
-              {loadingIng && <ActivityIndicator size="large" color={COLOURS.primary} />}
+            <View style={{ paddingHorizontal: SPACING.medium }}>
+              {loadingIng && (
+                <ActivityIndicator size="large" color={COLOURS.primary} />
+              )}
               {!loadingIng &&
-                ingredients.map((value)=>
-                  <IngredientRow 
-                    ingredient={value} 
-                    dimension={[height, width]} 
+                ingredients.map((value) => (
+                  <IngredientRow
+                    ingredient={value}
+                    dimension={[height, width]}
                     isDarkMode={isDarkMode}
                     navigation={navigation}
                   />
-                )
-              }
+                ))}
             </View>
           </View>
-        </KeyboardAwareScrollView> 
+        </KeyboardAwareScrollView>
         <View
           style={{
             position: "absolute",
@@ -851,21 +1024,20 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
             flexDirection: "row",
             justifyContent: "flex-end",
             margin: SPACING.small,
-          }}>
+          }}
+        >
           <TouchableOpacity
             style={{
               alignItems: "center",
             }}
-            onPress={()=>{
-              navigation.navigate("Setting")
+            onPress={() => {
+              navigation.navigate("Setting");
             }}
           >
-            <MaterialIcons 
-              name="settings" 
-              color={
-                (isDarkMode)?COLOURS.white: COLOURS.black
-              } 
-              size={ICON_SIZES.medium} 
+            <MaterialIcons
+              name="settings"
+              color={isDarkMode ? COLOURS.white : COLOURS.black}
+              size={ICON_SIZES.medium}
             />
           </TouchableOpacity>
         </View>
@@ -873,7 +1045,6 @@ export function Profile({navigation, route}:ScreenProp): JSX.Element {
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   menu: {

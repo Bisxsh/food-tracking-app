@@ -36,12 +36,12 @@ const RecipeInfo = (props: Props) => {
   const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation<any>();
   const meal = recipeContext.recipeBeingViewed || DUMMY_MEALS[0];
-  const [servings, setServings] = useState(recipeContext.viewedRecipeServings);
+  const [servings, setServings] = useState(
+    recipeContext.recipeBeingViewed?.servings || 1
+  );
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
-  const { height, width } = useWindowDimensions();
-
-
+  const recipe = recipeContext.recipeBeingViewed;
 
   async function updateFavorite() {
     //TODO add to favorites
@@ -49,11 +49,9 @@ const RecipeInfo = (props: Props) => {
     setIsFavourite(!isFavourite);
 
     if (isFavourite) {
-
       await DB.deleteMeal(meal.name);
       setUserData({ ...userData, savedRecipes: await getSaved() });
     } else {
-
       let newMeal = new Meal(
         meal.name,
         [],
@@ -93,7 +91,7 @@ const RecipeInfo = (props: Props) => {
   };
 
   function calculateServingValue(num: number) {
-    return Math.round((num / recipeContext.viewedRecipeServings) * servings);
+    return Math.round((num / (recipe?.servings || 1)) * servings);
   }
 
   navigation.setOptions({
@@ -108,6 +106,37 @@ const RecipeInfo = (props: Props) => {
       </TouchableOpacity>
     ),
   });
+
+  function getNutrientRow(
+    index: number,
+    total: number,
+    label: string,
+    quantity: number,
+    unit: string
+  ) {
+    return (
+      <View
+        key={index}
+        style={[
+          styles.nutrientRow,
+          {
+            backgroundColor: index % 2 == 1 ? COLOURS.grey : COLOURS.white,
+            borderTopLeftRadius: index == 0 ? RADIUS.standard : undefined,
+            borderTopRightRadius: index == 0 ? RADIUS.standard : undefined,
+            borderBottomLeftRadius:
+              index == total ? RADIUS.standard : undefined,
+            borderBottomRightRadius:
+              index == total ? RADIUS.standard : undefined,
+          },
+        ]}
+      >
+        <Text>{label}</Text>
+        <Text>
+          {calculateServingValue(quantity)} {unit}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -129,7 +158,10 @@ const RecipeInfo = (props: Props) => {
               }}
             >
               Source:{" "}
-              {recipeContext?.viewedRecipeSource?.replace(".com", "") || ""}
+              {(recipeContext?.recipeBeingViewed?.source || "").replace(
+                ".com",
+                ""
+              ) || ""}
             </Text>
             {meal.url && (
               <TouchableOpacity
@@ -167,8 +199,7 @@ const RecipeInfo = (props: Props) => {
             >
               Calories per serving:{" "}
               {Math.round(
-                recipeContext.viewedRecipeNutrients[0].quantity /
-                  recipeContext.viewedRecipeServings
+                (recipe?.nutrition.energy || 0) / (recipe?.servings || 1)
               )}
             </Text>
           </View>
@@ -224,7 +255,7 @@ const RecipeInfo = (props: Props) => {
               />
             </TouchableOpacity>
           </View>
-          {servings != recipeContext.viewedRecipeServings && (
+          {servings != recipe?.servings && (
             <Text
               style={{
                 textAlign: "center",
@@ -237,11 +268,10 @@ const RecipeInfo = (props: Props) => {
             </Text>
           )}
           {getSeperator()}
-          {recipeContext.viewedRecipeIngredients.map((ingredient, index) => {
+          {recipe?.mealIngredients.map((ingredient, index) => {
             if (ingredient == "" || ingredient == " " || !ingredient)
               return null;
             const split = ingredient.split(" ");
-
 
             return (
               <View key={index} style={styles.ingredient}>
@@ -268,35 +298,62 @@ const RecipeInfo = (props: Props) => {
             );
           })}
           <View style={styles.nutrientContainer}>
-            {recipeContext.viewedRecipeNutrients.map((nutrient, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.nutrientRow,
-                  {
-                    backgroundColor:
-                      index % 2 == 1 ? COLOURS.grey : COLOURS.white,
-                    borderTopLeftRadius:
-                      index == 0 ? RADIUS.standard : undefined,
-                    borderTopRightRadius:
-                      index == 0 ? RADIUS.standard : undefined,
-                    borderBottomLeftRadius:
-                      index == recipeContext.viewedRecipeNutrients.length - 1
-                        ? RADIUS.standard
-                        : undefined,
-                    borderBottomRightRadius:
-                      index == recipeContext.viewedRecipeNutrients.length - 1
-                        ? RADIUS.standard
-                        : undefined,
-                  },
-                ]}
-              >
-                <Text>{nutrient.label}</Text>
-                <Text>
-                  {calculateServingValue(nutrient.quantity)} {nutrient.unit}
-                </Text>
-              </View>
-            ))}
+            {getNutrientRow(
+              0,
+              7,
+              "Calories",
+              recipe?.nutrition.energy || 0,
+              recipe?.nutrition.energyUnit || "kcal"
+            )}
+            {getNutrientRow(
+              1,
+              7,
+              "Protein",
+              recipe?.nutrition.protein || 0,
+              recipe?.nutrition.proteinUnit || "g"
+            )}
+            {getNutrientRow(
+              2,
+              7,
+              "Fat",
+              recipe?.nutrition.fat || 0,
+              recipe?.nutrition.fatUnit || "g"
+            )}
+            {getNutrientRow(
+              3,
+              7,
+              "Sat. Fat",
+              recipe?.nutrition.saturatedFat || 0,
+              recipe?.nutrition.saturatedFatUnit || "g"
+            )}
+            {getNutrientRow(
+              4,
+              7,
+              "Carbohydrates",
+              recipe?.nutrition.carbs || 0,
+              recipe?.nutrition.carbsUnit || "g"
+            )}
+            {getNutrientRow(
+              5,
+              7,
+              "Sugar",
+              recipe?.nutrition.sugar || 0,
+              recipe?.nutrition.sugarUnit || "g"
+            )}
+            {getNutrientRow(
+              6,
+              7,
+              "Fibre",
+              recipe?.nutrition.fibre || 0,
+              recipe?.nutrition.fibreUnit || "g"
+            )}
+            {getNutrientRow(
+              7,
+              7,
+              "Salt",
+              recipe?.nutrition.salt || 0,
+              recipe?.nutrition.saltUnit || "g"
+            )}
           </View>
         </View>
       </ScrollView>

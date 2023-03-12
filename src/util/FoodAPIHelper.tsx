@@ -30,8 +30,6 @@ export function getIngredientBuilder(ingredientJSON: any) {
   );
 
   let nutritionBuilder = ingredientBuilder.getNutritionBuilder();
-  console.log(product.nutriments.carbohydrates);
-
   nutritionBuilder.setCarbs(
     product.nutriments.carbohydrates_serving ||
       product.nutriments.carbohydrates ||

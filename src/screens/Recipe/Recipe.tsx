@@ -12,7 +12,13 @@ import {
 import { Colors, Header } from "react-native/Libraries/NewAppScreen";
 import { getRecipes, getSaved, getSearchRecipe } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
-import { COLOURS, DROP_SHADOW, FONT_SIZES, RADIUS, SPACING } from "../../util/GlobalStyles";
+import {
+  COLOURS,
+  DROP_SHADOW,
+  FONT_SIZES,
+  RADIUS,
+  SPACING,
+} from "../../util/GlobalStyles";
 import RecipeBox from "./RecipeBox";
 import RecipeMenu from "./RecipeMenu";
 import { useNavigation } from "@react-navigation/native";
@@ -24,10 +30,14 @@ import {
 } from "./RecipeSortingFilters";
 import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
-import { Meal } from "../../classes/MealClass";
+// import { Meal } from "../../classes/MealClass";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TabNaviContext } from './RecipeNavigator';
-
+import { TabNaviContext } from "./RecipeNavigator";
+import { Meal } from "../../backends/Meal";
+import { Nutrition } from "../../backends/Nutrition";
+import { Ingredient, MealIngredient } from "../../backends/Ingredient";
+import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
+import { NutritionBuilder } from "../../classes/NutritionClass";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -43,64 +53,45 @@ export function Recipe(): JSX.Element {
   const navigation = useNavigation<any>();
   const [searchIngBut, setSearchIngBut] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [recipes, setRecipes] = useState<any[]>([]);
-  const [explore, setExplore] = useState<any[]>([]);
-  const [saved, setSaved] = useState<any[]>([]);
-  const [custom, setCustom] = useState<any[]>([]);
+  const [recipes, setRecipes] = useState<Meal[]>([]);
+  const [explore, setExplore] = useState<Meal[]>([]);
+  const [saved, setSaved] = useState<Meal[]>([]);
+  const [custom, setCustom] = useState<Meal[]>([]);
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
-  const [dietReq, setDietReq] = useState<[string, boolean][]>([])
-  const {height, width} = useWindowDimensions()
+  const [dietReq, setDietReq] = useState<[string, boolean][]>([]);
+  const { height, width } = useWindowDimensions();
 
   useEffect(() => {
     //search for typed ingredient
-    console.log("the indgredients search is: " + ingredientsSearch)
+    console.log("the indgredients search is: " + ingredientsSearch);
     if (ingredientsSearch != "") {
-      setLoading(true)
-      getSearchRecipe(ingredientsSearch).then((recipeList) => {setRecipes(recipeList)}).then(()=>setLoading(false))
+      setLoading(true);
+      getSearchRecipe(ingredientsSearch)
+        .then((recipeList) => {
+          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe)));
+        })
+        .then(() => setLoading(false));
+    } else {
+      setRecipes(explore);
     }
-    else{
-      setRecipes(explore)
-    }
-    setSearchIngBut(false)
+    setSearchIngBut(false);
   }, [searchIngBut]);
 
-
   async function readMeals() {
-
     await readAllMeal()
       .then((meals) => {
         let temp: Meal[] = [];
         let temp2: Meal[] = [];
         meals.map((meal) => {
           if (meal.url != "") {
-            temp.push(
-              new Meal(
-                meal.name,
-                meal.categoryId,
-                meal.instruction,
-                meal.ingredient,
-                meal._id,
-                meal.url,
-                meal.imgSrc
-              )
-            );
+            temp.push(meal);
           } else {
-            temp2.push(
-              new Meal(
-                meal.name,
-                meal.categoryId,
-                meal.instruction,
-                meal.ingredient,
-                meal._id,
-                meal.url,
-                meal.imgSrc
-              )
-            );
+            temp2.push(meal);
           }
         });
 
@@ -111,69 +102,41 @@ export function Recipe(): JSX.Element {
   }
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     readMeals();
     genRecipe();
-    getDietReq().then((req)=>{
-      if (req != undefined){
-        setDietReq(req)
+    getDietReq().then((req) => {
+      if (req != undefined) {
+        setDietReq(req);
       }
-      setLoading(false)
-    })
-
+      setLoading(false);
+    });
   }, []);
 
-
   async function genRecipe() {
-    if(userData.refreshExplore){
-      await getRecipes().then((recipeList) => { setRecipes(recipeList); setExplore(recipeList); sortList(); setUserData({ ...userData, exploreRecipes: recipeList })});
-      setUserData({ ...userData, refreshExplore: false })
-    }
-    else{
+    if (userData.refreshExplore) {
+      await getRecipes().then((recipeList) => {
+        setRecipes(recipeList);
+        setExplore(recipeList);
+        sortList();
+        setUserData({ ...userData, exploreRecipes: recipeList });
+      });
+      setUserData({ ...userData, refreshExplore: false });
+    } else {
       setRecipes(userData.exploreRecipes);
       setExplore(userData.exploreRecipes);
       sortList();
     }
-    
-
   }
 
   async function genSaved() {
     const recipeList = userData.savedRecipes;
-    var temp: any[] = [];
-    recipeList.map((recipe) => {
-      temp.push({
-        recipe: {
-          id: recipe.getId,
-          label: recipe.getName,
-          image: recipe.getImgSrc,
-          servings: 2,
-          calories: 1000.0,
-          ingredients: ["Cheesse"],
-          cautions: ["None"],
-        },
-      });
-    });
-    setSaved(temp);
+    setSaved(recipeList);
   }
 
   async function genCustom() {
     const recipeList = userData.customRecipes;
-    var temp: any[] = [];
-    recipeList.map((recipe) => {
-      temp.push({
-        recipe: {
-          id: recipe.getId,
-          label: recipe.getName,
-          image: recipe.getImgSrc,
-          servings: 2,
-          calories: 1000.0,
-          ingredients: ["Cheesse"],
-          cautions: ["None"],
-        },
-      });
-    });
-    setCustom(temp);
+    setCustom(recipeList);
   }
 
   function switchList(buttonNum: number) {
@@ -182,7 +145,6 @@ export function Recipe(): JSX.Element {
       sortList();
     }
     if (buttonNum === 1) {
-
       setRecipes(saved);
       sortList();
     }
@@ -196,7 +158,6 @@ export function Recipe(): JSX.Element {
   const [currentButton, setCurrentButton] = useState(0);
 
   function getCals(recipe: any) {
-
     return Math.round(
       parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
     );
@@ -205,88 +166,52 @@ export function Recipe(): JSX.Element {
   function sortList() {
     switch (selectedSort) {
       case RecipeSortingFilter.TimeLowToHigh:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return b.time - a.time;
+          })
+        );
         break;
       case RecipeSortingFilter.TimeHighToLow:
-        //TODO implement sorting by time
+        setRecipes((r) =>
+          r.sort((a, b) => {
+            return a.time - b.time;
+          })
+        );
         break;
       case RecipeSortingFilter.CaloriesLowToHigh:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(b.recipe) - getCals(a.recipe);
+            return getCals(b.nutrition.energy) - getCals(a.nutrition.energy);
           })
         );
         break;
       case RecipeSortingFilter.CaloriesHighToLow:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(a.recipe) - getCals(b.recipe);
+            return getCals(a.nutrition.energy) - getCals(b.nutrition.energy);
           })
         );
         break;
       case RecipeSortingFilter.IngredientsLowToHigh:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return b.recipe.ingredients.length - a.recipe.ingredients.length;
+            return b.ingredient.length - a.ingredient.length;
           })
         );
         break;
       case RecipeSortingFilter.IngredientsHighToLow:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return a.recipe.ingredients.length - b.recipe.ingredients.length;
+            return a.ingredient.length - b.ingredient.length;
           })
         );
         break;
     }
   }
 
-
   useEffect(() => {
-    switch (selectedSort) {
-      case RecipeSortingFilter.TimeLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return b.recipe.totalTime - a.recipe.totalTime;
-          })
-        );
-        break;
-      case RecipeSortingFilter.TimeHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return a.recipe.totalTime - b.recipe.totalTime;
-          })
-        );
-        break;
-      case RecipeSortingFilter.CaloriesLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return getCals(b.recipe) - getCals(a.recipe);
-          })
-        );
-        break;
-      case RecipeSortingFilter.CaloriesHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return getCals(a.recipe) - getCals(b.recipe);
-          })
-        );
-        break;
-      case RecipeSortingFilter.IngredientsLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return b.recipe.ingredients.length - a.recipe.ingredients.length;
-          })
-        );
-        break;
-      case RecipeSortingFilter.IngredientsHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return a.recipe.ingredients.length - b.recipe.ingredients.length;
-          })
-        );
-        break;
-    }
+    sortList();
   }, [selectedSort]);
 
   return (
@@ -338,7 +263,13 @@ export function Recipe(): JSX.Element {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ paddingLeft: SPACING.small, paddingRight: SPACING.medium, width: "100%" }}>
+      <View
+        style={{
+          paddingLeft: SPACING.small,
+          paddingRight: SPACING.medium,
+          width: "100%",
+        }}
+      >
         <RecipeMenu
           sortFilters={RecipeSortingFilters}
           ingredientsSearch={ingredientsSearch}
@@ -348,81 +279,63 @@ export function Recipe(): JSX.Element {
           setSearch={setSearchIngBut}
         />
       </View>
-      {!loading && <ScrollView
-        style={{ width: "100%" }}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
-      >
-        {recipes.map((recipe, key) => {
-          if (
-            //TODO implement allergies here
-            dietReq.every((elem: any) => {
-              if (elem[1] && (recipe["recipe"]["healthLabels"] != undefined)){
-                return recipe["recipe"]["healthLabels"].includes(elem[0])
-              }else{
-                return true
-              }
-            })
-          ) {
-            return (
-              <RecipeBox
-                key={Math.random()}
-                recipeImage={recipe["recipe"]["image"]}
-                recipeName={recipe["recipe"]["label"]}
-                recipeCalories={recipe["recipe"]["calories"]}
-                recipeServings={recipe["recipe"]["yield"]}
-                recipeCautions={recipe["recipe"]["cautions"]}
-                recipeIngredients={recipe["recipe"]["ingredients"]}
-                recipeLink={recipe["recipe"]["url"]}
-                source={recipe["recipe"]["source"]}
-                nutrition={[
-                  recipe?.recipe?.totalNutrients?.ENERC_KCAL || "",
-                  recipe?.recipe?.totalNutrients?.PROCNT || "",
-                  recipe?.recipe?.totalNutrients?.FAT || "",
-                  recipe?.recipe?.totalNutrients?.FASAT || "",
-                  (recipe?.recipe?.totalNutrients &&
-                    recipe?.recipe?.totalNutrients["CHOCDF.net"]) ||
-                    "",
-                  recipe?.recipe?.totalNutrients?.SUGAR || "",
-                  recipe?.recipe?.totalNutrients?.FIBTG || "",
-                  recipe?.recipe?.totalNutrients?.NA || "",
-                ]}
-                servings={recipe["recipe"]["yield"]}
-                time={recipe["recipe"]["totalTime"]}
-                ignoreFav={currentButton == 2 ? true : false}
-                savedRecipe = {setSaved}
-              />
-            );
-          }
-        })}
-      </ScrollView>}
+      {!loading && (
+        <ScrollView
+          style={{ width: "100%" }}
+          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        >
+          {recipes.map((recipe, key) => {
+            if (
+              dietReq.every((elem: any) => {
+                if (elem[1] && recipe.healthLabels != undefined) {
+                  return recipe.healthLabels.includes(elem[0]);
+                } else {
+                  return true;
+                }
+              })
+            ) {
+              return (
+                <RecipeBox
+                  key={Math.random()}
+                  recipe={recipe}
+                  ignoreFav={currentButton == 2 ? true : false}
+                  savedRecipe={setSaved}
+                />
+              );
+            }
+          })}
+        </ScrollView>
+      )}
       {loading && (
-                <View
-                  style={{
-                    flex: 1,
-                    width: "100%",
-                    backgroundColor: COLOURS.darker,
-                    opacity: 0.5,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <ActivityIndicator 
-                    size={"large"} 
-                    color={COLOURS.white}
-                    style={{
-                      transform: [{scale: 2}]
-                    }}
-                  />
-                  <Text 
-                    style={{
-                      marginTop: 36,
-                      color: isDarkMode ? COLOURS.white : COLOURS.darker,
-                      textAlign: "center",
-                      fontSize: FONT_SIZES.medium,
-                    }}
-                  >{"Loading Recipes"}</Text>
-                </View>
-              )}
+        <View
+          style={{
+            flex: 1,
+            width: "100%",
+            backgroundColor: COLOURS.darker,
+            opacity: 0.5,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator
+            size={"large"}
+            color={COLOURS.white}
+            style={{
+              transform: [{ scale: 2 }],
+            }}
+          />
+          <Text
+            style={{
+              marginTop: 36,
+              color: isDarkMode ? COLOURS.white : COLOURS.darker,
+              textAlign: "center",
+              fontSize: FONT_SIZES.medium,
+            }}
+          >
+            {"Loading Recipes"}
+          </Text>
+        </View>
+      )}
       <AddButton onPress={() => navigation.navigate("ManualMeal")} />
     </SafeAreaView>
   );
@@ -468,3 +381,45 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+export function getMealFromAPI(recipe: any) {
+  // console.log(recipe);
+
+  return new Meal(
+    recipe.label,
+    [],
+    [],
+    recipe.ingredients.map((ing: any) => {
+      return new IngredientBuilder().build();
+    }),
+    Math.random(),
+    recipe.url,
+    recipe.image,
+    recipe.source,
+    recipe.cautions,
+    recipe.healthLabels,
+    new Nutrition(
+      Math.random(),
+      recipe.totalNutrients["CHOCDF.net"].quantity,
+      recipe.totalNutrients["CHOCDF.net"].unit,
+      recipe.totalNutrients.ENERC_KCAL.quantity,
+      recipe.totalNutrients.ENERC_KCAL.unit,
+      recipe.totalNutrients.PROCNT.quantity,
+      recipe.totalNutrients.PROCNT.unit,
+      recipe.totalNutrients.FAT.quantity,
+      recipe.totalNutrients.FAT.unit,
+      recipe.totalNutrients.FASAT.quantity,
+      recipe.totalNutrients.FASAT.unit,
+      recipe.totalNutrients.FIBTG.quantity,
+      recipe.totalNutrients.FIBTG.unit,
+      recipe.totalNutrients.NA.quantity,
+      recipe.totalNutrients.NA.unit,
+      recipe.totalNutrients.SUGAR.quantity,
+      recipe.totalNutrients.SUGAR.unit
+    ),
+    recipe.yield,
+    recipe.totalTime,
+    false,
+    recipe.ingredients?.map((ingredient: any) => ingredient.text)
+  );
+}
