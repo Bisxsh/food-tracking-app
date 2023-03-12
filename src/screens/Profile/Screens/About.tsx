@@ -2,13 +2,15 @@ import React, { useContext } from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import { UserContext } from '../../../backends/User';
+import Constants from "expo-constants"
 
+import { UserContext } from '../../../backends/User';
 import { COLOURS, RADIUS, SPACING } from '../../../util/GlobalStyles';
 
 export function About(): JSX.Element{
     const { user, setUser } = useContext(UserContext);
     const isDarkMode = user.setting.isDark()
+    const version = Constants.manifest?.version
 
     return (
         <SafeAreaView
@@ -22,9 +24,22 @@ export function About(): JSX.Element{
                 style={{
                     backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     flex: 1,
+                    padding: SPACING.medium,
                 }}
             >
-                <Text>This is About page</Text>
+                <Text 
+                    style={{color: isDarkMode ? COLOURS.white : COLOURS.black,}}
+                >
+                    This app is developed as a part of CM20314 coursework.
+                </Text>
+                <Text 
+                    style={{
+                        marginTop: SPACING.small, 
+                        color: isDarkMode ? COLOURS.white : COLOURS.black,
+                    }}
+                >
+                    {"Version: "+version}
+                </Text>
             </View>
         </SafeAreaView>
     );
