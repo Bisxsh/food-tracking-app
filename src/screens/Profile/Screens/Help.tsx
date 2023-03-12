@@ -22,9 +22,14 @@ export function Help(): JSX.Element{
                 style={{
                     backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
                     flex: 1,
+                    padding: SPACING.medium,
                 }}
             >
-                <Text>This is Help page</Text>
+                <Text 
+                    style={{color: isDarkMode ? COLOURS.white : COLOURS.black,}}
+                >
+                    Please get in touch with our developer members if you need any helps.
+                </Text>
             </View>
         </SafeAreaView>
     );

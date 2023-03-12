@@ -51,7 +51,8 @@
     "react-native-svg-transformer": "^1.0.0",
     "react-native-web": "~0.18.11",
     "ts-jest": "^29.0.5",
-    "expo-mail-composer": "~12.1.1"
+    "expo-mail-composer": "~12.1.1",
+    "expo-constants": "~14.2.1"
   },
   "devDependencies": {
     "@types/react": "~18.0.27",
