@@ -77,7 +77,7 @@ export class Meal{
             properties[1],  // name
             (properties[4] as string).substring(1,(properties[4] as string).length-1).split(",").map((value)=>Number.parseInt(value)),  // categoryId
             (properties[5] as string).split("<###>"),  // instruction 
-            (properties[6] as string).split("<###>").filter((value)=>value!="").map((value)=>Ingredient.fromList(value.split("<%%%>")))),  // ingredient
+            (properties[6] as string).split("<###>").filter((value)=>value!="").map((value)=>Ingredient.fromList(value.split("<%%%>"))),  // ingredient
             properties[0],  // _id
             properties[2],  // url
             properties[3],  // imgSrc
