@@ -390,16 +390,16 @@ export function getMealFromAPI(recipe: any) {
     [],
     [],
     recipe.ingredients.map((ing: any) => {
-      return new IngredientBuilder().build();
+      return new IngredientBuilder().build().toIngredientBack();
     }),
-    Math.random(),
+    undefined,
     recipe.url,
     recipe.image,
     recipe.source,
     recipe.cautions,
     recipe.healthLabels,
     new Nutrition(
-      Math.random(),
+      undefined,
       recipe.totalNutrients["CHOCDF.net"].quantity,
       recipe.totalNutrients["CHOCDF.net"].unit,
       recipe.totalNutrients.ENERC_KCAL.quantity,

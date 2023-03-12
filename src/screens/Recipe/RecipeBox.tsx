@@ -86,7 +86,7 @@ const RecipeBox = (props: Props) => {
     //TODO add to favorites
 
     setIsFavourite(!isFavourite);
-
+    console.log(recipe)
     if (isFavourite) {
       await DB.deleteMeal(recipe.name);
       await getSaved().then((res) => {
@@ -94,6 +94,7 @@ const RecipeBox = (props: Props) => {
         genSaved(res);
       });
     } else {
+      
       await DB.create(recipe);
       await getSaved().then((res) => {
         setUserData({ ...userData, savedRecipes: res });

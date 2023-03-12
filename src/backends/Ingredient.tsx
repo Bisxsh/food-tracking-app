@@ -39,10 +39,10 @@ export class Ingredient {
   ) {
     if (_id != undefined) {
       Ingredient.count = Math.max(_id, Ingredient.count);
-    } else {
+    } else if (_id == undefined || _id == -1) {
       Ingredient.count += 1;
     }
-    this._id = _id != undefined ? _id : Ingredient.count;
+    this._id = _id != undefined&&_id!=-1 ? _id : Ingredient.count;
     this.name = name;
     this.quantity = quantity;
     this.weight = weight;
