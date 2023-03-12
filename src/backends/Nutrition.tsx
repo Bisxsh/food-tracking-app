@@ -22,10 +22,10 @@ export class Nutrition{
     constructor(_id?:number, carbs?: number, carbsUnit?: string, energy?: number, energyUnit?: string, protein?: number, proteinUnit?: string, fat?: number, fatUnit?: string, saturatedFat?: number, saturatedFatUnit?: string, fibre?: number, fibreUnit?: string, salt?: number, saltUnit?: string, sugar?: number, sugarUnit?: string){
         if (_id != undefined){
             Nutrition.count = Math.max(_id, Nutrition.count)
-        }else{
+        }else if (_id == undefined || _id == -1){
             Nutrition.count += 1
         }
-        this._id = (_id != undefined)? _id: Nutrition.count ++
+        this._id = (_id != undefined && _id != -1)? _id: Nutrition.count ++
         this.carbs = (carbs != undefined)? carbs: 0
         this.carbsUnit = (carbsUnit != undefined)? carbsUnit: "g"
         this.energy = (energy != undefined)? energy: 0
