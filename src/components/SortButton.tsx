@@ -21,12 +21,13 @@ type Props = {
   selectedOption: number; // From useState
   setSelectedOption: (option: number) => void;
   width?: number;
+  removeMargin?: boolean;
 };
 
 const SortButton = (props: Props) => {
   const [showModal, setShowModal] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const transitionAnim = useRef(new Animated.Value(-10)).current;
+  const transitionAnim = useRef(new Animated.Value(-4)).current;
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -36,14 +37,19 @@ const SortButton = (props: Props) => {
     }).start();
 
     Animated.timing(transitionAnim, {
-      toValue: showModal ? 0 : -10,
+      toValue: showModal ? 0 : -4,
       duration: 100,
       useNativeDriver: true,
     }).start();
   }, [showModal]);
 
   return (
-    <View style={{ position: "relative", marginRight: SPACING.medium }}>
+    <View
+      style={{
+        position: "relative",
+        marginRight: props.removeMargin ? 0 : SPACING.small,
+      }}
+    >
       <TouchableOpacity
         style={styles(props).button}
         onPress={() => setShowModal(true)}
@@ -58,7 +64,7 @@ const SortButton = (props: Props) => {
       <Modal
         isVisible={showModal}
         onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={0.1}
+        backdropOpacity={0}
         animationIn="fadeInDown"
         animationOut="fadeOutUp"
         style={{
@@ -129,7 +135,6 @@ const styles = (props: Props) =>
       alignSelf: "stretch",
       backgroundColor: COLOURS.white,
       width: props.width ? props.width : "auto",
-      direction: "rtl",
       borderRadius: RADIUS.standard,
       ...DROP_SHADOW,
     },
