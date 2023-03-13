@@ -71,12 +71,14 @@ export async function getRecipes() {
 
 export async function getSaved() {
   let meals = await readAllMeal();
-  return meals;
+  console.log(meals.map((meal) => meal.favourite));
+
+  return meals?.filter((meal) => meal.favourite);
 }
 
 export async function getCustom() {
   let meals = await readAllMeal();
-  return meals;
+  return meals?.filter((meal) => !meal.url);
 }
 
 export async function getDietReq() {
