@@ -284,16 +284,17 @@ export function Recipe(): JSX.Element {
           style={{ width: "100%" }}
           contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
         >
-          {recipes.map((recipe, key) => {
-            if (
-              dietReq.every((elem: any) => {
-                if (elem[1] && recipe.healthLabels != undefined) {
-                  return recipe.healthLabels.includes(elem[0]);
-                } else {
-                  return true;
-                }
-              })
-            ) {
+          {recipes
+            .filter((recipe) => {
+              if (!recipe.healthLabels || recipe.healthLabels.length === 0)
+                return true;
+              return dietReq
+                .filter((elem: any) => elem[1])
+                .map((elem: any) => elem[0])
+                .every((elem: any) => recipe.healthLabels!.includes(elem));
+            })
+            .map((recipe, key) => {
+              console.log(recipe.name);
               return (
                 <RecipeBox
                   key={Math.random()}
@@ -302,8 +303,7 @@ export function Recipe(): JSX.Element {
                   savedRecipe={setSaved}
                 />
               );
-            }
-          })}
+            })}
         </ScrollView>
       )}
       {loading && (

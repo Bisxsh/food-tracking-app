@@ -64,29 +64,14 @@ const RecipeBox = (props: Props) => {
   }
 
   async function genSaved(recipes: any) {
-    const recipeList = recipes;
-    var temp: any[] = [];
-    recipeList.map((recipe: { getId: any; getName: any; getImgSrc: any }) => {
-      temp.push({
-        recipe: {
-          id: recipe.getId,
-          label: recipe.getName,
-          image: recipe.getImgSrc,
-          servings: 2,
-          calories: 1000.0,
-          ingredients: ["Cheesse"],
-          cautions: ["None"],
-        },
-      });
-    });
-    props.savedRecipe(temp);
+    props.savedRecipe(recipes);
   }
 
   async function updateFavorite() {
     //TODO add to favorites
 
     setIsFavourite(!isFavourite);
-    console.log(recipe)
+    // console.log(recipe)
     if (isFavourite) {
       await DB.deleteMeal(recipe.name);
       await getSaved().then((res) => {
@@ -94,7 +79,7 @@ const RecipeBox = (props: Props) => {
         genSaved(res);
       });
     } else {
-      
+      recipe.favourite = true;
       await DB.create(recipe);
       await getSaved().then((res) => {
         setUserData({ ...userData, savedRecipes: res });
