@@ -73,7 +73,7 @@ export function Recipe(): JSX.Element {
       setLoading(true);
       getSearchRecipe(ingredientsSearch)
         .then((recipeList) => {
-          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe)));
+          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe.recipe)));
         })
         .then(() => setLoading(false));
     } else {
@@ -144,24 +144,22 @@ export function Recipe(): JSX.Element {
   function switchList(buttonNum: number) {
     if (buttonNum === 0) {
       setRecipes(explore);
-      sortList();
     }
     if (buttonNum === 1) {
       setRecipes(saved);
-      sortList();
     }
     if (buttonNum === 2) {
       setRecipes(custom);
-      sortList();
     }
+    sortList();
     setCurrentButton(buttonNum);
   }
 
   const [currentButton, setCurrentButton] = useState(0);
 
-  function getCals(recipe: any) {
+  function getCals(recipe: Meal) {
     return Math.round(
-      parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
+      recipe.nutrition.energy / (recipe.servings || 1) //need to add calorie to class
     );
   }
 
@@ -184,14 +182,14 @@ export function Recipe(): JSX.Element {
       case RecipeSortingFilter.CaloriesLowToHigh:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(b.nutrition.energy) - getCals(a.nutrition.energy);
+            return getCals(b) - getCals(a);
           })
         );
         break;
       case RecipeSortingFilter.CaloriesHighToLow:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(a.nutrition.energy) - getCals(b.nutrition.energy);
+            return getCals(a) - getCals(b);
           })
         );
         break;
@@ -296,7 +294,7 @@ export function Recipe(): JSX.Element {
                 .every((elem: any) => recipe.healthLabels!.includes(elem));
             })
             .map((recipe, key) => {
-              console.log(recipe.name);
+              console.log(recipe.time);
               return (
                 <RecipeBox
                   key={Math.random()}
@@ -385,13 +383,11 @@ const styles = StyleSheet.create({
 });
 
 export function getMealFromAPI(recipe: any) {
-  // console.log(recipe);
-
   return new Meal(
     recipe.label,
     [],
     [],
-    recipe.ingredients.map((ing: any) => {
+    recipe.ingredients?.map((ing: any) => {
       return new IngredientBuilder().build().toIngredientBack();
     }),
     undefined,
