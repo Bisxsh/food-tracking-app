@@ -1,6 +1,4 @@
 import {
-  KeyboardAvoidingView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,18 +18,11 @@ import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
 import { Category } from "../../classes/Categories";
 import { UserDataContext } from "../../classes/UserData";
-import DateField from "../../components/DateField";
-import InputFieldWithUnits from "../../components/InputFieldWithUnits";
-import InputField from "../../components/InputField";
-import NumberInputRow from "../Home/components/Add/NumberInputRow";
-import RecipeBox from "./RecipeBox";
 import RecipeIngredientList from "../../components/RecipeIngredientList";
-import PrimaryButton from "../../components/PrimaryButton";
 import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
-import { readAllMeal } from "../../backends/Database";
 import { UserContext } from "../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -58,7 +49,7 @@ const ManualMeal = (props: Props) => {
   );
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
-  const {height, width} = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
 
   function getSeperator() {
     return <View style={{ height: SPACING.medium }} />;
@@ -88,18 +79,14 @@ const ManualMeal = (props: Props) => {
     //   });
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
-    let builtMeal : MealClass.Meal = mealBuilder.build();
-    userData.customRecipes.push(builtMeal);
-    let meal = new Meal(
-      builtMeal.getName,
-      builtMeal.getCategoryId,
-      builtMeal.getInstruction,
-      builtMeal.getIngredients,
-      builtMeal.getId,
-      "",
-      builtMeal.getImgSrc
-    );
-      await DB.create(meal);
+    const meal : MealClass.Meal = Meal.fromBuilder(mealBuilder);
+    console.log(meal);
+
+    await DB.create(meal);
+    setUserData({
+      ...userData,
+      customRecipes: [...userData.customRecipes, meal],
+    });
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
@@ -113,35 +100,31 @@ const ManualMeal = (props: Props) => {
   navigation.setOptions({
     title: "Add a meal",
     headerTitleAlign: "center",
-    headerLeft: ()=>(
-      <TouchableOpacity
-          onPress={closeManual}
-      >
-          <MaterialCommunityIcons
-              name="arrow-left"
-              size={ICON_SIZES.medium}
-              color={isDarkMode ? COLOURS.white : COLOURS.black}
-          />
+    headerLeft: () => (
+      <TouchableOpacity onPress={closeManual}>
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={ICON_SIZES.medium}
+          color={isDarkMode ? COLOURS.white : COLOURS.black}
+        />
       </TouchableOpacity>
     ),
-    headerRight: ()=>(
-        <TouchableOpacity
-            onPress={saveRecipe}
-        >
-            <MaterialCommunityIcons
-                name="check"
-                size={ICON_SIZES.medium}
-                color={isDarkMode ? COLOURS.white : COLOURS.black}
-            />
-        </TouchableOpacity>
-    )
-  })
+    headerRight: () => (
+      <TouchableOpacity onPress={saveRecipe}>
+        <MaterialCommunityIcons
+          name="check"
+          size={ICON_SIZES.medium}
+          color={isDarkMode ? COLOURS.white : COLOURS.black}
+        />
+      </TouchableOpacity>
+    ),
+  });
 
   return (
-    <SafeAreaView 
+    <SafeAreaView
       style={[
-        styles.container, 
-        {backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,}
+        styles.container,
+        { backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white },
       ]}
       edges={["left", "right"]}
     >
@@ -159,11 +142,10 @@ const ManualMeal = (props: Props) => {
         <ChipsSelectors
           fieldName="Categories"
           categories={categories}
-          setCategories={(categories: Category[]) =>
-            setCategories(categories)
-          }
+          setCategories={(categories: Category[]) => setCategories(categories)}
           center
           onAdd={(category: Category) => {
+            category.active = false;
             setUserData({
               ...userData,
               ingredientCategories: [
@@ -174,17 +156,23 @@ const ManualMeal = (props: Props) => {
           }}
         />
         {getSeperator()}
-        <RecipeIngredientList />
+        <RecipeIngredientList
+          mealBuilder={mealBuilder}
+          setMealBuilder={setMealBuilder}
+        />
         {getSeperator()}
-        <Text 
-          style={{ 
-            marginBottom: SPACING.tiny, 
-            color: isDarkMode ? COLOURS.white : COLOURS.black 
+        <Text
+          style={{
+            marginBottom: SPACING.tiny,
+            color: isDarkMode ? COLOURS.white : COLOURS.black,
           }}
         >
           Instructions
         </Text>
-        <InstructionsList mealBuilder={mealBuilder}></InstructionsList>
+        <InstructionsList
+          mealBuilder={mealBuilder}
+          setMealBuilder={setMealBuilder}
+        ></InstructionsList>
         {getSeperator()}
       </KeyboardAwareScrollView>
     </SafeAreaView>

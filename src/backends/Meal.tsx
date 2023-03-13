@@ -1,3 +1,4 @@
+import { MealBuilder } from "../classes/MealClass";
 import { Ingredient, MealIngredient } from "./Ingredient";
 import { Nutrition } from "./Nutrition";
 
@@ -65,7 +66,9 @@ export class Meal {
       this.imgSrc,
       "," + this.categoryId.toString() + ",",
       this.instruction.join("<###>"),
-      this.ingredient.map((value) => value.toList().join("<%%%>")).join("<###>"),
+      this.ingredient
+        .map((value) => value.toList().join("<%%%>"))
+        .join("<###>"),
       this.source,
       this.cautions?.join("<###>"),
       JSON.stringify(this.nutrition),
@@ -105,5 +108,63 @@ export class Meal {
 
   static reset() {
     Meal.count = 0;
+  }
+
+  static fromBuilder(builder: MealBuilder) {
+    return new Meal(
+      builder.getName(),
+      builder.getCategoryId(),
+      builder.getInstruction(),
+      builder.getIngredients(),
+      builder.getId(),
+      undefined,
+      builder.getImgSrc(),
+      undefined,
+      undefined,
+      undefined,
+      new Nutrition(
+        undefined,
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.carbs)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.energy)
+          .reduce((a, b) => a + b, 0),
+        "kcal",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.protein)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.fat)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.saturatedFat)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.fibre)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.salt)
+          .reduce((a, b) => a + b, 0),
+        "g",
+        builder
+          .getIngredients()
+          .map((v) => v.getNutrition.sugar)
+          .reduce((a, b) => a + b, 0),
+        "g"
+      )
+    );
   }
 }

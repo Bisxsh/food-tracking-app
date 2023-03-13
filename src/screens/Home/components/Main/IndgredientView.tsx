@@ -45,7 +45,8 @@ const IndgredientView = (props: Props) => {
     .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
     .filter((i) => {
       for (let filter of activeFilters) {
-        if (i.categories.filter((v)=>v.name == filter.name).length == 0 ) return false;
+        if (i.categories.filter((v) => v.name == filter.name).length == 0)
+          return false;
       }
       return true;
     })
@@ -90,31 +91,29 @@ const IndgredientView = (props: Props) => {
         : "You don't have any ingredients that \n match the search criteria 😢";
 
     return (
-      <ScrollView style={{width: "100%", flexGrow: 1}}>
-        <View
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          marginTop: SPACING.medium,
+        }}
+      >
+        <NoDataSvg
+          width={200}
+          height={200}
+          style={{ marginBottom: SPACING.medium }}
+        />
+        <Text
           style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            marginTop: SPACING.medium,
+            textAlign: "center",
+            fontSize: FONT_SIZES.small,
           }}
         >
-          <NoDataSvg
-            width={200}
-            height={200}
-            style={{ marginBottom: SPACING.medium }}
-          />
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: FONT_SIZES.small,
-            }}
-          >
-            {message}
-          </Text>
-        </View>
-      </ScrollView>
+          {message}
+        </Text>
+      </View>
     );
   }
 

@@ -116,22 +116,25 @@ const RecipeBox = (props: Props) => {
           ) : (
             <MaterialCommunityIcons
               name="image-off"
-              size={100}
+              size={128}
               color={COLOURS.darkGrey}
               style={{ alignSelf: "center" }}
             />
           )}
-          <View style={styles.timeContainer}>
-            <MaterialCommunityIcons
-              name="clock-outline"
-              size={16}
-              color="black"
-            />
-            {/* TODO implement time here */}
-            <Text style={{ marginLeft: SPACING.tiny }}>
-              {recipe.time || "?"} mins
-            </Text>
-          </View>
+          {recipe.time ? (
+            <View style={styles.timeContainer}>
+              <MaterialCommunityIcons
+                name="clock-outline"
+                size={16}
+                color="black"
+              />
+              <Text style={{ marginLeft: SPACING.tiny }}>
+                {recipe.time || "?"} mins
+              </Text>
+            </View>
+          ) : (
+            <></>
+          )}
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.textHeading} numberOfLines={1}>

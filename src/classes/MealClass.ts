@@ -12,19 +12,18 @@ export class Meal {
   categoryId: number[];
   instruction: string[];
   ingredients: Ingredient[];
-  _id?:number;
+  _id?: number;
   url?: string;
   imgSrc?: string;
-
 
   constructor(
     name: string,
     categoryId: number[],
     instruction: string[],
     ingredients: Ingredient[],
-    _id?:number,
+    _id?: number,
     url?: string,
-    imgSrc?: string,
+    imgSrc?: string
   ) {
     this.name = name;
     this.categoryId = categoryId;
@@ -35,16 +34,16 @@ export class Meal {
     this.imgSrc = imgSrc;
   }
 
-  public toList(): any[]{
+  public toList(): any[] {
     return [
-        this.name, 
-        this.categoryId,
-        this.instruction,
-        this._id,
-        this.url,
-        this.imgSrc,
+      this.name,
+      this.categoryId,
+      this.instruction,
+      this._id,
+      this.url,
+      this.imgSrc,
     ];
-}
+  }
 
   //#region getters and setters
 
@@ -105,7 +104,7 @@ export class MealBuilder {
   private categoryId: number[];
   private instruction: string[];
   private ingredients: Ingredient[];
-  private _id?:number;
+  private _id?: number;
   private url?: string;
   private imgSrc?: string;
 
@@ -130,7 +129,6 @@ export class MealBuilder {
     builder.imgSrc = meal.imgSrc;
     return builder;
   }
-
 
   public setName(name: string): MealBuilder {
     this.name = name;
@@ -168,7 +166,7 @@ export class MealBuilder {
   }
 
   public allRequiredFieldsSet(): boolean {
-    return this.name !== "" 
+    return this.name !== "";
     // && this.instruction.length !== 0;
   }
 

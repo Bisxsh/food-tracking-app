@@ -14,6 +14,7 @@ import Instruction from "./Instruction";
 
 type Props = {
   mealBuilder: MealBuilder;
+  setMealBuilder: React.Dispatch<React.SetStateAction<MealBuilder>>;
 };
 
 const InstructionsList = (props: Props) => {
@@ -24,10 +25,9 @@ const InstructionsList = (props: Props) => {
     let num = instructionList.length + 1;
     // console.log(instruction)
     setInstructionList([...instructionList, [num + ". " + instruction]]);
-    props.mealBuilder.setInstruction(instructionList);
+    props.setMealBuilder((p) => p.setInstruction(instructionList));
     onChangeText("");
   }
-
 
   return (
     <>

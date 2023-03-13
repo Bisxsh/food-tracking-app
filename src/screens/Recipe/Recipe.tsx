@@ -38,6 +38,7 @@ import { Nutrition } from "../../backends/Nutrition";
 import { Ingredient, MealIngredient } from "../../backends/Ingredient";
 import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import { NutritionBuilder } from "../../classes/NutritionClass";
+import NoDataSvg from "../../assets/no_data.svg";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -52,14 +53,15 @@ export function Recipe(): JSX.Element {
 
   const navigation = useNavigation<any>();
   const [searchIngBut, setSearchIngBut] = useState(false);
+  const { userData, setUserData } = useContext(UserDataContext);
   const [loading, setLoading] = useState(true);
-  const [recipes, setRecipes] = useState<Meal[]>([]);
-  const [explore, setExplore] = useState<Meal[]>([]);
-  const [saved, setSaved] = useState<Meal[]>([]);
-  const [custom, setCustom] = useState<Meal[]>([]);
+  const [recipes, setRecipes] = useState<Meal[]>(userData.exploreRecipes || []);
+  const [explore, setExplore] = useState<Meal[]>(userData.exploreRecipes || []);
+  const [saved, setSaved] = useState<Meal[]>(userData.savedRecipes || []);
+  const [custom, setCustom] = useState<Meal[]>(userData.customRecipes || []);
+  const [currentButton, setCurrentButton] = useState(0);
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
@@ -73,7 +75,7 @@ export function Recipe(): JSX.Element {
       setLoading(true);
       getSearchRecipe(ingredientsSearch)
         .then((recipeList) => {
-          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe)));
+          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe.recipe)));
         })
         .then(() => setLoading(false));
     } else {
@@ -88,7 +90,9 @@ export function Recipe(): JSX.Element {
         let temp: Meal[] = [];
         let temp2: Meal[] = [];
         meals.map((meal) => {
-          if (meal.url != "") {
+          console.log(`Meal: ${meal.name}. Url is ${meal.url}`);
+
+          if (meal.url && meal.url != "") {
             temp.push(meal);
           } else {
             temp2.push(meal);
@@ -142,24 +146,20 @@ export function Recipe(): JSX.Element {
   function switchList(buttonNum: number) {
     if (buttonNum === 0) {
       setRecipes(explore);
-      sortList();
     }
     if (buttonNum === 1) {
       setRecipes(saved);
-      sortList();
     }
     if (buttonNum === 2) {
       setRecipes(custom);
-      sortList();
     }
+    sortList();
     setCurrentButton(buttonNum);
   }
 
-  const [currentButton, setCurrentButton] = useState(0);
-
-  function getCals(recipe: any) {
+  function getCals(recipe: Meal) {
     return Math.round(
-      parseInt(recipe.calories) / parseInt(recipe.yield) //need to add calorie to class
+      recipe.nutrition.energy / (recipe.servings || 1) //need to add calorie to class
     );
   }
 
@@ -182,14 +182,14 @@ export function Recipe(): JSX.Element {
       case RecipeSortingFilter.CaloriesLowToHigh:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(b.nutrition.energy) - getCals(a.nutrition.energy);
+            return getCals(b) - getCals(a);
           })
         );
         break;
       case RecipeSortingFilter.CaloriesHighToLow:
         setRecipes((r) =>
           r.sort((a, b) => {
-            return getCals(a.nutrition.energy) - getCals(b.nutrition.energy);
+            return getCals(a) - getCals(b);
           })
         );
         break;
@@ -213,6 +213,79 @@ export function Recipe(): JSX.Element {
   useEffect(() => {
     sortList();
   }, [selectedSort]);
+
+  function getMainContent() {
+    if (recipes.length > 0)
+      return (
+        <ScrollView
+          style={{ width: "100%" }}
+          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        >
+          {recipes
+            .filter((recipe) => {
+              if (!recipe.healthLabels || recipe.healthLabels.length === 0)
+                return true;
+              return dietReq
+                .filter((elem: any) => elem[1])
+                .map((elem: any) => elem[0])
+                .every((elem: any) => recipe.healthLabels!.includes(elem));
+            })
+            .map((recipe, key) => {
+              console.log(recipe.time);
+              return (
+                <RecipeBox
+                  key={Math.random()}
+                  recipe={recipe}
+                  ignoreFav={currentButton == 2 ? true : false}
+                  savedRecipe={setSaved}
+                />
+              );
+            })}
+        </ScrollView>
+      );
+
+    let message = "";
+    switch (currentButton) {
+      case 0:
+        message =
+          "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n Try searching for recipes above!";
+        break;
+      case 1:
+        message =
+          "You haven't saved any recipes yet 💾\n\n Try searching for recipes above!";
+        break;
+      case 2:
+        message =
+          "You haven't created any recipes yet 😢\n\n Click the button below to create a recipe!";
+        break;
+    }
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          marginTop: SPACING.medium,
+        }}
+      >
+        <NoDataSvg
+          width={200}
+          height={200}
+          style={{ marginBottom: SPACING.medium }}
+        />
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: FONT_SIZES.small,
+          }}
+        >
+          {message}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -279,33 +352,7 @@ export function Recipe(): JSX.Element {
           setSearch={setSearchIngBut}
         />
       </View>
-      {!loading && (
-        <ScrollView
-          style={{ width: "100%" }}
-          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
-        >
-          {recipes
-            .filter((recipe) => {
-              if (!recipe.healthLabels || recipe.healthLabels.length === 0)
-                return true;
-              return dietReq
-                .filter((elem: any) => elem[1])
-                .map((elem: any) => elem[0])
-                .every((elem: any) => recipe.healthLabels!.includes(elem));
-            })
-            .map((recipe, key) => {
-              console.log(recipe.name);
-              return (
-                <RecipeBox
-                  key={Math.random()}
-                  recipe={recipe}
-                  ignoreFav={currentButton == 2 ? true : false}
-                  savedRecipe={setSaved}
-                />
-              );
-            })}
-        </ScrollView>
-      )}
+      {!loading && getMainContent()}
       {loading && (
         <View
           style={{
@@ -383,13 +430,11 @@ const styles = StyleSheet.create({
 });
 
 export function getMealFromAPI(recipe: any) {
-  // console.log(recipe);
-
   return new Meal(
     recipe.label,
     [],
     [],
-    recipe.ingredients.map((ing: any) => {
+    recipe.ingredients?.map((ing: any) => {
       return new IngredientBuilder().build().toIngredientBack();
     }),
     undefined,

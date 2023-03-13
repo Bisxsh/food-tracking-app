@@ -1,7 +1,7 @@
 import { Category, toCategoryBack } from "./Categories";
 import { Nutrition, NutritionBuilder } from "./NutritionClass";
-import * as IngredientBack from "../backends/Ingredient"
-import * as DB from "../backends/Database"
+import * as IngredientBack from "../backends/Ingredient";
+import * as DB from "../backends/Database";
 
 export enum weightUnit {
   grams = "grams",
@@ -18,7 +18,7 @@ export class Ingredient {
   categories: Category[];
   imgSrc: string;
   addDate: Date;
-  useDate: Date;
+  useDate: Date | undefined;
   expiryDate: Date;
   nutrition: Nutrition;
   id: number;
@@ -33,7 +33,7 @@ export class Ingredient {
     categories: Category[],
     imgSrc: string,
     expiryDate: Date,
-    useDate: Date,
+    useDate: Date | undefined,
     nutrition: Nutrition,
     id: number,
     addDate?: Date
@@ -46,21 +46,21 @@ export class Ingredient {
     this.quantity = quantity;
     this.categories = categories;
     this.imgSrc = imgSrc;
-    this.addDate = (addDate != undefined)? addDate: new Date()
+    this.addDate = addDate != undefined ? addDate : new Date();
     this.useDate = useDate;
     this.expiryDate = expiryDate;
     this.nutrition = nutrition;
     this.id = id;
   }
 
-  toIngredientBack(): IngredientBack.Ingredient{
+  toIngredientBack(): IngredientBack.Ingredient {
     return new IngredientBack.Ingredient(
       this.name,
       this.quantity,
       this.weightType,
       this.servingSizeType,
       this.nutrition.toNutritionBack(),
-      this.categories.map((v)=>toCategoryBack(v)).map((v)=>v._id),
+      this.categories.map((v) => toCategoryBack(v)).map((v) => v._id),
       this.id,
       this.weight,
       this.servingSize,
@@ -68,7 +68,7 @@ export class Ingredient {
       this.addDate,
       this.useDate,
       this.expiryDate
-    )
+    );
   }
 
   //#region getters and setters
@@ -134,7 +134,7 @@ export class IngredientBuilder {
   private categories: Category[];
   private imgSrc: string;
   private addDate: Date;
-  private useDate: Date;
+  private useDate: Date | undefined;
   private expiryDate: Date;
   private nutrition: NutritionBuilder;
   private id: number;
@@ -143,13 +143,13 @@ export class IngredientBuilder {
     this.name = "";
     this.weight = 0;
     this.weightType = weightUnit.grams;
-    this.servingSize = 0;
+    this.servingSize = 1;
     this.servingSizeType = weightUnit.grams;
-    this.quantity = 0;
+    this.quantity = 1;
     this.categories = [];
     this.imgSrc = "";
-    this.addDate = new Date()
-    this.useDate = new Date();
+    this.addDate = new Date();
+    this.useDate = undefined;
     this.expiryDate = new Date();
     this.nutrition = new NutritionBuilder();
     this.id = -1;
@@ -198,10 +198,13 @@ export class IngredientBuilder {
     return this;
   }
 
-  public setQuantity(quantity: number, setUsed: boolean = false): IngredientBuilder {
+  public setQuantity(
+    quantity: number,
+    setUsed: boolean = false
+  ): IngredientBuilder {
     this.quantity = quantity;
-    if (quantity == 0 && setUsed){
-      this.useDate = new Date()
+    if (quantity == 0 && setUsed) {
+      this.useDate = new Date();
     }
     return this;
   }
@@ -271,7 +274,7 @@ export class IngredientBuilder {
     return this.imgSrc;
   }
 
-  public getUseDate(): Date {
+  public getUseDate(): Date | undefined {
     return this.useDate;
   }
 
@@ -300,14 +303,14 @@ export class IngredientBuilder {
       this.addDate
     );
 
-    DB.readIngredient(this.id).then((value)=>{
-      if (value == undefined){
-        DB.create(ing.toIngredientBack())
-      }else{
-        DB.updateIngredient(ing.toIngredientBack())
+    DB.readIngredient(this.id).then((value) => {
+      if (value == undefined) {
+        DB.create(ing.toIngredientBack());
+      } else {
+        DB.updateIngredient(ing.toIngredientBack());
       }
-    })
-    
-    return ing
+    });
+
+    return ing;
   }
 }
