@@ -3,7 +3,7 @@
     "slug": "foodtrackingapp",
     "name": "WasteX",
     "icon": "./assets/LauncherIcon_v1.png",
-    "version": "1.2",
+    "version": "1.3",
     "extra": {
       "eas": {
         "projectId": "d5393ef5-1861-4d74-afac-477fbe4e06c6"
@@ -15,6 +15,9 @@
         "foregroundImage": "./assets/LauncherIcon_v1_2.png",
         "backgroundColor": "#27C179"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "com.groupsix.foodtrackingapp.wastex"
     }
   },
   "name": "WasteX"
