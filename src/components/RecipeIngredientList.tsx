@@ -22,8 +22,14 @@ import { getDaysUntilExpiry, getTimeLeft } from "../util/ExpiryCalc";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import { UserContext } from "../backends/User";
+import { MealBuilder } from "../classes/MealClass";
 
-function RecipeIngredientList() {
+type RecipeIngredientListProps = {
+  mealBuilder: MealBuilder;
+  setMealBuilder: React.Dispatch<React.SetStateAction<MealBuilder>>;
+};
+
+function RecipeIngredientList(props: RecipeIngredientListProps) {
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const { userData, setUserData } = useContext(UserDataContext);
   const [ingredientList, setIngredientList] = useState<Ingredient[]>(
@@ -35,13 +41,20 @@ function RecipeIngredientList() {
   const [showModal, setShowModal] = useState(false);
   const [ingredientBeingEdited, setIngredientBeingEdited] =
     useState<IngredientBuilder | null>(null);
-  const {height, width} = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
 
   return (
     <>
-      <Text style={{color: isDarkMode ? COLOURS.white : COLOURS.black, marginBottom: SPACING.small}}>Ingredients</Text>
+      <Text
+        style={{
+          color: isDarkMode ? COLOURS.white : COLOURS.black,
+          marginBottom: SPACING.small,
+        }}
+      >
+        Ingredients
+      </Text>
 
       <View style={styles.container}>
         <View style={{ paddingTop: 10 }}>
@@ -50,7 +63,7 @@ function RecipeIngredientList() {
               textHint={"Search Ingredient"}
               text={ingredientsSearch}
               setText={setIngredientsSearch}
-              width={width - SPACING.medium*2 - SPACING.small*2}
+              width={width - SPACING.medium * 2 - SPACING.small * 2}
               height={40}
             />
             {ingredientList
@@ -79,6 +92,13 @@ function RecipeIngredientList() {
                               )
                             );
                           }
+                          props.setMealBuilder((p) =>
+                            p.setIngredients(
+                              usedIngredientsList.map((i) =>
+                                i.toIngredientBack()
+                              )
+                            )
+                          );
                         }}
                       />
                       {ingredient.imgSrc && (

@@ -88,7 +88,9 @@ export function Recipe(): JSX.Element {
         let temp: Meal[] = [];
         let temp2: Meal[] = [];
         meals.map((meal) => {
-          if (meal.url != "") {
+          console.log(`Meal: ${meal.name}. Url is ${meal.url}`);
+
+          if (meal.url && meal.url != "") {
             temp.push(meal);
           } else {
             temp2.push(meal);

@@ -40,6 +40,7 @@ const RecipeInfo = (props: Props) => {
     recipeContext.recipeBeingViewed?.servings || 1
   );
   const { user, setUser } = useContext(UserContext);
+  const { height, width } = useWindowDimensions();
   const isDarkMode = user.setting.isDark();
   const recipe = recipeContext.recipeBeingViewed;
 
@@ -147,22 +148,33 @@ const RecipeInfo = (props: Props) => {
       edges={["left", "right"]}
     >
       <ScrollView>
-        <Image source={{ uri: meal.imgSrc }} style={styles.foodImage} />
+        {meal.imgSrc ? (
+          <Image source={{ uri: meal.imgSrc }} style={styles.foodImage} />
+        ) : (
+          <MaterialCommunityIcons
+            name="image-off"
+            size={width - SPACING.medium}
+            style={styles.foodImage}
+            color={COLOURS.darkGrey}
+          />
+        )}
 
         <View style={styles.contentContainer}>
           <View style={styles.sourceContainer}>
-            <Text
-              style={{
-                fontSize: FONT_SIZES.medium,
-                color: isDarkMode ? COLOURS.white : COLOURS.black,
-              }}
-            >
-              Source:{" "}
-              {(recipeContext?.recipeBeingViewed?.source || "").replace(
-                ".com",
-                ""
-              ) || ""}
-            </Text>
+            {meal.source && (
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.medium,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                }}
+              >
+                Source:{" "}
+                {(recipeContext?.recipeBeingViewed?.source || "").replace(
+                  ".com",
+                  ""
+                ) || ""}
+              </Text>
+            )}
             {meal.url && (
               <TouchableOpacity
                 onPress={openURI}

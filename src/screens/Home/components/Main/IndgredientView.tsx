@@ -45,7 +45,8 @@ const IndgredientView = (props: Props) => {
     .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
     .filter((i) => {
       for (let filter of activeFilters) {
-        if (i.categories.filter((v)=>v.name == filter.name).length == 0 ) return false;
+        if (i.categories.filter((v) => v.name == filter.name).length == 0)
+          return false;
       }
       return true;
     })
@@ -90,7 +91,7 @@ const IndgredientView = (props: Props) => {
         : "You don't have any ingredients that \n match the search criteria 😢";
 
     return (
-      <ScrollView style={{width: "100%", flexGrow: 1}}>
+      <ScrollView style={{ width: "100%", flexGrow: 1 }}>
         <View
           style={{
             flex: 1,
