@@ -38,6 +38,7 @@ import { Nutrition } from "../../backends/Nutrition";
 import { Ingredient, MealIngredient } from "../../backends/Ingredient";
 import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import { NutritionBuilder } from "../../classes/NutritionClass";
+import NoDataSvg from "../../assets/no_data.svg";
 
 export function Recipe(): JSX.Element {
   const { user, setUser } = useContext(UserContext);
@@ -214,6 +215,66 @@ export function Recipe(): JSX.Element {
     sortList();
   }, [selectedSort]);
 
+  function getMainContent() {
+    if (recipes.length > 0)
+      return (
+        <ScrollView
+          style={{ width: "100%" }}
+          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+        >
+          {recipes
+            .filter((recipe) => {
+              if (!recipe.healthLabels || recipe.healthLabels.length === 0)
+                return true;
+              return dietReq
+                .filter((elem: any) => elem[1])
+                .map((elem: any) => elem[0])
+                .every((elem: any) => recipe.healthLabels!.includes(elem));
+            })
+            .map((recipe, key) => {
+              console.log(recipe.time);
+              return (
+                <RecipeBox
+                  key={Math.random()}
+                  recipe={recipe}
+                  ignoreFav={currentButton == 2 ? true : false}
+                  savedRecipe={setSaved}
+                />
+              );
+            })}
+        </ScrollView>
+      );
+
+    const message =
+      "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n 🔎Try searching for recipes above🔍";
+
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          marginTop: SPACING.medium,
+        }}
+      >
+        <NoDataSvg
+          width={200}
+          height={200}
+          style={{ marginBottom: SPACING.medium }}
+        />
+        <Text
+          style={{
+            textAlign: "center",
+            fontSize: FONT_SIZES.small,
+          }}
+        >
+          {message}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={[
@@ -279,33 +340,7 @@ export function Recipe(): JSX.Element {
           setSearch={setSearchIngBut}
         />
       </View>
-      {!loading && (
-        <ScrollView
-          style={{ width: "100%" }}
-          contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
-        >
-          {recipes
-            .filter((recipe) => {
-              if (!recipe.healthLabels || recipe.healthLabels.length === 0)
-                return true;
-              return dietReq
-                .filter((elem: any) => elem[1])
-                .map((elem: any) => elem[0])
-                .every((elem: any) => recipe.healthLabels!.includes(elem));
-            })
-            .map((recipe, key) => {
-              console.log(recipe.time);
-              return (
-                <RecipeBox
-                  key={Math.random()}
-                  recipe={recipe}
-                  ignoreFav={currentButton == 2 ? true : false}
-                  savedRecipe={setSaved}
-                />
-              );
-            })}
-        </ScrollView>
-      )}
+      {!loading && getMainContent()}
       {loading && (
         <View
           style={{
