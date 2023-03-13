@@ -246,7 +246,7 @@ export function Recipe(): JSX.Element {
       );
 
     const message =
-      "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n 🔎Try searching for recipes above🔍";
+      "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n Try searching for recipes above!";
 
     return (
       <View
