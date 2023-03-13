@@ -74,8 +74,11 @@ const ManualMeal = (props: Props) => {
     const meal = Meal.fromBuilder(mealBuilder);
     console.log(meal);
 
-    userData.customRecipes.push(meal);
     await DB.create(meal);
+    setUserData({
+      ...userData,
+      customRecipes: [...userData.customRecipes, meal],
+    });
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }

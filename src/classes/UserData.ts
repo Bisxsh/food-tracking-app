@@ -17,8 +17,8 @@ export interface UserData {
   homePageSort: HomeSortingFilter;
   savedRecipes: Meal[];
   customRecipes: Meal[];
-  recipesPageSort: RecipeSortingFilter;
   exploreRecipes: Meal[];
+  recipesPageSort: RecipeSortingFilter;
   refreshExplore: boolean;
   //TODO implement
   // recipeCategories: RecipeCategory[];
