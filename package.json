@@ -22,10 +22,12 @@
     "date-fns": "^2.29.3",
     "expo": "^48.0.0",
     "expo-camera": "~13.2.1",
+    "expo-constants": "~14.2.1",
     "expo-dev-client": "~2.1.5",
     "expo-file-system": "~15.2.2",
     "expo-image": "~1.0.0",
     "expo-image-picker": "~14.1.1",
+    "expo-mail-composer": "~12.1.1",
     "expo-notifications": "~0.18.1",
     "expo-screen-orientation": "~5.1.1",
     "expo-splash-screen": "~0.18.1",
@@ -50,9 +52,7 @@
     "react-native-svg": "13.4.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-web": "~0.18.11",
-    "ts-jest": "^29.0.5",
-    "expo-mail-composer": "~12.1.1",
-    "expo-constants": "~14.2.1"
+    "ts-jest": "^29.0.5"
   },
   "devDependencies": {
     "@types/react": "~18.0.27",
