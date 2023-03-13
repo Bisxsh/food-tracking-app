@@ -1,5 +1,6 @@
 import { Category } from "./Categories";
 import { Ingredient } from "../backends/Ingredient";
+import * as MealBack from "../backends/Meal"
 import { Nutrition, NutritionBuilder } from "./NutritionClass";
 
 export enum weightUnit {
@@ -43,6 +44,18 @@ export class Meal {
       this.url,
       this.imgSrc,
     ];
+  }
+
+  public toMealBack(): MealBack.Meal{
+    return new MealBack.Meal(
+      this.name,
+      this.categoryId,
+      this.instruction,
+      this.ingredients,
+      this._id,
+      this.url,
+      this.imgSrc
+    )
   }
 
   //#region getters and setters

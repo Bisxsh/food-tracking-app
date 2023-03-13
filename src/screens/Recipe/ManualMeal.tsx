@@ -5,13 +5,10 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { COLOURS, ICON_SIZES, SPACING } from "../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Dimensions } from "react-native";
-
-import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
 import * as MealClass from "../../classes/MealClass";
 import * as DB from "../../backends/Database";
 import ChipsSelectors from "../../components/ChipsSelectors";
@@ -79,7 +76,7 @@ const ManualMeal = (props: Props) => {
     //   });
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
-    const meal : MealClass.Meal = Meal.fromBuilder(mealBuilder);
+    const meal : Meal = Meal.fromBuilder(mealBuilder);
     console.log(meal);
 
     await DB.create(meal);
