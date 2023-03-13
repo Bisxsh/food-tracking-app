@@ -245,8 +245,21 @@ export function Recipe(): JSX.Element {
         </ScrollView>
       );
 
-    const message =
-      "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n Try searching for recipes above!";
+    let message = "";
+    switch (currentButton) {
+      case 0:
+        message =
+          "You don't have any ingredients stored\nso we cant suggest any recipes 😢 \n\n Try searching for recipes above!";
+        break;
+      case 1:
+        message =
+          "You haven't saved any recipes yet 💾\n\n Try searching for recipes above!";
+        break;
+      case 2:
+        message =
+          "You haven't created any recipes yet 😢\n\n Click the button below to create a recipe!";
+        break;
+    }
 
     return (
       <View
