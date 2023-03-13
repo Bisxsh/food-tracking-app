@@ -40,6 +40,7 @@ import { Nutrition } from "../../../backends/Nutrition";
 import Modal from "react-native-modal/dist/modal";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { UserDataContext } from "../../../classes/UserData";
 
 type Months = {
   short: {
@@ -219,16 +220,11 @@ const SearchMenu = (props: searchMenuProp) => {
         setSelectedOption={props.setSort}
       />
       <IngredientsFilter
-        options={props.option}
+        options={props.option.map((v)=>v.toCategoryClass())}
         setOptions={(options) => {
           const categories = options.map(
             (value: Categories.Category) =>
-              new Category(
-                value.name,
-                value.colour,
-                (value as Category)._id,
-                value.active
-              )
+              Categories.toCategoryBack(value)
           );
           props.setOption(categories);
         }}
@@ -459,6 +455,7 @@ var init = true;
 
 export function Profile({ navigation, route }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
+  const { userData, setUserData} = useContext(UserDataContext);
   const { tabNavi, setTabNavi } = useContext(TabNaviContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
   const [name, setName] = useState(user.name);
@@ -963,10 +960,10 @@ export function Profile({ navigation, route }: ScreenProp): JSX.Element {
                   for (const cat of category) {
                     if (user.findCategory(cat.name) == undefined) {
                       DB.create(cat);
-                    } else {
-                      DB.updateCategory(cat);
-                    }
+                      userData.ingredientCategories.push(cat.toCategoryClass())
+                    } 
                   }
+                  
                   user.categories = category.copyWithin(category.length, 0);
                   // console.log(category.filter((v)=>v.active))
                   const ing = await DB.searchIngredient(
@@ -994,7 +991,7 @@ export function Profile({ navigation, route }: ScreenProp): JSX.Element {
                   }
                   setUser(user);
                   setIngredients(ing);
-                  setOption(option);
+                  setOption(category);
                   setLoadingIng(false);
                 }}
               />

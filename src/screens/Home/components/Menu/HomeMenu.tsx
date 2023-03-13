@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import CustomSearchBar from "../../../../components/CustomSearchBar";
 import SortButton from "../../../../components/SortButton";
 import IngredientsFilter from "../../../../components/IngredientsFilter";
@@ -19,6 +19,12 @@ type Props = {
 
 const HomeMenu = (props: Props) => {
   const { userData, setUserData } = useContext(UserDataContext);
+  const resetOption = useRef(true)
+  if (resetOption.current){
+    userData.ingredientCategories.forEach((v)=>v.active=false)
+    resetOption.current = false
+  }
+
   return (
     <View style={styles.menu}>
       <CustomSearchBar

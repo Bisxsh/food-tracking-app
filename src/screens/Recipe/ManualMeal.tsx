@@ -7,14 +7,14 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { COLOURS, ICON_SIZES, SPACING } from "../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Dimensions } from "react-native";
 
 import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
-import { MealBuilder } from "../../classes/MealClass";
+import * as MealClass from "../../classes/MealClass";
 import * as DB from "../../backends/Database";
 import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
@@ -37,19 +37,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 type Props = {
   setShowManual?: (showManual: boolean) => void;
-  setMeal?: (meal: MealBuilder | null) => void;
-  mealBuilder?: MealBuilder;
+  setMeal?: (meal: MealClass.MealBuilder | null) => void;
+  mealBuilder?: MealClass.MealBuilder;
 };
 
 const ManualMeal = (props: Props) => {
   const { recipeContext, setRecipeContext } = useContext(RecipeContext);
   const { userData, setUserData } = useContext(UserDataContext);
+  const resetOption = useRef(true)
+  if (resetOption.current){
+    userData.ingredientCategories.forEach((v)=>v.active=false)
+    resetOption.current = false
+  }
   const [categories, setCategories] = useState<Category[]>(
     userData.ingredientCategories
   );
   const navigation = useNavigation<any>();
   const [mealBuilder, setMealBuilder] = useState(
-    recipeContext.recipeBeingEdited || new MealBuilder()
+    recipeContext.recipeBeingEdited || new MealClass.MealBuilder()
   );
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
@@ -83,7 +88,7 @@ const ManualMeal = (props: Props) => {
     //   });
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
-    let builtMeal = mealBuilder.build();
+    let builtMeal : MealClass.Meal = mealBuilder.build();
     userData.customRecipes.push(builtMeal);
     let meal = new Meal(
       builtMeal.getName,

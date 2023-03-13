@@ -4,7 +4,7 @@ export class Category{
     _id!: number
     name: string
     colour: string
-    active?: boolean
+    active: boolean
 
     constructor(name: string, colour: string, _id?:number, active?: boolean){
         if (_id != undefined){
@@ -29,7 +29,7 @@ export class Category{
     static count = -1;
 
     static fromList(properties:any[]):Category{
-        return new Category(properties[1], properties[2], properties[0], properties[3]);
+        return new Category(properties[1], properties[2], properties[0], properties[3]==1);
     }
 
     static reset(){
