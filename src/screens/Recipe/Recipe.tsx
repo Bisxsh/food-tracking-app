@@ -53,14 +53,15 @@ export function Recipe(): JSX.Element {
 
   const navigation = useNavigation<any>();
   const [searchIngBut, setSearchIngBut] = useState(false);
+  const { userData, setUserData } = useContext(UserDataContext);
   const [loading, setLoading] = useState(true);
-  const [recipes, setRecipes] = useState<Meal[]>([]);
-  const [explore, setExplore] = useState<Meal[]>([]);
-  const [saved, setSaved] = useState<Meal[]>([]);
-  const [custom, setCustom] = useState<Meal[]>([]);
+  const [recipes, setRecipes] = useState<Meal[]>(userData.exploreRecipes || []);
+  const [explore, setExplore] = useState<Meal[]>(userData.exploreRecipes || []);
+  const [saved, setSaved] = useState<Meal[]>(userData.savedRecipes || []);
+  const [custom, setCustom] = useState<Meal[]>(userData.customRecipes || []);
+  const [currentButton, setCurrentButton] = useState(0);
   const [ingredientsSearch, setIngredientsSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
-  const { userData, setUserData } = useContext(UserDataContext);
   const [selectedSort, setSelectedSort] = useState(
     userData.recipesPageSort || RecipeSortingFilter.TimeLowToHigh
   );
@@ -155,8 +156,6 @@ export function Recipe(): JSX.Element {
     sortList();
     setCurrentButton(buttonNum);
   }
-
-  const [currentButton, setCurrentButton] = useState(0);
 
   function getCals(recipe: Meal) {
     return Math.round(
