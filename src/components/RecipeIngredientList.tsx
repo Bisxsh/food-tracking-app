@@ -91,7 +91,7 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
       </Text>
 
       <View style={{...styles.container, paddingTop: 10}}>
-        <ScrollView style={{flexDirection: "column", flex: 1}}>
+        <ScrollView style={{flexDirection: "column", flex: 1, width: width - SPACING.medium * 2 - inset.left - inset.right}}>
           <CustomSearchBar
             textHint={"Search Ingredient"}
             text={ingredientsSearch}
@@ -121,115 +121,117 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
               //   ingredient.servingSize = usedIngredientsList.find((v)=> v.getId==ingredient.getId)!.servingSize
               // }
               return (
-                <View>
-                  <View
-                    style={styles.ingredientContainer}
-                    key={ingredient.name}
-                  >
-                    <Checkbox
-                      initialVal={used}
-                      onPress={(checked) => {
-                        var newUsedIngList: Ingredient[] = []
-                        if (checked) {
-                          newUsedIngList = [
-                            ...usedIngredientsList,
-                            ingredient,
-                          ]
-                        } else {
-                          newUsedIngList = usedIngredientsList.filter(
-                            (i) => i.name != ingredient.name
+                <View
+                  style={styles.ingredientContainer}
+                  key={ingredient.name}
+                >
+                  <Checkbox
+                    initialVal={used}
+                    onPress={(checked) => {
+                      var newUsedIngList: Ingredient[] = []
+                      if (checked) {
+                        newUsedIngList = [
+                          ...usedIngredientsList,
+                          ingredient,
+                        ]
+                      } else {
+                        newUsedIngList = usedIngredientsList.filter(
+                          (i) => i.name != ingredient.name
+                        )
+                      }
+                      setUsedIngredientsList(newUsedIngList)
+                      props.setMealBuilder((p) =>
+                        p.setIngredients(
+                          newUsedIngList.map((i) =>
+                            i.toIngredientBack()
                           )
-                        }
-                        setUsedIngredientsList(newUsedIngList)
-                        props.setMealBuilder((p) =>
-                          p.setIngredients(
-                            newUsedIngList.map((i) =>
-                              i.toIngredientBack()
-                            )
-                          )
-                        );
+                        )
+                      );
+                    }}
+                  />
+                  {ingredient.imgSrc != undefined && ingredient.imgSrc != "" && (
+                    <Image
+                      source={{
+                        uri: ingredient.imgSrc,
+                      }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        marginRight: SPACING.small,
+                        borderRadius: RADIUS.tiny,
                       }}
                     />
-                    {ingredient.imgSrc != undefined && ingredient.imgSrc != "" && (
-                      <Image
-                        source={{
-                          uri: ingredient.imgSrc,
-                        }}
-                        style={{
-                          width: 50,
-                          height: 50,
-                          marginRight: SPACING.small,
-                          borderRadius: RADIUS.tiny,
-                        }}
-                      />
-                    )}
-                    {(ingredient.imgSrc == undefined || ingredient.imgSrc == "") && (
-                      <View
-                        style={{
-                          alignItems: "center",
-                          backgroundColor: COLOURS.darkGrey,
-                          aspectRatio: 1,
-                          justifyContent: "center",
-                          width: 50,
-                          height: 50,
-                          marginRight: SPACING.small,
-                          borderRadius: RADIUS.tiny,
-                        }}
-                      >
-                        <MaterialIcons
-                          name="image-not-supported"
-                          color={COLOURS.white}
-                          size={ICON_SIZES.medium}
-                          style={{
-                            textAlign: "center",
-                          }}
-                        />
-                      </View>
-                    )}
-                    <View style={{ flexDirection: "column" }}>
-                      <Text>{ingredient.name}</Text>
-                      {getDaysUntilExpiry(ingredient) < 1 &&
-                      getDaysUntilExpiry(ingredient) > 0 ? (
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            alignItems: "center",
-                          }}
-                        >
-                          <MaterialCommunityIcons
-                            name="alert-outline"
-                            size={16}
-                            color={"#A04444"}
-                          />
-                          <Text style={{ color: "#A04444" }}>
-                            Expires in {getTimeLeft(ingredient)}
-                          </Text>
-                        </View>
-                      ) : (
-                        <></>
-                      )}
-                    </View>
-
-                    <View style={{ flex: 1 }} />
-                    <TouchableOpacity
-                      style={styles.amountContainer}
-                      onPress={() => {
-                        setShowModal(true);
-                        setIngredientBeingEdited(
-                          IngredientBuilder.fromIngredient(ingredient)
-                        );
-
+                  )}
+                  {(ingredient.imgSrc == undefined || ingredient.imgSrc == "") && (
+                    <View
+                      style={{
+                        alignItems: "center",
+                        backgroundColor: COLOURS.darkGrey,
+                        aspectRatio: 1,
+                        justifyContent: "center",
+                        width: 50,
+                        height: 50,
+                        marginRight: SPACING.small,
+                        borderRadius: RADIUS.tiny,
                       }}
                     >
-                      <Text>
-                        {ingredient.servingSize}{" "}
-                        {ingredient.servingSizeType == weightUnit.grams
-                          ? "g"
-                          : "kg"}
-                      </Text>
-                    </TouchableOpacity>
+                      <MaterialIcons
+                        name="image-not-supported"
+                        color={COLOURS.white}
+                        size={ICON_SIZES.medium}
+                        style={{
+                          textAlign: "center",
+                        }}
+                      />
+                    </View>
+                  )}
+                  <View style={{ flexDirection: "column", flexShrink: 1}}>
+                    <Text
+                      numberOfLines={1}
+                    >
+                      {ingredient.name}
+                    </Text>
+                    {getDaysUntilExpiry(ingredient) < 1 &&
+                    getDaysUntilExpiry(ingredient) > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <MaterialCommunityIcons
+                          name="alert-outline"
+                          size={16}
+                          color={"#A04444"}
+                        />
+                        <Text style={{ color: "#A04444" }}>
+                          Expires in {getTimeLeft(ingredient)}
+                        </Text>
+                      </View>
+                    ) : (
+                      <></>
+                    )}
                   </View>
+
+                  <View style={{ flex: 1 }} />
+                  <TouchableOpacity
+                    style={styles.amountContainer}
+                    onPress={() => {
+                      setShowModal(true);
+                      setIngredientBeingEdited(
+                        IngredientBuilder.fromIngredient(ingredient)
+                      );
+
+                    }}
+                  >
+                    <Text>
+                      {ingredient.servingSize}{" "}
+                      {ingredient.servingSizeType == weightUnit.grams
+                        ? "g"
+                        : "kg"}
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               );
             })}

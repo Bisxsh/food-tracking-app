@@ -102,7 +102,11 @@ export class Meal {
       properties[10], // serving
       properties[11], // time
       properties[12], // favourite
-      [] // mealIngredients
+      (properties[6] as string)
+        .split("<###>")
+        .filter((value) => value != "")
+        .map((value) => Ingredient.fromList(value.split("<%%%>")))
+        .map((ing)=>ing.weight +" "+ing.weightUnit+" "+ ing.name) // mealIngredients
     );
   }
 
@@ -176,7 +180,11 @@ export class Meal {
           .map((v) => v.getNutrition.sugar)
           .reduce((a, b) => a + b, 0),
         "g"
-      )
+      ),
+      undefined,
+      undefined,
+      undefined,
+      builder.getIngredients().map((ing)=>ing.weight +" "+ing.weightUnit+" "+ ing.name)
     );
   }
 }

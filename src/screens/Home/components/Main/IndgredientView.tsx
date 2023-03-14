@@ -47,7 +47,6 @@ const IndgredientView = (props: Props) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setLoading(true)
-      console.log(["navigation"])
       setExpiredIngredients(
         userData.storedIngredients.filter(
           (i) => i.expiryDate < new Date() && i.quantity > 0

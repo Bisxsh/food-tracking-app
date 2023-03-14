@@ -310,6 +310,7 @@ export function Recipe(): JSX.Element {
           style={{
             textAlign: "center",
             fontSize: FONT_SIZES.small,
+            color: isDarkMode? COLOURS.white: COLOURS.black
           }}
         >
           {message}

@@ -77,7 +77,6 @@ const ManualMeal = (props: Props) => {
       alert("All required fields must be set");
       return;
     }
-    console.log(mealBuilder)
 
     const catId: number[] = [];
     const catDB = await DB.readAllCategory();
@@ -106,6 +105,7 @@ const ManualMeal = (props: Props) => {
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
     const meal : Meal = Meal.fromBuilder(mealBuilder);
+
     if (mealBuilder.getId() == -1){
       await DB.create(meal);
       setUserData({

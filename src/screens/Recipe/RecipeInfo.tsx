@@ -26,8 +26,25 @@ import { getSaved } from "../../util/GetRecipe";
 import * as DB from "../../backends/Database";
 import { DUMMY_MEALS } from "../../classes/DummyData";
 import { UserContext } from "../../backends/User";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
 import * as MealClass from "../../classes/MealClass"
+
+type InstructionBoxProps={
+  instructions: string[]
+}
+
+function instructionsBox(props: InstructionBoxProps): JSX.Element{
+  return (
+    <View
+      style={{
+
+      }}
+    >
+
+    </View>
+  );
+}
+
 
 type Props = {};
 
@@ -42,6 +59,7 @@ const RecipeInfo = (props: Props) => {
   );
   const { user, setUser } = useContext(UserContext);
   const { height, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets()
   const isDarkMode = user.setting.isDark();
   const recipe = recipeContext.recipeBeingViewed;
 
@@ -164,7 +182,7 @@ const RecipeInfo = (props: Props) => {
         ) : (
           <MaterialCommunityIcons
             name="image-off"
-            size={width - SPACING.medium}
+            size={width - insets.left - insets.right}
             style={styles.foodImage}
             color={COLOURS.darkGrey}
           />
@@ -211,8 +229,9 @@ const RecipeInfo = (props: Props) => {
                 />
               </TouchableOpacity>
             )}
+            {(meal.source || meal.url) && getSeperator()}
           </View>
-          {getSeperator()}
+          
           <View style={[styles.sourceContainer, { marginTop: SPACING.medium }]}>
             <Text
               style={{
@@ -320,6 +339,35 @@ const RecipeInfo = (props: Props) => {
               </View>
             );
           })}
+          {recipe?.instruction.length != 0 && 
+            <>
+              {getSeperator()}
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.small,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                  flexShrink: 1,
+                }}
+              >
+                Instructions
+              </Text>
+            </>
+          }
+          {recipe?.instruction.length != 0 && 
+            recipe?.instruction.map((instr, index)=>
+              <View key={index} style={styles.ingredient}>
+                <Text
+                  style={{
+                    fontSize: FONT_SIZES.medium,
+                    color: isDarkMode ? COLOURS.white : COLOURS.black,
+                    flexShrink: 1,
+                  }}
+                >
+                  {instr}
+                </Text>
+              </View>
+            )
+          }
           <View style={styles.nutrientContainer}>
             {getNutrientRow(
               0,
@@ -410,7 +458,6 @@ const styles = StyleSheet.create({
   },
 
   foodImage: {
-    width: "100%",
     aspectRatio: 1,
   },
 
