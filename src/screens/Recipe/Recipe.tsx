@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
@@ -68,6 +68,69 @@ export function Recipe(): JSX.Element {
   const [dietReq, setDietReq] = useState<[string, boolean][]>([]);
   const { height, width } = useWindowDimensions();
 
+  async function readMeals() {
+    const meals = await readAllMeal()
+
+    let temp: Meal[] = [];
+    let temp2: Meal[] = [];
+    meals.map((meal) => {
+      console.log(`Meal: ${meal.name}. Url is ${meal.url}`);
+
+      if (meal.url && meal.url != "") {
+        temp.push(meal);
+      } else {
+        temp2.push(meal);
+      }
+    });
+
+    setUserData({ ...userData, savedRecipes: temp, customRecipes: temp2 });
+
+    setSaved(temp)
+    setCustom(temp2)
+  }
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setLoading(true)
+      readMeals().then(()=>{
+        genRecipe().then(()=>{
+          getDietReq().then((req) => {
+            if (req != undefined) {
+              setDietReq(req);
+            }
+            setCurrentButton(0)
+            setLoading(false);
+          });
+        });
+      });
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  // useEffect(() => {
+  //   setLoading(true);
+  //   readMeals().then(()=>{
+  //     genRecipe().then(()=>{
+  //       getDietReq().then((req) => {
+  //         if (req != undefined) {
+  //           setDietReq(req);
+  //         }
+  //         console.log(["useEffect", currentButton])
+  //         if (currentButton === 0) {
+  //           setRecipes(explore);
+  //         }
+  //         if (currentButton === 1) {
+  //           setRecipes(saved);
+  //         }
+  //         if (currentButton === 2) {
+  //           setRecipes(custom);
+  //         }
+  //         setLoading(false);
+  //       });
+  //     });
+  //   });
+  // }, []);
+
   useEffect(() => {
     //search for typed ingredient
     console.log("the indgredients search is: " + ingredientsSearch);
@@ -84,40 +147,9 @@ export function Recipe(): JSX.Element {
     setSearchIngBut(false);
   }, [searchIngBut]);
 
-  async function readMeals() {
-    await readAllMeal()
-      .then((meals) => {
-        let temp: Meal[] = [];
-        let temp2: Meal[] = [];
-        meals.map((meal) => {
-          console.log(`Meal: ${meal.name}. Url is ${meal.url}`);
-
-          if (meal.url && meal.url != "") {
-            temp.push(meal);
-          } else {
-            temp2.push(meal);
-          }
-        });
-
-        setUserData({ ...userData, savedRecipes: temp, customRecipes: temp2 });
-      })
-      .then(() => genSaved())
-      .then(() => genCustom());
-  }
-
-  useEffect(() => {
-    setLoading(true);
-    readMeals();
-    genRecipe();
-    getDietReq().then((req) => {
-      if (req != undefined) {
-        setDietReq(req);
-      }
-      setLoading(false);
-    });
-  }, []);
 
   async function genRecipe() {
+    console.log(userData.refreshExplore)
     if (userData.refreshExplore) {
       await getRecipes().then((recipeList) => {
         setRecipes(recipeList);
@@ -133,12 +165,12 @@ export function Recipe(): JSX.Element {
     }
   }
 
-  async function genSaved() {
+  function genSaved() {
     const recipeList = userData.savedRecipes;
     setSaved(recipeList);
   }
 
-  async function genCustom() {
+  function genCustom() {
     const recipeList = userData.customRecipes;
     setCustom(recipeList);
   }

@@ -188,7 +188,7 @@ export function Debug(): JSX.Element {
                         undefined
                       ),
                       i.categories.map((v) => categories[v.name]),
-                      i.id,
+                      undefined,
                       i.weight,
                       i.servingSize,
                       i.imgSrc,
@@ -289,7 +289,7 @@ export function Debug(): JSX.Element {
                       []
                     );
                     setIng(newIng);
-                    setLog(JSON.stringify(newIng))(newIng);
+                    setLog(JSON.stringify(newIng));
                     break;
                   case "Category":
                     const newCat = new Category("Vegitable", "#00FF00");

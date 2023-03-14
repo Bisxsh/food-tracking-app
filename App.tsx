@@ -34,7 +34,7 @@ var firstTime = true;
 
 function App(): JSX.Element {
   registerNNPushToken(6535, "xdrqfHr09cuuEeUjH1MATl");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [consent, setConsent] = useState(true);
   const { height, width } = useWindowDimensions();
 
@@ -44,11 +44,12 @@ function App(): JSX.Element {
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER);
   const init = async () => {
+    const start = Date.now()
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
       await user.loadCategories();
-      DB.create(user);
+      await DB.create(user);
       setConsent(false);
     } else {
       await stored.loadCategories();
@@ -69,6 +70,9 @@ function App(): JSX.Element {
       savedRecipes: await getSaved(),
       customRecipes: await getCustom(),
     });
+    // while (Date.now() - start < 5000) {
+    //   console.log("wait")
+    // }
     setLoading(false);
   };
 
@@ -135,42 +139,43 @@ function App(): JSX.Element {
             backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
           }}
         >
-          <UserContext.Provider value={{ user, setUser }}>
+          {loading && (
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Image
+                style={{
+                  height: Math.min(height, width) / 2,
+                  width: Math.min(height, width) / 2,
+                }}
+                source={require("./src/assets/LauncherIcon_v4_1.png")}
+              />
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.heading,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                  textAlign: "center",
+                }}
+              >
+                {"Welcome to\nWasteX"}
+              </Text>
+            </View>
+          )}
+          {!loading && <UserContext.Provider value={{ user, setUser }}>
             <UserDataContext.Provider value={{ userData, setUserData }}>
-              {loading && (
-                <View
-                  style={{
-                    flex: 1,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <Image
-                    style={{
-                      height: Math.min(height, width) / 2,
-                      width: Math.min(height, width) / 2,
-                    }}
-                    source={require("./src/assets/LauncherIcon_v4_1.png")}
-                  />
-                  <Text
-                    style={{
-                      fontSize: FONT_SIZES.heading,
-                      color: isDarkMode ? COLOURS.white : COLOURS.black,
-                      textAlign: "center",
-                    }}
-                  >
-                    {"Welcome to\nWasteX"}
-                  </Text>
-                </View>
-              )}
-              {!loading && !consent && (
+              
+              {!consent && (
                 <InitialEntry
                   user={user}
                   setUser={setUser}
                   setConsent={setConsent}
                 />
               )}
-              {!loading && consent && (
+              {consent && (
                 <NavigationContainer>
                   <Tab.Navigator
                     initialRouteName="HomeNavigator"
@@ -233,7 +238,7 @@ function App(): JSX.Element {
                 </NavigationContainer>
               )}
             </UserDataContext.Provider>
-          </UserContext.Provider>
+          </UserContext.Provider>}
         </MenuProvider>
       </ActionSheetProvider>
     </SafeAreaProvider>

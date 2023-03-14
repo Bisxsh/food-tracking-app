@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   ScrollView,
   StyleSheet,
@@ -6,7 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { UserDataContext } from "../../../../classes/UserData";
 import IngredientCard from "./IngredientCard";
 import {
@@ -35,28 +36,45 @@ const IndgredientView = (props: Props) => {
   const [ingredientShown, setIngredientShown] = useState<Ingredient | null>(
     null
   );
+  const [loading, setLoading] = useState(true);
 
-  const expiredIngredients = userData.storedIngredients.filter(
-    (i) => i.expiryDate < new Date() && i.quantity > 0
-  );
+  const [expiredIngredients, setExpiredIngredients] = useState<Ingredient[]>([]);
 
   const activeFilters = userData.ingredientCategories.filter((i) => i.active);
-  const activeIngredients = userData.storedIngredients
-    .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-    .filter((i) => {
-      for (let filter of activeFilters) {
-        if (i.categories.filter((v) => v.name == filter.name).length == 0)
-          return false;
-      }
-      return true;
-    })
-    .filter((i) => {
-      if (props.ingredientsSearch === "") return true;
+  const [activeIngredients, setActiveIngredients] = useState<Ingredient[]>([]);
 
-      return i.getName
-        .toLowerCase()
-        .includes(props.ingredientsSearch.toLowerCase());
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setLoading(true)
+      console.log(["navigation"])
+      setExpiredIngredients(
+        userData.storedIngredients.filter(
+          (i) => i.expiryDate < new Date() && i.quantity > 0
+        )
+      );
+      setActiveIngredients(
+        userData.storedIngredients
+          .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+          .filter((i) => {
+            for (let filter of activeFilters) {
+              if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                return false;
+            }
+            return true;
+          })
+          .filter((i) => {
+            if (props.ingredientsSearch === "") return true;
+
+            return i.getName
+              .toLowerCase()
+              .includes(props.ingredientsSearch.toLowerCase());
+          })
+      )
+      setLoading(false)
     });
+    return unsubscribe;
+  }, [navigation]);
 
   function getIngredientCards(ingredients: Ingredient[]) {
     const cards = ingredients.map((ingredient) => (
@@ -126,7 +144,16 @@ const IndgredientView = (props: Props) => {
           flex: 1,
         }}
       >
-        {expiredIngredients.length > 0 && (
+        {loading && <ActivityIndicator
+          size={"large"}
+          color={COLOURS.primary}
+          style={{
+            transform: [{ scale: 2 }],
+            flex:1,
+            alignSelf: "center",
+          }}
+        />}
+        {!loading && expiredIngredients.length > 0 && (
           <>
             <View
               style={{
@@ -149,7 +176,7 @@ const IndgredientView = (props: Props) => {
           </>
         )}
 
-        {getMainIngredients()}
+        {!loading && getMainIngredients()}
       </ScrollView>
       {ingredientShown && (
         <IngredientPopup
