@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import CustomSearchBar from "./CustomSearchBar";
-import { COLOURS, DROP_SHADOW, RADIUS, SPACING } from "../util/GlobalStyles";
+import { COLOURS, DROP_SHADOW, ICON_SIZES, RADIUS, SPACING } from "../util/GlobalStyles";
 import { UserDataContext } from "../classes/UserData";
 import {
   Ingredient,
@@ -20,10 +20,11 @@ import {
 } from "../classes/IngredientClass";
 import Checkbox from "./Checkbox";
 import { getDaysUntilExpiry, getTimeLeft } from "../util/ExpiryCalc";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal/dist/modal";
 import { UserContext } from "../backends/User";
 import { MealBuilder } from "../classes/MealClass";
+import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 type RecipeIngredientListProps = {
   mealBuilder: MealBuilder;
@@ -44,6 +45,7 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
   const [ingredientBeingEdited, setIngredientBeingEdited] =
     useState<IngredientBuilder | null>(null);
   const { height, width } = useWindowDimensions();
+  const inset = useSafeAreaInsets()
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
   const init = useRef(true)
@@ -94,7 +96,7 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
             textHint={"Search Ingredient"}
             text={ingredientsSearch}
             setText={setIngredientsSearch}
-            width={width - SPACING.medium * 2 - SPACING.small * 2}
+            width={width - SPACING.medium * 3 - SPACING.tiny * 1 - inset.left - inset.right}
             height={40}
           />
           {loadingUsedIng && 
@@ -148,7 +150,7 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
                         );
                       }}
                     />
-                    {ingredient.imgSrc && (
+                    {ingredient.imgSrc != undefined && ingredient.imgSrc != "" && (
                       <Image
                         source={{
                           uri: ingredient.imgSrc,
@@ -160,6 +162,29 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
                           borderRadius: RADIUS.tiny,
                         }}
                       />
+                    )}
+                    {(ingredient.imgSrc == undefined || ingredient.imgSrc == "") && (
+                      <View
+                        style={{
+                          alignItems: "center",
+                          backgroundColor: COLOURS.darkGrey,
+                          aspectRatio: 1,
+                          justifyContent: "center",
+                          width: 50,
+                          height: 50,
+                          marginRight: SPACING.small,
+                          borderRadius: RADIUS.tiny,
+                        }}
+                      >
+                        <MaterialIcons
+                          name="image-not-supported"
+                          color={COLOURS.white}
+                          size={ICON_SIZES.medium}
+                          style={{
+                            textAlign: "center",
+                          }}
+                        />
+                      </View>
                     )}
                     <View style={{ flexDirection: "column" }}>
                       <Text>{ingredient.name}</Text>
@@ -296,6 +321,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginVertical: SPACING.tiny,
     paddingHorizontal: SPACING.small,
+    flexShrink: 1,
   },
 
   amountContainer: {
