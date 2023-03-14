@@ -24,6 +24,7 @@ import {
 } from "../../../../classes/IngredientClass";
 import IngredientPopup from "../IngredientPopup";
 import NoDataSvg from "../../../../assets/no_data.svg";
+import * as DB from "../../../../backends/Database"
 
 type Props = {
   ingredientsSearch: string;
@@ -43,37 +44,98 @@ const IndgredientView = (props: Props) => {
   const activeFilters = userData.ingredientCategories.filter((i) => i.active);
   const [activeIngredients, setActiveIngredients] = useState<Ingredient[]>([]);
 
+  async function loadFromDB(): Promise<Ingredient[]>{
+    const ing: Ingredient[] = []
+    for (const v of await DB.readAllIngredient()) {
+      ing.push(await v.toIngredientClass());
+    }
+    return ing
+  }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setLoading(true)
-      setExpiredIngredients(
-        userData.storedIngredients.filter(
-          (i) => i.expiryDate < new Date() && i.quantity > 0
-        )
-      );
-      setActiveIngredients(
-        userData.storedIngredients
-          .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-          .filter((i) => {
-            for (let filter of activeFilters) {
-              if (i.categories.filter((v) => v.name == filter.name).length == 0)
-                return false;
-            }
-            return true;
+      setTimeout(()=>
+        loadFromDB().then((ing)=>{
+          setExpiredIngredients(
+            ing.filter(
+              (i) => i.expiryDate < new Date() && i.quantity > 0
+            )
+          );
+          setActiveIngredients(
+            ing
+              .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+              .filter((i) => {
+                for (let filter of activeFilters) {
+                  if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                    return false;
+                }
+                return true;
+              })
+              .filter((i) => {
+                if (props.ingredientsSearch === "") return true;
+    
+                return i.getName
+                  .toLowerCase()
+                  .includes(props.ingredientsSearch.toLowerCase());
+              })
+          )
+          setUserData({
+            ...userData,
+            storedIngredients: ing
           })
-          .filter((i) => {
-            if (props.ingredientsSearch === "") return true;
-
-            return i.getName
-              .toLowerCase()
-              .includes(props.ingredientsSearch.toLowerCase());
-          })
-      )
-      setLoading(false)
-    });
+          console.log("navigation")
+          setLoading(false)
+        })
+        ),
+        3000
+      });
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(()=>{
+    if (ingredientShown == null){
+      setLoading(true)
+      console.log("ingredientShown")
+      setTimeout(()=>
+        {
+          loadFromDB().then((ing)=>{
+            setExpiredIngredients(
+              ing.filter(
+                (i) => i.expiryDate < new Date() && i.quantity > 0
+              )
+            );
+            setActiveIngredients(
+              ing
+                .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+                .filter((i) => {
+                  for (let filter of activeFilters) {
+                    if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                      return false;
+                  }
+                  return true;
+                })
+                .filter((i) => {
+                  if (props.ingredientsSearch === "") return true;
+      
+                  return i.getName
+                    .toLowerCase()
+                    .includes(props.ingredientsSearch.toLowerCase());
+                })
+            )
+            setUserData({
+              ...userData,
+              storedIngredients: ing
+            })
+            console.log("navigation")
+            setLoading(false)
+          })
+        }, 
+        3000
+      )
+    }
+    
+  }, [ingredientShown])
 
   function getIngredientCards(ingredients: Ingredient[]) {
     const cards = ingredients.map((ingredient) => (

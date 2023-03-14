@@ -18,6 +18,7 @@ import { getRecipes, getSaved, getCustom } from "../../../../util/GetRecipe";
 import { Dimensions } from "react-native";
 
 import {
+  Ingredient,
   IngredientBuilder,
   weightUnit,
 } from "../../../../classes/IngredientClass";
@@ -98,11 +99,17 @@ const ManualIngredient = (props: Props) => {
         (ing) => ing.id === ingredientBuilder.getId()
       )
     ) {
+      const newStoredIngredients: Ingredient[] = []
+      for (const ing of userData.storedIngredients) {
+        if (ing.getId == ingredientBuilder.getId()){
+          newStoredIngredients.push(ingredientBuilder.build())
+        }else{
+          newStoredIngredients.push(ing)
+        }
+      }
       setUserData({
         ...userData,
-        storedIngredients: userData.storedIngredients.map((ing) =>
-          ing.id == ingredientBuilder.getId() ? ingredientBuilder.build() : ing
-        ), 
+        storedIngredients: newStoredIngredients, 
       });
     } else userData.storedIngredients.push(ingredientBuilder.build());
     setUserData({ ...userData, refreshExplore: true });
