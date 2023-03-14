@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertButton,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -20,9 +22,27 @@ import { RecipeContext } from "./RecipeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import InstructionsList from "../../components/InstructionsList";
 import { Meal } from "../../backends/Meal";
-import { UserContext } from "../../backends/User";
+import { UserContext, User } from "../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { getSaved } from "../../util/GetRecipe";
+
+type alertProp = {
+  title: string
+  desc: string
+  buttons: AlertButton[]
+  user: User
+}
+
+function createAlert(prop: alertProp){
+  Alert.alert(
+      prop.title,
+      prop.desc,
+      prop.buttons,
+      {cancelable:true, userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
+  )
+}
+
 type Props = {
   setShowManual?: (showManual: boolean) => void;
   setMeal?: (meal: MealClass.MealBuilder | null) => void;
@@ -123,13 +143,46 @@ const ManualMeal = (props: Props) => {
       </TouchableOpacity>
     ),
     headerRight: () => (
-      <TouchableOpacity onPress={saveRecipe}>
-        <MaterialCommunityIcons
-          name="check"
-          size={ICON_SIZES.medium}
-          color={isDarkMode ? COLOURS.white : COLOURS.black}
-        />
-      </TouchableOpacity>
+      <View style={{flexDirection: "row"}}>
+        <TouchableOpacity 
+          onPress={()=>{
+            createAlert({
+              title:"Delete this recipe", 
+              desc:"Do you want to delete this recipe?\n\nThis action cannot be undone.", 
+              buttons:[
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: async ()=>{
+                    await DB.deleteMeal(mealBuilder.getName());
+                    setUserData({ ...userData, savedRecipes: await getSaved() });
+                    closeManual();
+                  }
+                }
+              ],
+              user: user
+            })
+          }}
+          style={{marginRight: SPACING.small}}
+        >
+          <MaterialCommunityIcons
+            name={"delete"}
+            size={ICON_SIZES.medium}
+            color={"red"}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={saveRecipe}>
+          <MaterialCommunityIcons
+            name="check"
+            size={ICON_SIZES.medium}
+            color={isDarkMode ? COLOURS.white : COLOURS.black}
+          />
+        </TouchableOpacity>
+      </View>
     ),
   });
 

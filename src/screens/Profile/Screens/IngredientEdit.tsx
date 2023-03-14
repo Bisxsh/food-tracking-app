@@ -78,35 +78,67 @@ const IngredientEdit = (navigation: ScreenProp) => {
     navigation.navigation.setOptions({
         title:"Edit "+tempIngredient.name,
         headerRight: ()=>(
-            <TouchableOpacity
-                onPress={()=>{
-                    if (tempIngredient.name == ""){
+            <View style={{flexDirection: "row"}}>
+                <TouchableOpacity 
+                    onPress={()=>{
                         createAlert({
-                            title: "Name missing",
-                            desc: "Name cannot be empty",
-                            buttons: [{text: "OK"}],
-                            user: user
+                        title:"Delete this ingredient", 
+                        desc:"Do you want to delete this ingredient?\n\nThis action cannot be undone.", 
+                        buttons:[
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Delete",
+                                style: "destructive",
+                                onPress: async ()=>{
+                                    DB.deleteIngredient(tempIngredient._id)
+                                    navigation.navigation.goBack()
+                                }
+                            }
+                        ],
+                        user: user
                         })
-                    }else if (tempIngredient.weight == 0){
-                        createAlert({
-                            title: "Weight missing",
-                            desc: "Weight cannot be zero",
-                            buttons: [{text: "OK"}],
-                            user: user
-                        })
-                    }else{
-                        DB.updateIngredient(tempIngredient)
-                        navigation.navigation.goBack()
-                    }
-                }}
-                disabled={!edited}
-            >
-                <MaterialCommunityIcons
-                    name="check"
-                    size={ICON_SIZES.medium}
-                    color={isDarkMode ? COLOURS.white : COLOURS.black}
-                />
-            </TouchableOpacity>
+                    }}
+                    style={{marginRight: SPACING.small}}
+                    >
+                    <MaterialCommunityIcons
+                        name={"delete"}
+                        size={ICON_SIZES.medium}
+                        color={"red"}
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={()=>{
+                        if (tempIngredient.name == ""){
+                            createAlert({
+                                title: "Name missing",
+                                desc: "Name cannot be empty",
+                                buttons: [{text: "OK"}],
+                                user: user
+                            })
+                        }else if (tempIngredient.weight == 0){
+                            createAlert({
+                                title: "Weight missing",
+                                desc: "Weight cannot be zero",
+                                buttons: [{text: "OK"}],
+                                user: user
+                            })
+                        }else{
+                            DB.updateIngredient(tempIngredient)
+                            navigation.navigation.goBack()
+                        }
+                    }}
+                    disabled={!edited}
+                >
+                    <MaterialCommunityIcons
+                        name="check"
+                        size={ICON_SIZES.medium}
+                        color={isDarkMode ? COLOURS.white : COLOURS.black}
+                    />
+                </TouchableOpacity>
+            </View>
         ),
     })
 

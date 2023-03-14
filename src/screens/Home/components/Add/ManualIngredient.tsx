@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertButton,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -30,8 +32,27 @@ import NumberInputRow from "./NumberInputRow";
 import PrimaryButton from "../../../../components/PrimaryButton";
 import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
-import { UserContext } from "../../../../backends/User";
+import { User, UserContext } from "../../../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as DB from "../../../../backends/Database"
+
+type alertProp = {
+  title: string
+  desc: string
+  buttons: AlertButton[],
+  user: User
+}
+
+function createAlert(prop: alertProp){
+  Alert.alert(
+      prop.title,
+      prop.desc,
+      prop.buttons,
+      {userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
+  )
+}
+
+
 
 type Props = {};
 
@@ -71,9 +92,7 @@ const ManualIngredient = (props: Props) => {
       return;
     }
     ingredientBuilder.setCategories(categories.filter((cat) => cat.active));
-    if (ingredientBuilder.getId() == -1) {
-      ingredientBuilder.setId(userData.storedIngredients.length);
-    }
+
     if (
       userData.storedIngredients.find(
         (ing) => ing.id === ingredientBuilder.getId()
@@ -110,6 +129,50 @@ const ManualIngredient = (props: Props) => {
       </TouchableOpacity>
     ),
     headerRight: ()=>(
+      <View style={{flexDirection: "row"}}>
+        <TouchableOpacity 
+          onPress={()=>{
+            createAlert({
+              title:"Delete this ingredient", 
+              desc:"Do you want to delete this ingredient?\n\nThis action cannot be undone.", 
+              buttons:[
+                {
+                  text: "Cancel",
+                  style: "cancel"
+                },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: async ()=>{
+                    if (
+                      userData.storedIngredients.find(
+                        (ing) => ing.id === ingredientBuilder.getId()
+                      )
+                    ) {
+                      setUserData({
+                        ...userData,
+                        storedIngredients: userData.storedIngredients.filter((ing) =>
+                          ing.id == ingredientBuilder.getId()
+                        ), 
+                      });
+                      DB.deleteIngredient(ingredientBuilder.getId())
+                    }
+                    setUserData({ ...userData, refreshExplore: true });
+                    closeManual();
+                  }
+                }
+              ],
+              user: user
+              })
+            }}
+          style={{marginRight: SPACING.small}}
+        >
+          <MaterialCommunityIcons
+            name={"delete"}
+            size={ICON_SIZES.medium}
+            color={"red"}
+          />
+        </TouchableOpacity>
         <TouchableOpacity
             onPress={saveIngredient}
         >
@@ -119,6 +182,7 @@ const ManualIngredient = (props: Props) => {
                 color={isDarkMode ? COLOURS.white : COLOURS.black}
             />
         </TouchableOpacity>
+      </View>
     )
   })
 

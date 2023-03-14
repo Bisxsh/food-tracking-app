@@ -34,7 +34,7 @@ type Props = {};
 const RecipeInfo = (props: Props) => {
   const { recipeContext, setRecipeContext } = useContext(RecipeContext);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(recipeContext.recipeBeingViewed?.favourite);
   const navigation = useNavigation<any>();
   const meal = recipeContext.recipeBeingViewed || DUMMY_MEALS[0];
   const [servings, setServings] = useState(
@@ -44,7 +44,7 @@ const RecipeInfo = (props: Props) => {
   const { height, width } = useWindowDimensions();
   const isDarkMode = user.setting.isDark();
   const recipe = recipeContext.recipeBeingViewed;
-  
+
   async function updateFavorite() {
     //TODO add to favorites
 
@@ -91,7 +91,7 @@ const RecipeInfo = (props: Props) => {
     title: meal.name,
     headerRight: () => (
       <View style={{flexDirection: "row"}}>
-        {(meal.url !== undefined || meal.url == "" || meal.url == null) && <TouchableOpacity 
+        {(meal.url == undefined || meal.url == "" || meal.url == null) && <TouchableOpacity 
           onPress={()=>{
             setRecipeContext({
               ...recipeContext, 
@@ -104,7 +104,7 @@ const RecipeInfo = (props: Props) => {
           <MaterialCommunityIcons
             name={"pencil"}
             size={ICON_SIZES.medium}
-            color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
+            color={isDarkMode ? "white" : "black"}
           />
         </TouchableOpacity>}
         <TouchableOpacity onPress={updateFavorite}>
