@@ -160,6 +160,31 @@ const IndgredientView = (props: Props) => {
 
   useEffect(()=>{
     setLoading(true)
+    setActiveIngredients(
+      userData.storedIngredients
+        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+        .filter((i) => {
+          for (let filter of activeFilters) {
+            if (i.categories.filter((v) => v.name == filter.name).length == 0)
+              return false;
+          }
+          return true;
+        })
+        .filter((i) => {
+          if (props.ingredientsSearch === "") return true;
+
+          return i.getName
+            .toLowerCase()
+            .includes(props.ingredientsSearch.toLowerCase());
+        })
+    )
+    sortActiveIng()
+    console.log("category")
+    setLoading(false)
+  }, [userData.ingredientCategories])
+
+  useEffect(()=>{
+    setLoading(true)
     sortActiveIng()
     console.log("sort")
     setLoading(false)
