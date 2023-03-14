@@ -100,7 +100,7 @@ export function Home(): JSX.Element {
             alignContent: "center",
           }}
         >
-          <IndgredientView ingredientsSearch={ingredientsSearch} />
+          <IndgredientView ingredientsSearch={ingredientsSearch} sort={selectedSort} />
         </View>
       </SafeAreaView>
       <AddButton onPress={() => setShowAddMenu(true)} />

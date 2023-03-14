@@ -17,7 +17,7 @@ import {
   SPACING,
 } from "../../../../util/GlobalStyles";
 import { HomeContext } from "../HomeContextProvider";
-import { useNavigation } from "@react-navigation/native";
+import { useLinkProps, useNavigation } from "@react-navigation/native";
 import {
   Ingredient,
   IngredientBuilder,
@@ -25,9 +25,11 @@ import {
 import IngredientPopup from "../IngredientPopup";
 import NoDataSvg from "../../../../assets/no_data.svg";
 import * as DB from "../../../../backends/Database"
+import { HomeSortingFilter } from "../Menu/HomeSortingFilters";
 
 type Props = {
   ingredientsSearch: string;
+  sort: HomeSortingFilter;
 };
 
 const IndgredientView = (props: Props) => {
@@ -83,6 +85,7 @@ const IndgredientView = (props: Props) => {
           ...userData,
           storedIngredients: ing
         })
+        sortActiveIng()
         console.log("navigation")
         setLoading(false)
       })
@@ -122,6 +125,7 @@ const IndgredientView = (props: Props) => {
           ...userData,
           storedIngredients: ing
         })
+        sortActiveIng()
         console.log("navigation")
         setLoading(false)
       })
@@ -149,9 +153,46 @@ const IndgredientView = (props: Props) => {
             .includes(props.ingredientsSearch.toLowerCase());
         })
     )
+    sortActiveIng()
     console.log("search")
     setLoading(false)
   }, [props.ingredientsSearch])
+
+  useEffect(()=>{
+    setLoading(true)
+    sortActiveIng()
+    console.log("sort")
+    setLoading(false)
+  }, [props.sort])
+
+  function sortActiveIng(){
+    var newActiveIngredient: Ingredient[] = []
+    switch (props.sort) {
+      default:
+        newActiveIngredient = activeIngredients
+        break;
+      case HomeSortingFilter.ExpiryDateFirstToLast:
+        newActiveIngredient = activeIngredients.sort((a, b) => {
+          return a.expiryDate.getTime() - b.expiryDate.getTime();
+        })
+        break;
+      case HomeSortingFilter.ExpiryDateLastToFirst:
+        newActiveIngredient = activeIngredients.sort((a, b) => {
+          return b.expiryDate.getTime() - a.expiryDate.getTime();
+        })
+        break;
+      case HomeSortingFilter.QuantityLowToHigh:
+        newActiveIngredient = activeIngredients.sort((a, b) => {
+          return a.quantity - b.quantity;
+        })
+        break;
+      case HomeSortingFilter.QuantityHighToLow:
+        newActiveIngredient = activeIngredients.sort((a, b) => {
+          return b.quantity - a.quantity;
+        })
+        break;
+    }
+  }
 
   function getIngredientCards(ingredients: Ingredient[]) {
     const cards = ingredients.map((ingredient) => (
