@@ -259,19 +259,20 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
             name="arrow-right-thin"
             style={styles.confirmButton}
             size={SPACING.medium}
-            onPress={() => {
+            onPress={async () => {
               setShowModal(false);
+              const ingEdited = await ingredientBeingEdited!.build()
               setIngredientList(
                 ingredientList.map((i) =>
                   i.name == ingredientBeingEdited?.getName()
-                    ? ingredientBeingEdited.build()
+                    ? ingEdited
                     : i
                 )
               );
               props.setMealBuilder((p) =>
                 p.setIngredients(
                   p.getIngredients().map((ing)=>
-                    (ing._id == ingredientBeingEdited!.getId())? ingredientBeingEdited!.build().toIngredientBack(): ing
+                    (ing._id == ingredientBeingEdited!.getId())? ingEdited.toIngredientBack(): ing
                   )
                 )
               );

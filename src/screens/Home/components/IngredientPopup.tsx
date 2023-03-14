@@ -200,18 +200,22 @@ const IngredientPopup = (props: Props) => {
             <SecondaryButton
               colour={COLOURS.red}
               text="Wasted all"
-              onPress={() => {
-                setUserData({
-                  ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
                         .setQuantity(0, true)
                         .setUseDate(new Date())
-                        .build();
-                    }
-                    return p;
-                  }),
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
+                setUserData({
+                  ...userData,
+                  storedIngredients: newStoredIngredients,
                 });
                 props.setShowModal(false);
                 //TODO add to wasted tally
@@ -232,17 +236,21 @@ const IngredientPopup = (props: Props) => {
             <PrimaryButton
               colour={COLOURS.red}
               text="Wasted one"
-              onPress={() => {
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(p.quantity - 1, false)
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
                 setUserData({
                   ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(p.quantity - 1, false)
-                        .build();
-                    }
-                    return p;
-                  }),
+                  storedIngredients: newStoredIngredients,
                 });
 
                 const weight =
@@ -255,18 +263,22 @@ const IngredientPopup = (props: Props) => {
           <View style={{ flexDirection: "row", marginTop: SPACING.medium }}>
             <SecondaryButton
               text="Used all"
-              onPress={() => {
-                setUserData({
-                  ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
                         .setQuantity(0, true)
                         .setUseDate(new Date())
-                        .build();
-                    }
-                    return p;
-                  }),
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
+                setUserData({
+                  ...userData,
+                  storedIngredients: newStoredIngredients,
                 });
                 props.setShowModal(false);
               }}
@@ -274,17 +286,21 @@ const IngredientPopup = (props: Props) => {
             <View style={{ width: SPACING.medium }} />
             <PrimaryButton
               text="Used one"
-              onPress={() => {
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(p.quantity - 1, true)
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
                 setUserData({
                   ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(p.quantity - 1, true)
-                        .build();
-                    }
-                    return p;
-                  }),
+                  storedIngredients: newStoredIngredients,
                 });
               }}
             />

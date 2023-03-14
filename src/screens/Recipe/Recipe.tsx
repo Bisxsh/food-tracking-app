@@ -36,7 +36,7 @@ import { TabNaviContext } from "./RecipeNavigator";
 import { Meal } from "../../backends/Meal";
 import { Nutrition } from "../../backends/Nutrition";
 import { Ingredient, MealIngredient } from "../../backends/Ingredient";
-import { IngredientBuilder, weightUnit } from "../../classes/IngredientClass";
+import * as IngredientClass from "../../classes/IngredientClass";
 import { NutritionBuilder } from "../../classes/NutritionClass";
 import NoDataSvg from "../../assets/no_data.svg";
 
@@ -107,29 +107,6 @@ export function Recipe(): JSX.Element {
     return unsubscribe;
   }, [navigation]);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   readMeals().then(()=>{
-  //     genRecipe().then(()=>{
-  //       getDietReq().then((req) => {
-  //         if (req != undefined) {
-  //           setDietReq(req);
-  //         }
-  //         console.log(["useEffect", currentButton])
-  //         if (currentButton === 0) {
-  //           setRecipes(explore);
-  //         }
-  //         if (currentButton === 1) {
-  //           setRecipes(saved);
-  //         }
-  //         if (currentButton === 2) {
-  //           setRecipes(custom);
-  //         }
-  //         setLoading(false);
-  //       });
-  //     });
-  //   });
-  // }, []);
 
   useEffect(() => {
     //search for typed ingredient
@@ -462,12 +439,29 @@ const styles = StyleSheet.create({
 });
 
 export function getMealFromAPI(recipe: any) {
+
   return new Meal(
     recipe.label,
     [],
     [],
     recipe.ingredients?.map((ing: any) => {
-      return new IngredientBuilder().build().toIngredientBack();
+      return new Ingredient(
+        ing["food"], 
+        1, 
+        "g", 
+        "g", 
+        new Nutrition(), 
+        [], 
+        undefined, 
+        ing["weight"],
+        undefined,
+        ing["image"],
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        ing["text"]
+      );
     }),
     undefined,
     recipe.url,

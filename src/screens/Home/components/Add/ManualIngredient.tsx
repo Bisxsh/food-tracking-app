@@ -102,7 +102,7 @@ const ManualIngredient = (props: Props) => {
       const newStoredIngredients: Ingredient[] = []
       for (const ing of userData.storedIngredients) {
         if (ing.getId == ingredientBuilder.getId()){
-          newStoredIngredients.push(ingredientBuilder.build())
+          newStoredIngredients.push(await ingredientBuilder.build())
         }else{
           newStoredIngredients.push(ing)
         }
@@ -111,7 +111,7 @@ const ManualIngredient = (props: Props) => {
         ...userData,
         storedIngredients: newStoredIngredients, 
       });
-    } else userData.storedIngredients.push(ingredientBuilder.build());
+    } else userData.storedIngredients.push(await ingredientBuilder.build());
     setUserData({ ...userData, refreshExplore: true });
     closeManual();
   }

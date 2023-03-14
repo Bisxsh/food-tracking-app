@@ -55,41 +55,38 @@ const IndgredientView = (props: Props) => {
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setLoading(true)
-      setTimeout(()=>
-        loadFromDB().then((ing)=>{
-          setExpiredIngredients(
-            ing.filter(
-              (i) => i.expiryDate < new Date() && i.quantity > 0
-            )
-          );
-          setActiveIngredients(
-            ing
-              .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-              .filter((i) => {
-                for (let filter of activeFilters) {
-                  if (i.categories.filter((v) => v.name == filter.name).length == 0)
-                    return false;
-                }
-                return true;
-              })
-              .filter((i) => {
-                if (props.ingredientsSearch === "") return true;
-    
-                return i.getName
-                  .toLowerCase()
-                  .includes(props.ingredientsSearch.toLowerCase());
-              })
+      loadFromDB().then((ing)=>{
+        setExpiredIngredients(
+          ing.filter(
+            (i) => i.expiryDate < new Date() && i.quantity > 0
           )
-          setUserData({
-            ...userData,
-            storedIngredients: ing
-          })
-          console.log("navigation")
-          setLoading(false)
+        );
+        setActiveIngredients(
+          ing
+            .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+            .filter((i) => {
+              for (let filter of activeFilters) {
+                if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                  return false;
+              }
+              return true;
+            })
+            .filter((i) => {
+              if (props.ingredientsSearch === "") return true;
+  
+              return i.getName
+                .toLowerCase()
+                .includes(props.ingredientsSearch.toLowerCase());
+            })
+        )
+        setUserData({
+          ...userData,
+          storedIngredients: ing
         })
-        ),
-        3000
-      });
+        console.log("navigation")
+        setLoading(false)
+      })
+    });
     return unsubscribe;
   }, [navigation]);
 
@@ -97,42 +94,37 @@ const IndgredientView = (props: Props) => {
     if (ingredientShown == null){
       setLoading(true)
       console.log("ingredientShown")
-      setTimeout(()=>
-        {
-          loadFromDB().then((ing)=>{
-            setExpiredIngredients(
-              ing.filter(
-                (i) => i.expiryDate < new Date() && i.quantity > 0
-              )
-            );
-            setActiveIngredients(
-              ing
-                .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-                .filter((i) => {
-                  for (let filter of activeFilters) {
-                    if (i.categories.filter((v) => v.name == filter.name).length == 0)
-                      return false;
-                  }
-                  return true;
-                })
-                .filter((i) => {
-                  if (props.ingredientsSearch === "") return true;
-      
-                  return i.getName
-                    .toLowerCase()
-                    .includes(props.ingredientsSearch.toLowerCase());
-                })
-            )
-            setUserData({
-              ...userData,
-              storedIngredients: ing
+      loadFromDB().then((ing)=>{
+        setExpiredIngredients(
+          ing.filter(
+            (i) => i.expiryDate < new Date() && i.quantity > 0
+          )
+        );
+        setActiveIngredients(
+          ing
+            .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+            .filter((i) => {
+              for (let filter of activeFilters) {
+                if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                  return false;
+              }
+              return true;
             })
-            console.log("navigation")
-            setLoading(false)
-          })
-        }, 
-        3000
-      )
+            .filter((i) => {
+              if (props.ingredientsSearch === "") return true;
+  
+              return i.getName
+                .toLowerCase()
+                .includes(props.ingredientsSearch.toLowerCase());
+            })
+        )
+        setUserData({
+          ...userData,
+          storedIngredients: ing
+        })
+        console.log("navigation")
+        setLoading(false)
+      })
     }
     
   }, [ingredientShown])
