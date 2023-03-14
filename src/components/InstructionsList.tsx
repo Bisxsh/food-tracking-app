@@ -19,9 +19,9 @@ type Props = {
 
 const InstructionsList = (props: Props) => {
   const [text, onChangeText] = useState("");
-  const [instructionList, setInstructionList] = useState<any>([]);
+  const [instructionList, setInstructionList] = useState<string[]>(props.mealBuilder.getInstruction());
 
-  function addInstruction(instruction: any) {
+  function addInstruction(instruction: string) {
     let num = instructionList.length + 1;
     // console.log(instruction)
     const newInstructionList: string[] = [...instructionList, num + ". " + instruction]

@@ -86,7 +86,6 @@ const ManualMeal = (props: Props) => {
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
     const meal : Meal = Meal.fromBuilder(mealBuilder);
-    console.log(meal);
     if (mealBuilder.getId() == -1){
       await DB.create(meal);
       setUserData({

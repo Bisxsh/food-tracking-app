@@ -44,7 +44,7 @@ const RecipeInfo = (props: Props) => {
   const { height, width } = useWindowDimensions();
   const isDarkMode = user.setting.isDark();
   const recipe = recipeContext.recipeBeingViewed;
-
+  
   async function updateFavorite() {
     //TODO add to favorites
 
@@ -54,16 +54,7 @@ const RecipeInfo = (props: Props) => {
       await DB.deleteMeal(meal.name);
       setUserData({ ...userData, savedRecipes: await getSaved() });
     } else {
-      let newMeal = new Meal(
-        meal.name,
-        [],
-        [],
-        [],
-        Math.floor(Math.random() * 1000),
-        meal.url,
-        meal.imgSrc
-      );
-      await DB.create(newMeal);
+      await DB.create(meal);
 
       setUserData({ ...userData, savedRecipes: await getSaved() });
       // await DB.deleteMeal(props.recipeName)
@@ -100,7 +91,7 @@ const RecipeInfo = (props: Props) => {
     title: meal.name,
     headerRight: () => (
       <View style={{flexDirection: "row"}}>
-        <TouchableOpacity 
+        {(meal.url !== undefined || meal.url == "" || meal.url == null) && <TouchableOpacity 
           onPress={()=>{
             setRecipeContext({
               ...recipeContext, 
@@ -115,7 +106,7 @@ const RecipeInfo = (props: Props) => {
             size={ICON_SIZES.medium}
             color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
           />
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <TouchableOpacity onPress={updateFavorite}>
           <MaterialCommunityIcons
             name={isFavourite ? "star" : "star-outline"}
