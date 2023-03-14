@@ -129,6 +129,30 @@ const IndgredientView = (props: Props) => {
     
   }, [ingredientShown])
 
+  useEffect(()=>{
+    setLoading(true)
+    setActiveIngredients(
+      userData.storedIngredients
+        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+        .filter((i) => {
+          for (let filter of activeFilters) {
+            if (i.categories.filter((v) => v.name == filter.name).length == 0)
+              return false;
+          }
+          return true;
+        })
+        .filter((i) => {
+          if (props.ingredientsSearch === "") return true;
+
+          return i.getName
+            .toLowerCase()
+            .includes(props.ingredientsSearch.toLowerCase());
+        })
+    )
+    console.log("search")
+    setLoading(false)
+  }, [props.ingredientsSearch])
+
   function getIngredientCards(ingredients: Ingredient[]) {
     const cards = ingredients.map((ingredient) => (
       <TouchableOpacity

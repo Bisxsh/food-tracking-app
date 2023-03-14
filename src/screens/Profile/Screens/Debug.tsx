@@ -252,6 +252,7 @@ export function Debug(): JSX.Element {
                   savedRecipes: await getSaved(),
                   customRecipes: await getCustom(),
                 });
+                setLog("Done")
                 DB.updateUser(user);
               }}
             >
