@@ -13,7 +13,7 @@ import * as MealClass from "../../classes/MealClass";
 import * as DB from "../../backends/Database";
 import ChipsSelectors from "../../components/ChipsSelectors";
 import NameAndImage from "../../components/NameAndImage";
-import { Category } from "../../classes/Categories";
+import * as CategoryClass from "../../classes/Categories";
 import { UserDataContext } from "../../classes/UserData";
 import RecipeIngredientList from "../../components/RecipeIngredientList";
 import { RecipeContext } from "./RecipeContextProvider";
@@ -37,7 +37,7 @@ const ManualMeal = (props: Props) => {
     userData.ingredientCategories.forEach((v)=>v.active=false)
     resetOption.current = false
   }
-  const [categories, setCategories] = useState<Category[]>(
+  const [categories, setCategories] = useState<CategoryClass.Category[]>(
     userData.ingredientCategories
   );
   const navigation = useNavigation<any>();
@@ -57,12 +57,21 @@ const ManualMeal = (props: Props) => {
       alert("All required fields must be set");
       return;
     }
+    console.log(mealBuilder)
 
-    mealBuilder.setCategoryId([1]);
-    if (mealBuilder.getId() == 0 && userData.customRecipes.length > 0) {
-      mealBuilder.setId(userData.customRecipes.length); //change to meal id
+    const catId: number[] = [];
+    const catDB = await DB.readAllCategory();
+    for (const cat of categories) {
+      if (catDB.filter((c)=>c.name == cat.name).length == 0){
+        const catBack = CategoryClass.toCategoryBack(cat)
+        DB.create(catBack)
+        cat.id = catBack._id
+      }
+      if (cat.active){
+        catId.push(cat.id!)
+      }
     }
-
+    mealBuilder.setCategoryId(catId);
     // if (
     //   userData.storedIngredients.find(
     //     (ing) => ing.id === mealBuilder.getId()
@@ -78,12 +87,20 @@ const ManualMeal = (props: Props) => {
     // userData.storedIngredients.push(mealBuilder.build());
     const meal : Meal = Meal.fromBuilder(mealBuilder);
     console.log(meal);
-
-    await DB.create(meal);
-    setUserData({
-      ...userData,
-      customRecipes: [...userData.customRecipes, meal],
-    });
+    if (mealBuilder.getId() == -1){
+      await DB.create(meal);
+      setUserData({
+        ...userData,
+        customRecipes: [...userData.customRecipes, meal],
+      });
+    }else{
+      await DB.updateMeal(meal)
+      setUserData({
+        ...userData,
+        customRecipes: userData.customRecipes.map((m)=>m._id == meal._id? meal: m)
+      })
+    }
+    
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
@@ -139,9 +156,9 @@ const ManualMeal = (props: Props) => {
         <ChipsSelectors
           fieldName="Categories"
           categories={categories}
-          setCategories={(categories: Category[]) => setCategories(categories)}
+          setCategories={(categories: CategoryClass.Category[]) => setCategories(categories)}
           center
-          onAdd={(category: Category) => {
+          onAdd={(category: CategoryClass.Category) => {
             category.active = false;
             setUserData({
               ...userData,

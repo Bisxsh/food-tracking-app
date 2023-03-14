@@ -24,8 +24,9 @@ const InstructionsList = (props: Props) => {
   function addInstruction(instruction: any) {
     let num = instructionList.length + 1;
     // console.log(instruction)
-    setInstructionList([...instructionList, [num + ". " + instruction]]);
-    props.setMealBuilder((p) => p.setInstruction(instructionList));
+    const newInstructionList: string[] = [...instructionList, num + ". " + instruction]
+    setInstructionList(newInstructionList);
+    props.setMealBuilder((p) => p.setInstruction(newInstructionList));
     onChangeText("");
   }
 

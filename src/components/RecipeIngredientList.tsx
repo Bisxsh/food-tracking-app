@@ -80,21 +80,21 @@ function RecipeIngredientList(props: RecipeIngredientListProps) {
                       <Checkbox
                         initialVal={usedIngredientsList.includes(ingredient)}
                         onPress={(checked) => {
+                          var newUsedIngList: Ingredient[] = []
                           if (checked) {
-                            setUsedIngredientsList([
+                            newUsedIngList = [
                               ...usedIngredientsList,
                               ingredient,
-                            ]);
+                            ]
                           } else {
-                            setUsedIngredientsList(
-                              usedIngredientsList.filter(
+                            newUsedIngList = usedIngredientsList.filter(
                                 (i) => i.name != ingredient.name
                               )
-                            );
                           }
+                          setUsedIngredientsList(newUsedIngList)
                           props.setMealBuilder((p) =>
                             p.setIngredients(
-                              usedIngredientsList.map((i) =>
+                              newUsedIngList.map((i) =>
                                 i.toIngredientBack()
                               )
                             )

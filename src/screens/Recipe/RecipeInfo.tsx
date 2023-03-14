@@ -27,6 +27,7 @@ import * as DB from "../../backends/Database";
 import { DUMMY_MEALS } from "../../classes/DummyData";
 import { UserContext } from "../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as MealClass from "../../classes/MealClass"
 
 type Props = {};
 
@@ -98,13 +99,32 @@ const RecipeInfo = (props: Props) => {
   navigation.setOptions({
     title: meal.name,
     headerRight: () => (
-      <TouchableOpacity onPress={updateFavorite}>
-        <MaterialCommunityIcons
-          name={isFavourite ? "star" : "star-outline"}
-          size={ICON_SIZES.medium}
-          color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
-        />
-      </TouchableOpacity>
+      <View style={{flexDirection: "row"}}>
+        <TouchableOpacity 
+          onPress={()=>{
+            setRecipeContext({
+              ...recipeContext, 
+              recipeBeingEdited: MealClass.MealBuilder.fromMeal(meal.toMealClass())
+            })
+            navigation.navigate("ManualMeal");
+          }}
+          style={{marginRight: SPACING.tiny}}
+        >
+          <MaterialCommunityIcons
+            name={"pencil"}
+            size={ICON_SIZES.medium}
+            color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={updateFavorite}>
+          <MaterialCommunityIcons
+            name={isFavourite ? "star" : "star-outline"}
+            size={ICON_SIZES.medium}
+            color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
+          />
+        </TouchableOpacity>
+      </View>
+      
     ),
   });
 

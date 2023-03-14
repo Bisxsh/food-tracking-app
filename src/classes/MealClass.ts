@@ -126,12 +126,12 @@ export class MealBuilder {
     this.categoryId = [];
     this.instruction = [];
     this.ingredients = [];
-    this._id = 0;
+    this._id = -1;
     this.url = "";
     this.imgSrc = "";
   }
 
-  public static fromIngredient(meal: Meal): MealBuilder {
+  public static fromMeal(meal: Meal): MealBuilder {
     let builder = new MealBuilder();
     builder.name = meal.name;
     builder.categoryId = meal.categoryId;

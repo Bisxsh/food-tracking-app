@@ -1,4 +1,4 @@
-import { MealBuilder } from "../classes/MealClass";
+import * as MealClass from "../classes/MealClass";
 import { Ingredient, MealIngredient } from "./Ingredient";
 import { Nutrition } from "./Nutrition";
 
@@ -38,10 +38,10 @@ export class Meal {
   ) {
     if (_id != undefined) {
       Meal.count = Math.max(_id, Meal.count);
-    } else {
+    } else if (_id == undefined || _id == -1){
       Meal.count += 1;
     }
-    this._id = _id != undefined ? _id : Meal.count;
+    this._id = _id != undefined && _id != -1 ? _id : Meal.count;
     this.name = name;
     this.url = url;
     this.imgSrc = imgSrc;
@@ -106,11 +106,23 @@ export class Meal {
     );
   }
 
+  toMealClass(): MealClass.Meal{
+    return new MealClass.Meal(
+      this.name,
+      this.categoryId,
+      this.instruction,
+      this.ingredient,
+      this._id,
+      this.url,
+      this.imgSrc
+    )
+  }
+
   static reset() {
     Meal.count = 0;
   }
 
-  static fromBuilder(builder: MealBuilder) {
+  static fromBuilder(builder: MealClass.MealBuilder) {
     return new Meal(
       builder.getName(),
       builder.getCategoryId(),
