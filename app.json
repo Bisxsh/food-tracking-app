@@ -23,10 +23,10 @@
           "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
         }
       ]
-    ]
+    ],
     "ios": {
       "bundleIdentifier": "com.groupsix.foodtrackingapp.wastex"
-    
+    }
   },
   "name": "WasteX"
 }
