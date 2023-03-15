@@ -1,9 +1,9 @@
+import { Meal } from "../backends/Meal";
 import { USER_COLOURS } from "../util/GlobalStyles";
 import { Ingredient, weightUnit } from "./IngredientClass";
 import { Nutrition } from "./NutritionClass";
-import { Meal } from "./MealClass";
 
-const today = new Date()
+const today = new Date();
 
 export const DUMMY_CATEGORIES = [
   {

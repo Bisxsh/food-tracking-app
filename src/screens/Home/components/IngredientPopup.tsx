@@ -1,4 +1,11 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import React, { useContext } from "react";
 import Modal from "react-native-modal/dist/modal";
 import {
@@ -37,13 +44,19 @@ const IngredientPopup = (props: Props) => {
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
   const navigation = useNavigation<any>();
-  const { height, width } = useWindowDimensions()
+  const { height, width } = useWindowDimensions();
 
   function Header() {
     return (
       <View style={styles.header}>
         <IngredientTile ingredient={props.ingredient} />
-        <View style={{ flexDirection: "column", flexShrink: 1, justifyContent: "center" }}>
+        <View
+          style={{
+            flexDirection: "column",
+            flexShrink: 1,
+            justifyContent: "center",
+          }}
+        >
           <Text
             style={{
               fontSize: FONT_SIZES.body,
@@ -155,82 +168,57 @@ const IngredientPopup = (props: Props) => {
             backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
             borderColor: isDarkMode ? COLOURS.darkGrey : COLOURS.white,
             borderWidth: 0.5,
-            maxWidth: width - SPACING.small*2,
-            maxHeight: height - SPACING.medium*2,
-            flexShrink: 1
+            maxWidth: width - SPACING.small * 2,
+            maxHeight: height - SPACING.medium * 2,
+            flexShrink: 1,
           },
         ]}
       >
-        <ScrollView style={{flexGrow: 0}}>
+        <ScrollView style={{ flexGrow: 0 }}>
           <Header />
-          {props.ingredient.categories.length > 0 && <View style={styles.categories}>
-            {props.ingredient.categories.map((category) => {
-              return (
-                <View
-                  style={[
-                    styles.category,
-                    {
-                      backgroundColor: category.colour,
-                    },
-                  ]}
-                  key={category.name}
-                >
-                  <Text>{category.name}</Text>
-                </View>
-              );
-            })}
-          </View>}
+          {props.ingredient.categories.length > 0 && (
+            <View style={styles.categories}>
+              {props.ingredient.categories.map((category) => {
+                return (
+                  <View
+                    style={[
+                      styles.category,
+                      {
+                        backgroundColor: category.colour,
+                      },
+                    ]}
+                    key={category.name}
+                  >
+                    <Text>{category.name}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          )}
           {Nutrition(props.ingredient)}
           <View style={{ flexDirection: "row", marginTop: SPACING.medium }}>
             <SecondaryButton
               colour={COLOURS.red}
               text="Wasted all"
-              onPress={() => {
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(0, true)
+                        .setUseDate(new Date())
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
                 setUserData({
                   ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(0, true)
-                        .build();
-                    }
-                    return p;
-                  }),
+                  storedIngredients: newStoredIngredients,
                 });
                 props.setShowModal(false);
                 //TODO add to wasted tally
-                {
-                  /*
-                _id: number
-      userId: number
-      date: Date
-      mass: number
-      cost: number
-              */
-                }
-                const weight =
-                  props.ingredient.weight *
-                  (props.ingredient.weightType === weightUnit.grams ? 1 : 1000);
-                DB.create(new History(0, new Date(), props.ingredient.quantity * weight, 0));
-              }}
-            />
-            <View style={{ width: SPACING.medium }} />
-            <PrimaryButton
-              colour={COLOURS.red}
-              text="Wasted one"
-              onPress={() => {
-                setUserData({
-                  ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(p.quantity - 1, false)
-                        .build();
-                    }
-                    return p;
-                  }),
-                });
-                
                 const weight =
                   props.ingredient.weight *
                   (props.ingredient.weightType === weightUnit.grams ? 1 : 1000);
@@ -238,27 +226,59 @@ const IngredientPopup = (props: Props) => {
                   new History(
                     0,
                     new Date(),
-                    weight,
+                    props.ingredient.quantity * weight,
                     0
                   )
                 );
+              }}
+            />
+            <View style={{ width: SPACING.medium }} />
+            <PrimaryButton
+              colour={COLOURS.red}
+              text="Wasted one"
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(p.quantity - 1, false)
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
+                setUserData({
+                  ...userData,
+                  storedIngredients: newStoredIngredients,
+                });
+
+                const weight =
+                  props.ingredient.weight *
+                  (props.ingredient.weightType === weightUnit.grams ? 1 : 1000);
+                DB.create(new History(0, new Date(), weight, 0));
               }}
             />
           </View>
           <View style={{ flexDirection: "row", marginTop: SPACING.medium }}>
             <SecondaryButton
               text="Used all"
-              onPress={() => {
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(0, true)
+                        .setUseDate(new Date())
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
                 setUserData({
                   ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(0, true)
-                        .build();
-                    }
-                    return p;
-                  }),
+                  storedIngredients: newStoredIngredients,
                 });
                 props.setShowModal(false);
               }}
@@ -266,17 +286,21 @@ const IngredientPopup = (props: Props) => {
             <View style={{ width: SPACING.medium }} />
             <PrimaryButton
               text="Used one"
-              onPress={() => {
+              onPress={async () => {
+                const newStoredIngredients: Ingredient[] = []
+                for (const p of userData.storedIngredients) {
+                  if (p.id === props.ingredient.id) {
+                    newStoredIngredients.push(
+                      await IngredientBuilder.fromIngredient(props.ingredient)
+                        .setQuantity(p.quantity - 1, true)
+                        .build());
+                  }else{
+                    newStoredIngredients.push(p);
+                  }
+                }
                 setUserData({
                   ...userData,
-                  storedIngredients: userData.storedIngredients.map((p) => {
-                    if (p.id === props.ingredient.id) {
-                      return IngredientBuilder.fromIngredient(props.ingredient)
-                        .setQuantity(p.quantity - 1, true)
-                        .build();
-                    }
-                    return p;
-                  }),
+                  storedIngredients: newStoredIngredients,
                 });
               }}
             />

@@ -1,28 +1,26 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-//import { LinearGradient } from "expo-linear-gradient";
 import { Dimensions } from "react-native";
-import { Camera, FlashMode } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
 import { getIngredientBuilder } from "../../../../util/FoodAPIHelper";
 import { HomeContext } from "../HomeContextProvider";
+import { BarCodeScanner, BarCodeScannerResult } from 'expo-barcode-scanner';
 
 export type Props = {};
 
 const BarcodeScanner = (props: Props) => {
-  const [showFlash, setShowFlash] = useState(false);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [scanning, setScanning] = useState(false);
+  const [permission, setPermission] = useState(BarCodeScanner.usePermissions()[0])
+  const [scanned, setScanned] = useState(false);
   const navigation = useNavigation<any>();
   const { homeContext, setHomeContext } = useContext(HomeContext);
 
-  const handleBarCodeScanned = (info: any) => {
+  const handleBarCodeScanned = (info: BarCodeScannerResult) => {
     if (!info.data) {
       return;
     }
-    setScanning(true);
+    setScanned(true);
     navigation.goBack();
     console.log(
       `https://world.openfoodfacts.org/api/v0/product/${info.data}.json`
@@ -38,29 +36,33 @@ const BarcodeScanner = (props: Props) => {
         });
 
         navigation.navigate("ManualIngredient");
-        setScanning(false);
+        setScanned(false);
       })
       .catch((error) => {
         console.log(error);
 
         alert("Failed to get ingredient information. Please enter manually.");
         navigation.navigate("ManualIngredient");
-        setScanning(false);
+        setScanned(false);
       });
   };
 
-  if (!permission?.granted){
-    requestPermission()
-  }
-
-  if (scanning) return <View style={{ backgroundColor: "red" }}></View>;
+  useEffect(()=>{
+    if (permission == null || !permission.granted){
+      BarCodeScanner.requestPermissionsAsync().then((request)=>{
+        if (request.granted){
+          setPermission(request)
+        }else{
+          navigation.goBack();
+        }
+      })
+    }
+  }, [])
+  
+  if (scanned) return <View style={{ backgroundColor: "red" }}></View>;
 
   return (
     <View style={styles.container}>
-      {/* <LinearGradient
-        colors={["rgba(0,0,0,0.6)", "transparent"]}
-        style={styles.gradient}
-      /> */}
       <View style={styles.menuBar}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -69,19 +71,13 @@ const BarcodeScanner = (props: Props) => {
           <MaterialCommunityIcons name="close" size={24} color="white" />
         </TouchableOpacity>
         <Text style={{ color: COLOURS.white }}>Barcode Scanner</Text>
-        <MaterialCommunityIcons
-          name={showFlash ? "flash" : "flash-off"}
-          size={24}
-          color="white"
-          style={{ padding: SPACING.small }}
-          onPress={() => setShowFlash((i) => !i)}
-        />
+        <View style={{width: 24, height: 24}} />
       </View>
-      <Camera
-        onBarCodeScanned={handleBarCodeScanned}
+      {permission?.granted && <BarCodeScanner
         style={styles.scanner}
-        flashMode={showFlash ? FlashMode.torch : FlashMode.off}
-      />
+        onBarCodeScanned={!scanned? handleBarCodeScanned: undefined}
+      />}
+      {!permission?.granted && <View style={styles.scanner} />}
     </View>
   );
 };

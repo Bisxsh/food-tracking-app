@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Octicons } from "@expo/vector-icons";
 import {
   COLOURS,
   DROP_SHADOW,
@@ -22,8 +22,15 @@ import Checkbox from "./Checkbox";
 import Modal from "react-native-modal/dist/modal";
 import { Category } from "../classes/Categories";
 import ColourPicker from "./ColourPicker";
-import * as DB from "../backends/Database"
+import * as DB from "../backends/Database";
 import * as CategoryBack from "../backends/Category";
+import {
+  Menu,
+  MenuTrigger,
+  MenuOptions,
+  MenuOption,
+} from "react-native-popup-menu";
+import { ScrollView } from "react-native";
 
 type Props = {
   options: Category[];
@@ -133,8 +140,8 @@ const FilterButton = (props: Props) => {
         style={styles(props).modalOption}
         onPress={() => {
           //props.onAdd && props.onAdd(searchText);
-          setCategoryName(searchText)
-          setShowInnerModal(true)
+          setCategoryName(searchText);
+          setShowInnerModal(true);
         }}
       >
         <MaterialCommunityIcons name="plus" size={24} color="black" />
@@ -145,93 +152,174 @@ const FilterButton = (props: Props) => {
     return list;
   }
 
+  const optionsStyles = {
+    optionsContainer: {
+      paddingTop: SPACING.medium,
+      paddingBottom: SPACING.medium,
+      backgroundColor: COLOURS.white,
+      width: props.width ? props.width : "auto",
+      borderRadius: RADIUS.standard,
+      ...DROP_SHADOW,
+      maxHeight: 350,
+    },
+  };
+
   return (
     <>
-      <TouchableOpacity
-        style={styles(props).button}
-        onPress={() => {
-          setShowModal(true);
-        }}
-      >
-        <MaterialCommunityIcons
-          name={props.plusSymbol ? "plus" : "filter-variant"}
-          size={24}
-          color="black"
-        />
-      </TouchableOpacity>
-
-      <Modal
-        isVisible={showModal}
-        onBackdropPress={() => setShowModal(false)}
-        backdropOpacity={props.center ? 0.5 : 0}
-        animationIn="fadeInDown"
-        animationOut="fadeOutUp"
-        style={
-          props.center
-            ? StyleSheet.absoluteFill
-            : {
-                position: "absolute",
-                //TODO change to work with device for presentation
-                top: 50,
-                right: 30,
-              }
-        }
-      >
-        <Animated.ScrollView
-          style={[
-            styles(props).modal,
-            { opacity: fadeAnim, translateY: transitionAnim },
-          ]}
-        >
-          <CustomSearchBar
-            text={searchText}
-            setText={setSearchText}
-            textHint={props.textHint || "                    "}
+      <Menu>
+        <MenuTrigger style={styles(props).button}>
+          <MaterialCommunityIcons
+            name={props.plusSymbol ? "plus" : "filter-variant"}
+            size={24}
+            color="black"
           />
-          <View style={{ height: SPACING.small }} />
-          {getOptions()}
-          {props.options.length > 7 && (
-            <View style={{ height: SPACING.medium }} />
-          )}
-        </Animated.ScrollView>
-        
-        <Modal
-          isVisible={showInnerModal}
-          onBackdropPress={() => setShowInnerModal(false)}
-          backdropOpacity={0.5}
-          animationIn="zoomIn"
-          animationOut="zoomOut"
-          style={StyleSheet.absoluteFill}
-        >
-          <View style={styles(props).modalContainer}>
-            <ColourPicker colour={colour} setColour={setColour} />
-            <TextInput
-              placeholderTextColor="grey"
-              placeholder={"Category name"}
-              style={styles(props).textInput}
-              value={categoryName}
-              onChangeText={(text) => setCategoryName(text)}
+        </MenuTrigger>
+        <MenuOptions customStyles={optionsStyles}>
+          <ScrollView>
+            <CustomSearchBar
+              text={searchText}
+              setText={setSearchText}
+              textHint={props.textHint || "                    "}
             />
-            <MaterialCommunityIcons
-              name="arrow-right-thin"
-              style={styles(props).confirmButton}
-              size={SPACING.medium}
-              onPress={() => {
-                setShowInnerModal(false);
-                let newOptions = [
-                  ...props.options,
-                  { colour, name: categoryName, active: false, id: props.options.length },
-                ];
-                console.log(newOptions)
-                DB.create(new CategoryBack.Category(categoryName, colour, undefined, false))
-                props.setOptions(newOptions);
-                if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
-              }}
-            />
-          </View>
-        </Modal>
+            <View style={{ height: SPACING.small }} />
+            {getOptions()}
+          </ScrollView>
+        </MenuOptions>
+      </Menu>
+      <Modal
+        isVisible={showInnerModal}
+        onBackdropPress={() => setShowInnerModal(false)}
+        backdropOpacity={0.5}
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        style={StyleSheet.absoluteFill}
+      >
+        <View style={styles(props).modalContainer}>
+          <ColourPicker colour={colour} setColour={setColour} />
+          <TextInput
+            placeholderTextColor="grey"
+            placeholder={"Category name"}
+            style={styles(props).textInput}
+            value={categoryName}
+            onChangeText={(text) => setCategoryName(text)}
+          />
+          <MaterialCommunityIcons
+            name="arrow-right-thin"
+            style={styles(props).confirmButton}
+            size={SPACING.medium}
+            onPress={() => {
+              setShowInnerModal(false);
+              let newOptions = [
+                ...props.options,
+                {
+                  colour,
+                  name: categoryName,
+                  active: false,
+                  id: props.options.length,
+                },
+              ];
+              console.log(newOptions);
+              DB.create(
+                new CategoryBack.Category(
+                  categoryName,
+                  colour,
+                  undefined,
+                  false
+                )
+              );
+              props.setOptions(newOptions);
+              if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
+            }}
+          />
+        </View>
       </Modal>
     </>
+    // <>
+    //   <TouchableOpacity
+    //     style={styles(props).button}
+    //     onPress={() => {
+    //       setShowModal(true);
+    //     }}
+    //   >
+    //     <MaterialCommunityIcons
+    //       name={props.plusSymbol ? "plus" : "filter-variant"}
+    //       size={24}
+    //       color="black"
+    //     />
+    //   </TouchableOpacity>
+
+    //   <Modal
+    //     isVisible={showModal}
+    //     onBackdropPress={() => setShowModal(false)}
+    //     backdropOpacity={props.center ? 0.5 : 0}
+    //     animationIn="fadeInDown"
+    //     animationOut="fadeOutUp"
+    //     style={
+    //       props.center
+    //         ? StyleSheet.absoluteFill
+    //         : {
+    //             position: "absolute",
+    //             //TODO change to work with device for presentation
+    //             top: 50,
+    //             right: 30,
+    //           }
+    //     }
+    //   >
+    //     <Animated.ScrollView
+    //       style={[
+    //         styles(props).modal,
+    //         { opacity: fadeAnim, translateY: transitionAnim },
+    //       ]}
+    //     >
+    //       <CustomSearchBar
+    //         text={searchText}
+    //         setText={setSearchText}
+    //         textHint={props.textHint || "                    "}
+    //       />
+    //       <View style={{ height: SPACING.small }} />
+    //       {getOptions()}
+    //       {props.options.length > 7 && (
+    //         <View style={{ height: SPACING.medium }} />
+    //       )}
+    //     </Animated.ScrollView>
+
+    //     <Modal
+    //       isVisible={showInnerModal}
+    //       onBackdropPress={() => setShowInnerModal(false)}
+    //       backdropOpacity={0.5}
+    //       animationIn="zoomIn"
+    //       animationOut="zoomOut"
+    //       style={StyleSheet.absoluteFill}
+    //     >
+    //       <View style={styles(props).modalContainer}>
+    //         <ColourPicker colour={colour} setColour={setColour} />
+    //         <TextInput
+    //           placeholderTextColor="grey"
+    //           placeholder={"Category name"}
+    //           style={styles(props).textInput}
+    //           value={categoryName}
+    //           onChangeText={(text) => setCategoryName(text)}
+    //         />
+    //         <MaterialCommunityIcons
+    //           name="arrow-right-thin"
+    //           style={styles(props).confirmButton}
+    //           size={SPACING.medium}
+    //           onPress={() => {
+    //             setShowInnerModal(false);
+    //             let newOptions = [
+    //               ...props.options,
+    //               { colour, name: categoryName, active: false, id: props.options.length },
+    //             ];
+    //             console.log(newOptions)
+    //             DB.create(new CategoryBack.Category(categoryName, colour, undefined, false))
+    //             props.setOptions(newOptions);
+    //             if (props.onAdd) props.onAdd(newOptions[newOptions.length - 1]);
+    //           }}
+    //         />
+    //       </View>
+    //     </Modal>
+    //   </Modal>
+    // </>
   );
 };
 
@@ -249,18 +337,6 @@ const styles = (props: Props) =>
       position: "relative",
     },
 
-    modal: {
-      paddingTop: SPACING.medium,
-      paddingBottom: SPACING.medium,
-      alignSelf: "stretch",
-      backgroundColor: COLOURS.white,
-      width: props.width ? props.width : "auto",
-      borderRadius: RADIUS.standard,
-      ...DROP_SHADOW,
-      maxHeight: 350,
-      overflow: "scroll",
-    },
-
     modalHeading: {
       fontSize: FONT_SIZES.medium,
       textAlign: "center",
@@ -275,7 +351,7 @@ const styles = (props: Props) =>
       justifyContent: "flex-start",
       alignItems: "center",
     },
-    
+
     modalContainer: {
       flexDirection: "row",
       alignItems: "center",
@@ -285,12 +361,12 @@ const styles = (props: Props) =>
       borderRadius: RADIUS.standard,
       ...DROP_SHADOW,
     },
-  
+
     textInput: {
       minWidth: 200,
       marginLeft: SPACING.small,
     },
-  
+
     confirmButton: {
       borderRadius: RADIUS.circle,
       padding: SPACING.small,

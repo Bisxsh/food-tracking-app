@@ -8,8 +8,8 @@ import {
   DUMMY_MEALS,
 } from "./DummyData";
 import { Ingredient } from "./IngredientClass";
-import { Meal } from "./MealClass";
 import { readAllMeal } from "../backends/Database";
+import { Meal } from "../backends/Meal";
 
 export interface UserData {
   storedIngredients: Ingredient[];
@@ -17,8 +17,8 @@ export interface UserData {
   homePageSort: HomeSortingFilter;
   savedRecipes: Meal[];
   customRecipes: Meal[];
+  exploreRecipes: Meal[];
   recipesPageSort: RecipeSortingFilter;
-  exploreRecipes: any[];
   refreshExplore: boolean;
   //TODO implement
   // recipeCategories: RecipeCategory[];
@@ -39,7 +39,7 @@ export const DEFAULT_USER_DATA: UserData = {
   ingredientCategories: [], //DUMMY_CATEGORIES,
   homePageSort: HomeSortingFilter.ExpiryDateFirstToLast,
   recipesPageSort: RecipeSortingFilter.TimeLowToHigh,
-  savedRecipes:  DUMMY_MEALS,
+  savedRecipes: DUMMY_MEALS,
   customRecipes: [],
   exploreRecipes: <any>[],
   refreshExplore: false,

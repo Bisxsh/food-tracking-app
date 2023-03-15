@@ -14,20 +14,21 @@ import Instruction from "./Instruction";
 
 type Props = {
   mealBuilder: MealBuilder;
+  setMealBuilder: React.Dispatch<React.SetStateAction<MealBuilder>>;
 };
 
 const InstructionsList = (props: Props) => {
   const [text, onChangeText] = useState("");
-  const [instructionList, setInstructionList] = useState<any>([]);
+  const [instructionList, setInstructionList] = useState<string[]>(props.mealBuilder.getInstruction());
 
-  function addInstruction(instruction: any) {
+  function addInstruction(instruction: string) {
     let num = instructionList.length + 1;
     // console.log(instruction)
-    setInstructionList([...instructionList, [num + ". " + instruction]]);
-    props.mealBuilder.setInstruction(instructionList);
+    const newInstructionList: string[] = [...instructionList, num + ". " + instruction]
+    setInstructionList(newInstructionList);
+    props.setMealBuilder((p) => p.setInstruction(newInstructionList));
     onChangeText("");
   }
-
 
   return (
     <>

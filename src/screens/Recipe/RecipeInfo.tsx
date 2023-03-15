@@ -26,22 +26,42 @@ import { getSaved } from "../../util/GetRecipe";
 import * as DB from "../../backends/Database";
 import { DUMMY_MEALS } from "../../classes/DummyData";
 import { UserContext } from "../../backends/User";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaFrame, useSafeAreaInsets } from "react-native-safe-area-context";
+import * as MealClass from "../../classes/MealClass"
+
+type InstructionBoxProps={
+  instructions: string[]
+}
+
+function instructionsBox(props: InstructionBoxProps): JSX.Element{
+  return (
+    <View
+      style={{
+
+      }}
+    >
+
+    </View>
+  );
+}
+
 
 type Props = {};
 
 const RecipeInfo = (props: Props) => {
   const { recipeContext, setRecipeContext } = useContext(RecipeContext);
   const { userData, setUserData } = useContext(UserDataContext);
-  const [isFavourite, setIsFavourite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(recipeContext.recipeBeingViewed?.favourite);
   const navigation = useNavigation<any>();
   const meal = recipeContext.recipeBeingViewed || DUMMY_MEALS[0];
-  const [servings, setServings] = useState(recipeContext.viewedRecipeServings);
+  const [servings, setServings] = useState(
+    recipeContext.recipeBeingViewed?.servings || 1
+  );
   const { user, setUser } = useContext(UserContext);
-  const isDarkMode = user.setting.isDark();
   const { height, width } = useWindowDimensions();
-
-
+  const insets = useSafeAreaInsets()
+  const isDarkMode = user.setting.isDark();
+  const recipe = recipeContext.recipeBeingViewed;
 
   async function updateFavorite() {
     //TODO add to favorites
@@ -49,21 +69,10 @@ const RecipeInfo = (props: Props) => {
     setIsFavourite(!isFavourite);
 
     if (isFavourite) {
-
       await DB.deleteMeal(meal.name);
       setUserData({ ...userData, savedRecipes: await getSaved() });
     } else {
-
-      let newMeal = new Meal(
-        meal.name,
-        [],
-        [],
-        [],
-        Math.floor(Math.random() * 1000),
-        meal.url,
-        meal.imgSrc
-      );
-      await DB.create(newMeal);
+      await DB.create(meal);
 
       setUserData({ ...userData, savedRecipes: await getSaved() });
       // await DB.deleteMeal(props.recipeName)
@@ -93,21 +102,71 @@ const RecipeInfo = (props: Props) => {
   };
 
   function calculateServingValue(num: number) {
-    return Math.round((num / recipeContext.viewedRecipeServings) * servings);
+    return Math.round((num / (recipe?.servings || 1)) * servings);
   }
 
   navigation.setOptions({
     title: meal.name,
     headerRight: () => (
-      <TouchableOpacity onPress={updateFavorite}>
-        <MaterialCommunityIcons
-          name={isFavourite ? "star" : "star-outline"}
-          size={ICON_SIZES.medium}
-          color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
-        />
-      </TouchableOpacity>
+      <View style={{flexDirection: "row"}}>
+        {(meal.url == undefined || meal.url == "" || meal.url == null) && <TouchableOpacity 
+          onPress={()=>{
+            setRecipeContext({
+              ...recipeContext, 
+              recipeBeingEdited: MealClass.MealBuilder.fromMeal(meal.toMealClass())
+            })
+            navigation.navigate("ManualMeal");
+          }}
+          style={{marginRight: SPACING.tiny}}
+        >
+          <MaterialCommunityIcons
+            name={"pencil"}
+            size={ICON_SIZES.medium}
+            color={isDarkMode ? "white" : "black"}
+          />
+        </TouchableOpacity>}
+        <TouchableOpacity onPress={updateFavorite}>
+          <MaterialCommunityIcons
+            name={isFavourite ? "star" : "star-outline"}
+            size={ICON_SIZES.medium}
+            color={isFavourite ? COLOURS.primary : isDarkMode ? "white" : "black"}
+          />
+        </TouchableOpacity>
+      </View>
+      
     ),
   });
+
+  function getNutrientRow(
+    index: number,
+    total: number,
+    label: string,
+    quantity: number,
+    unit: string
+  ) {
+    return (
+      <View
+        key={index}
+        style={[
+          styles.nutrientRow,
+          {
+            backgroundColor: index % 2 == 1 ? COLOURS.grey : COLOURS.white,
+            borderTopLeftRadius: index == 0 ? RADIUS.standard : undefined,
+            borderTopRightRadius: index == 0 ? RADIUS.standard : undefined,
+            borderBottomLeftRadius:
+              index == total ? RADIUS.standard : undefined,
+            borderBottomRightRadius:
+              index == total ? RADIUS.standard : undefined,
+          },
+        ]}
+      >
+        <Text>{label}</Text>
+        <Text>
+          {calculateServingValue(quantity)} {unit}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView
@@ -118,19 +177,33 @@ const RecipeInfo = (props: Props) => {
       edges={["left", "right"]}
     >
       <ScrollView>
-        <Image source={{ uri: meal.imgSrc }} style={styles.foodImage} />
+        {meal.imgSrc ? (
+          <Image source={{ uri: meal.imgSrc }} style={styles.foodImage} />
+        ) : (
+          <MaterialCommunityIcons
+            name="image-off"
+            size={width - insets.left - insets.right}
+            style={styles.foodImage}
+            color={COLOURS.darkGrey}
+          />
+        )}
 
         <View style={styles.contentContainer}>
           <View style={styles.sourceContainer}>
-            <Text
-              style={{
-                fontSize: FONT_SIZES.medium,
-                color: isDarkMode ? COLOURS.white : COLOURS.black,
-              }}
-            >
-              Source:{" "}
-              {recipeContext?.viewedRecipeSource?.replace(".com", "") || ""}
-            </Text>
+            {meal.source && (
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.medium,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                }}
+              >
+                Source:{" "}
+                {(recipeContext?.recipeBeingViewed?.source || "").replace(
+                  ".com",
+                  ""
+                ) || ""}
+              </Text>
+            )}
             {meal.url && (
               <TouchableOpacity
                 onPress={openURI}
@@ -156,8 +229,9 @@ const RecipeInfo = (props: Props) => {
                 />
               </TouchableOpacity>
             )}
+            {(meal.source || meal.url) && getSeperator()}
           </View>
-          {getSeperator()}
+          
           <View style={[styles.sourceContainer, { marginTop: SPACING.medium }]}>
             <Text
               style={{
@@ -167,8 +241,7 @@ const RecipeInfo = (props: Props) => {
             >
               Calories per serving:{" "}
               {Math.round(
-                recipeContext.viewedRecipeNutrients[0].quantity /
-                  recipeContext.viewedRecipeServings
+                (recipe?.nutrition.energy || 0) / (recipe?.servings || 1)
               )}
             </Text>
           </View>
@@ -224,7 +297,7 @@ const RecipeInfo = (props: Props) => {
               />
             </TouchableOpacity>
           </View>
-          {servings != recipeContext.viewedRecipeServings && (
+          {servings != recipe?.servings && (
             <Text
               style={{
                 textAlign: "center",
@@ -237,11 +310,10 @@ const RecipeInfo = (props: Props) => {
             </Text>
           )}
           {getSeperator()}
-          {recipeContext.viewedRecipeIngredients.map((ingredient, index) => {
+          {recipe?.mealIngredients.map((ingredient, index) => {
             if (ingredient == "" || ingredient == " " || !ingredient)
               return null;
             const split = ingredient.split(" ");
-
 
             return (
               <View key={index} style={styles.ingredient}>
@@ -267,36 +339,92 @@ const RecipeInfo = (props: Props) => {
               </View>
             );
           })}
-          <View style={styles.nutrientContainer}>
-            {recipeContext.viewedRecipeNutrients.map((nutrient, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.nutrientRow,
-                  {
-                    backgroundColor:
-                      index % 2 == 1 ? COLOURS.grey : COLOURS.white,
-                    borderTopLeftRadius:
-                      index == 0 ? RADIUS.standard : undefined,
-                    borderTopRightRadius:
-                      index == 0 ? RADIUS.standard : undefined,
-                    borderBottomLeftRadius:
-                      index == recipeContext.viewedRecipeNutrients.length - 1
-                        ? RADIUS.standard
-                        : undefined,
-                    borderBottomRightRadius:
-                      index == recipeContext.viewedRecipeNutrients.length - 1
-                        ? RADIUS.standard
-                        : undefined,
-                  },
-                ]}
+          {recipe?.instruction.length != 0 && 
+            <>
+              {getSeperator()}
+              <Text
+                style={{
+                  fontSize: FONT_SIZES.small,
+                  color: isDarkMode ? COLOURS.white : COLOURS.black,
+                  flexShrink: 1,
+                }}
               >
-                <Text>{nutrient.label}</Text>
-                <Text>
-                  {calculateServingValue(nutrient.quantity)} {nutrient.unit}
+                Instructions
+              </Text>
+            </>
+          }
+          {recipe?.instruction.length != 0 && 
+            recipe?.instruction.map((instr, index)=>
+              <View key={index} style={styles.ingredient}>
+                <Text
+                  style={{
+                    fontSize: FONT_SIZES.medium,
+                    color: isDarkMode ? COLOURS.white : COLOURS.black,
+                    flexShrink: 1,
+                  }}
+                >
+                  {instr}
                 </Text>
               </View>
-            ))}
+            )
+          }
+          <View style={styles.nutrientContainer}>
+            {getNutrientRow(
+              0,
+              7,
+              "Calories",
+              recipe?.nutrition.energy || 0,
+              recipe?.nutrition.energyUnit || "kcal"
+            )}
+            {getNutrientRow(
+              1,
+              7,
+              "Protein",
+              recipe?.nutrition.protein || 0,
+              recipe?.nutrition.proteinUnit || "g"
+            )}
+            {getNutrientRow(
+              2,
+              7,
+              "Fat",
+              recipe?.nutrition.fat || 0,
+              recipe?.nutrition.fatUnit || "g"
+            )}
+            {getNutrientRow(
+              3,
+              7,
+              "Sat. Fat",
+              recipe?.nutrition.saturatedFat || 0,
+              recipe?.nutrition.saturatedFatUnit || "g"
+            )}
+            {getNutrientRow(
+              4,
+              7,
+              "Carbohydrates",
+              recipe?.nutrition.carbs || 0,
+              recipe?.nutrition.carbsUnit || "g"
+            )}
+            {getNutrientRow(
+              5,
+              7,
+              "Sugar",
+              recipe?.nutrition.sugar || 0,
+              recipe?.nutrition.sugarUnit || "g"
+            )}
+            {getNutrientRow(
+              6,
+              7,
+              "Fibre",
+              recipe?.nutrition.fibre || 0,
+              recipe?.nutrition.fibreUnit || "g"
+            )}
+            {getNutrientRow(
+              7,
+              7,
+              "Salt",
+              recipe?.nutrition.salt || 0,
+              recipe?.nutrition.saltUnit || "g"
+            )}
           </View>
         </View>
       </ScrollView>
@@ -330,7 +458,6 @@ const styles = StyleSheet.create({
   },
 
   foodImage: {
-    width: "100%",
     aspectRatio: 1,
   },
 
