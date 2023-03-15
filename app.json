@@ -24,6 +24,9 @@
         }
       ]
     ]
+    "ios": {
+      "bundleIdentifier": "com.groupsix.foodtrackingapp.wastex"
+    
   },
   "name": "WasteX"
 }
