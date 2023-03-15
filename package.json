@@ -52,7 +52,8 @@
     "react-native-svg": "13.4.0",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-web": "~0.18.11",
-    "ts-jest": "^29.0.5"
+    "ts-jest": "^29.0.5",
+    "expo-barcode-scanner": "~12.3.2"
   },
   "devDependencies": {
     "@types/react": "~18.0.27",

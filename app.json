@@ -15,7 +15,15 @@
         "foregroundImage": "./assets/LauncherIcon_v1_2.png",
         "backgroundColor": "#27C179"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ]
+    ]
   },
   "name": "WasteX"
 }

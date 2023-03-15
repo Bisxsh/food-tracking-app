@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { COLOURS, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -8,21 +8,22 @@ import { Camera, FlashMode } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
 import { getIngredientBuilder } from "../../../../util/FoodAPIHelper";
 import { HomeContext } from "../HomeContextProvider";
+import { BarCodeScanner, BarCodeScannerResult } from 'expo-barcode-scanner';
 
 export type Props = {};
 
 const BarcodeScanner = (props: Props) => {
   const [showFlash, setShowFlash] = useState(false);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
-  const [scanning, setScanning] = useState(false);
+  const [permission, requestPermission] = BarCodeScanner.usePermissions();
+  const [scanned, setScanned] = useState(false);
   const navigation = useNavigation<any>();
   const { homeContext, setHomeContext } = useContext(HomeContext);
 
-  const handleBarCodeScanned = (info: any) => {
+  const handleBarCodeScanned = (info: BarCodeScannerResult) => {
     if (!info.data) {
       return;
     }
-    setScanning(true);
+    setScanned(true);
     navigation.goBack();
     console.log(
       `https://world.openfoodfacts.org/api/v0/product/${info.data}.json`
@@ -38,14 +39,14 @@ const BarcodeScanner = (props: Props) => {
         });
 
         navigation.navigate("ManualIngredient");
-        setScanning(false);
+        setScanned(false);
       })
       .catch((error) => {
         console.log(error);
 
         alert("Failed to get ingredient information. Please enter manually.");
         navigation.navigate("ManualIngredient");
-        setScanning(false);
+        setScanned(false);
       });
   };
 
@@ -53,7 +54,7 @@ const BarcodeScanner = (props: Props) => {
     requestPermission()
   }
 
-  if (scanning) return <View style={{ backgroundColor: "red" }}></View>;
+  if (scanned) return <View style={{ backgroundColor: "red" }}></View>;
 
   return (
     <View style={styles.container}>
@@ -77,10 +78,17 @@ const BarcodeScanner = (props: Props) => {
           onPress={() => setShowFlash((i) => !i)}
         />
       </View>
-      <Camera
+      {/* <Camera
         onBarCodeScanned={handleBarCodeScanned}
         style={styles.scanner}
         flashMode={showFlash ? FlashMode.torch : FlashMode.off}
+        // barCodeScannerSettings={{
+        //   barCodeTypes: Platform.OS === 'ios' ? [] : ['ean13', 'ean8', 'code128']
+        // }}
+      /> */}
+      <BarCodeScanner
+        style={styles.scanner}
+        onBarCodeScanned={!scanned? handleBarCodeScanned: undefined}
       />
     </View>
   );
