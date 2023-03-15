@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
   Text,
   View,
-  Image,
   useWindowDimensions,
   ActivityIndicator,
 } from "react-native";
-import { Colors, Header } from "react-native/Libraries/NewAppScreen";
-import { getRecipes, getSaved, getSearchRecipe } from "../../util/GetRecipe";
+import { getRecipes, getSearchRecipe } from "../../util/GetRecipe";
 import { getDietReq } from "../../util/GetRecipe";
 import {
   COLOURS,
-  DROP_SHADOW,
   FONT_SIZES,
   RADIUS,
   SPACING,
@@ -30,14 +27,10 @@ import {
 } from "./RecipeSortingFilters";
 import AddButton from "../../components/AddButton";
 import { readAllMeal } from "../../backends/Database";
-// import { Meal } from "../../classes/MealClass";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TabNaviContext } from "./RecipeNavigator";
 import { Meal } from "../../backends/Meal";
 import { Nutrition } from "../../backends/Nutrition";
-import { Ingredient, MealIngredient } from "../../backends/Ingredient";
-import * as IngredientClass from "../../classes/IngredientClass";
-import { NutritionBuilder } from "../../classes/NutritionClass";
+import { Ingredient } from "../../backends/Ingredient";
 import NoDataSvg from "../../assets/no_data.svg";
 
 export function Recipe(): JSX.Element {
@@ -99,6 +92,7 @@ export function Recipe(): JSX.Element {
               setDietReq(req);
             }
             setCurrentButton(0)
+            console.log("navigation")
             setLoading(false);
           });
         });
@@ -115,11 +109,16 @@ export function Recipe(): JSX.Element {
       setLoading(true);
       getSearchRecipe(ingredientsSearch)
         .then((recipeList) => {
-          setRecipes(recipeList.map((recipe) => getMealFromAPI(recipe.recipe)));
-        })
-        .then(() => setLoading(false));
+          const newRecipes = recipeList.map((recipe) => getMealFromAPI(recipe.recipe))
+          sortList(selectedSort, newRecipes);
+          setRecipes(newRecipes);
+          setLoading(false)
+        });
     } else {
+      setLoading(true);
+      sortList(selectedSort, explore)
       setRecipes(explore);
+      setLoading(false);
     }
     setSearchIngBut(false);
   }, [searchIngBut]);
@@ -130,14 +129,14 @@ export function Recipe(): JSX.Element {
       await getRecipes().then((recipeList) => {
         setRecipes(recipeList);
         setExplore(recipeList);
-        sortList();
+        sortList(selectedSort);
         setUserData({ ...userData, exploreRecipes: recipeList });
       });
       setUserData({ ...userData, refreshExplore: false });
     } else {
       setRecipes(userData.exploreRecipes);
       setExplore(userData.exploreRecipes);
-      sortList();
+      sortList(selectedSort);
     }
   }
 
@@ -152,6 +151,7 @@ export function Recipe(): JSX.Element {
   }
 
   function switchList(buttonNum: number) {
+    setLoading(true)
     if (buttonNum === 0) {
       setRecipes(explore);
     }
@@ -161,8 +161,9 @@ export function Recipe(): JSX.Element {
     if (buttonNum === 2) {
       setRecipes(custom);
     }
-    sortList();
+    sortList(selectedSort);
     setCurrentButton(buttonNum);
+    setLoading(false)
   }
 
   function getCals(recipe: Meal) {
@@ -171,56 +172,78 @@ export function Recipe(): JSX.Element {
     );
   }
 
-  function sortList() {
-    switch (selectedSort) {
+  function sortList(selected: RecipeSortingFilter, list?: Meal[]) {
+    switch (selected) {
       case RecipeSortingFilter.TimeLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return b.time - a.time;
-          })
-        );
-        break;
-      case RecipeSortingFilter.TimeHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
+        if (list != undefined){
+          list.sort((a, b) => {
             return a.time - b.time;
           })
-        );
+        }else{
+          recipes.sort((a, b) => {
+            return a.time - b.time;
+          })
+        }
+        break;
+      case RecipeSortingFilter.TimeHighToLow:
+        if (list != undefined){
+          list.sort((a, b) => {
+            return b.time - a.time;
+          })
+        }else{
+          recipes.sort((a, b) => {
+            return b.time - a.time;
+          })
+        }
         break;
       case RecipeSortingFilter.CaloriesLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return getCals(b) - getCals(a);
-          })
-        );
-        break;
-      case RecipeSortingFilter.CaloriesHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
+        if (list != undefined){
+          list.sort((a, b) => {
             return getCals(a) - getCals(b);
           })
-        );
+        }else{
+          recipes.sort((a, b) => {
+            return getCals(a) - getCals(b);
+          })
+        }
+        break;
+      case RecipeSortingFilter.CaloriesHighToLow:
+        if (list != undefined){
+          list.sort((a, b) => {
+            return getCals(b) - getCals(a);
+          })
+        }else{
+          recipes.sort((a, b) => {
+            return getCals(b) - getCals(a);
+          })
+        }
         break;
       case RecipeSortingFilter.IngredientsLowToHigh:
-        setRecipes((r) =>
-          r.sort((a, b) => {
-            return b.ingredient.length - a.ingredient.length;
-          })
-        );
-        break;
-      case RecipeSortingFilter.IngredientsHighToLow:
-        setRecipes((r) =>
-          r.sort((a, b) => {
+        if (list != undefined){
+          list.sort((a, b) => {
             return a.ingredient.length - b.ingredient.length;
           })
-        );
+        }else{
+          recipes.sort((a, b) => {
+            return a.ingredient.length - b.ingredient.length;
+          })
+        }
+        break;
+      case RecipeSortingFilter.IngredientsHighToLow:
+        if (list != undefined){
+          list.sort((a, b) => {
+            return b.ingredient.length - a.ingredient.length;
+          })
+        }else{
+          recipes.sort((a, b) => {
+            return b.ingredient.length - a.ingredient.length;
+          })
+        }
+        break;
+      default:
         break;
     }
   }
-
-  useEffect(() => {
-    sortList();
-  }, [selectedSort]);
 
   function getMainContent() {
     if (recipes.length > 0)
@@ -239,7 +262,7 @@ export function Recipe(): JSX.Element {
                 .every((elem: any) => recipe.healthLabels!.includes(elem));
             })
             .map((recipe, key) => {
-              console.log(recipe.time);
+              //console.log(recipe.time);
               return (
                 <RecipeBox
                   key={Math.random()}
@@ -357,7 +380,12 @@ export function Recipe(): JSX.Element {
           ingredientsSearch={ingredientsSearch}
           sort={RecipeSortingFilters.indexOf(selectedSort)}
           setIngredientsSearch={setIngredientsSearch}
-          setSort={(i: number) => setSelectedSort(RecipeSortingFilters[i])}
+          setSort={(i: number) => {
+            setLoading(true)
+            setSelectedSort(RecipeSortingFilters[i])
+            sortList(RecipeSortingFilters[i])
+            setLoading(false)
+          }}
           setSearch={setSearchIngBut}
         />
       </View>
