@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text, Image, useWindowDimensions } from "react-native";
+import { View, Text, Image, useWindowDimensions, StatusBar } from "react-native";
 
 import {
   COLOURS,
@@ -103,7 +103,7 @@ function App(): JSX.Element {
     firstTime = false;
     init();
   }
-  const isDarkMode = user.setting.isDark();
+  const [isDarkMode, setIsDarkMode]  = useState(user.setting.isDark());
 
   useEffect(() => {
     Notifications.getAllScheduledNotificationsAsync().then((list) => {
@@ -130,6 +130,8 @@ function App(): JSX.Element {
       // console.log("Number of notications scheduled: " + v.length);
     });
   }, []);
+
+  useEffect(()=>setIsDarkMode(user.setting.isDark()), [user.setting.appearance])
 
   return (
     <SafeAreaProvider>
@@ -167,7 +169,10 @@ function App(): JSX.Element {
           )}
           {!loading && <UserContext.Provider value={{ user, setUser }}>
             <UserDataContext.Provider value={{ userData, setUserData }}>
-              
+              <StatusBar
+                backgroundColor={isDarkMode ? COLOURS.darker : COLOURS.white}
+                barStyle={isDarkMode? "light-content" : "dark-content"}
+              />
               {!consent && (
                 <InitialEntry
                   user={user}
