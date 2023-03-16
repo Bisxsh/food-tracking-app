@@ -58,6 +58,7 @@ const IndgredientView = (props: Props) => {
     const unsubscribe = navigation.addListener("focus", () => {
       setLoading(true)
       loadFromDB().then((ing)=>{
+        sortActiveIng(ing)
         setExpiredIngredients(
           ing.filter(
             (i) => i.expiryDate < new Date() && i.quantity > 0
@@ -190,29 +191,29 @@ const IndgredientView = (props: Props) => {
     setLoading(false)
   }, [props.sort])
 
-  function sortActiveIng(){
+  function sortActiveIng(list?: Ingredient[]){
     var newActiveIngredient: Ingredient[] = []
     switch (props.sort) {
       default:
         newActiveIngredient = activeIngredients
         break;
       case HomeSortingFilter.ExpiryDateFirstToLast:
-        newActiveIngredient = activeIngredients.sort((a, b) => {
+        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
           return a.expiryDate.getTime() - b.expiryDate.getTime();
         })
         break;
       case HomeSortingFilter.ExpiryDateLastToFirst:
-        newActiveIngredient = activeIngredients.sort((a, b) => {
+        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
           return b.expiryDate.getTime() - a.expiryDate.getTime();
         })
         break;
       case HomeSortingFilter.QuantityLowToHigh:
-        newActiveIngredient = activeIngredients.sort((a, b) => {
+        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
           return a.quantity - b.quantity;
         })
         break;
       case HomeSortingFilter.QuantityHighToLow:
-        newActiveIngredient = activeIngredients.sort((a, b) => {
+        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
           return b.quantity - a.quantity;
         })
         break;
