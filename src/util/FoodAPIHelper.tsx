@@ -6,6 +6,8 @@ export function getIngredientBuilder(ingredientJSON: any) {
     alert("Product not found. Please enter details manually.");
     return new IngredientBuilder();
   }
+
+  console.log(ingredientJSON?.product?.product_quantity);
   let product = ingredientJSON.product;
   const ingredientBuilder = new IngredientBuilder();
   ingredientBuilder.setName(product?.product_name || "");
@@ -21,10 +23,14 @@ export function getIngredientBuilder(ingredientJSON: any) {
       : weightUnit.kg || weightUnit.grams
   );
   ingredientBuilder.setWeight(
-    ingredientJSON.product?.packagings[0]?.quantity_per_unit_value || 0
+    ingredientJSON.product?.packagings[0]?.quantity_per_unit_value ||
+      ingredientJSON?.product?.product_quantity ||
+      0
   );
   ingredientBuilder.setWeightType(
-    ingredientJSON.product?.packagings[0]?.quantity_per_unit_unit == "g"
+    (ingredientJSON.product?.packagings[0]?.quantity_per_unit_unit ||
+      ingredientJSON?.product?.quantity?.slice(-1) ||
+      "") == "g"
       ? weightUnit.grams
       : weightUnit.kg || weightUnit.grams
   );
