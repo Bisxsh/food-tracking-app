@@ -57,12 +57,12 @@ const ManualMeal = (props: Props) => {
     userData.ingredientCategories.forEach((v)=>v.active=false)
     resetOption.current = false
   }
-  const [categories, setCategories] = useState<CategoryClass.Category[]>(
-    userData.ingredientCategories
-  );
   const navigation = useNavigation<any>();
   const [mealBuilder, setMealBuilder] = useState(
     recipeContext.recipeBeingEdited || new MealClass.MealBuilder()
+  );
+  const [categories, setCategories] = useState<CategoryClass.Category[]>(
+    userData.ingredientCategories.map((cat)=>mealBuilder.getCategoryId().includes(cat.id!)? {...cat, active: true}: cat)
   );
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();

@@ -209,9 +209,9 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
               }else{
                 Notifications.getAllScheduledNotificationsAsync().then((list)=>{
                   if (user.setting.notification && list.length == 0){
-                    // Send push notification at 10pm GMT every day
+                    // Send push notification at 7am GMT every day
                     const trigger: Notifications.DailyTriggerInput = {
-                      hour: 22, // 10pm GMT
+                      hour: 7, // 7am GMT
                       minute: 0,
                       //second: 0,
                       repeats: true, // Send notification every day

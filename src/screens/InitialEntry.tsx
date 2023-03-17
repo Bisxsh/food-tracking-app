@@ -255,7 +255,9 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
                 width: "100%",
               }}
               placeholder="Name"
-              onChangeText={setName}
+              onChangeText={(text)=>{
+                setName(text)
+              }}
               value={name}
               onSubmitEditing={(e) => {
                 if (e.nativeEvent.text != "") {
@@ -338,6 +340,7 @@ export function InitialEntry(prop: InitialEntryProp): JSX.Element {
             onPress={() => {
               if (name.length != 0) {
                 if (prop.user.consent) {
+                  prop.user.name = name
                   DB.updateUser(prop.user);
                   prop.setConsent(true);
                   prop.setUser(prop.user);
