@@ -28,19 +28,17 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { getSaved } from "../../util/GetRecipe";
 
 type alertProp = {
-  title: string
-  desc: string
-  buttons: AlertButton[]
-  user: User
-}
+  title: string;
+  desc: string;
+  buttons: AlertButton[];
+  user: User;
+};
 
-function createAlert(prop: alertProp){
-  Alert.alert(
-      prop.title,
-      prop.desc,
-      prop.buttons,
-      {cancelable:true, userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
-  )
+function createAlert(prop: alertProp) {
+  Alert.alert(prop.title, prop.desc, prop.buttons, {
+    cancelable: true,
+    userInterfaceStyle: prop.user.setting.isDark() ? "dark" : "light",
+  });
 }
 
 type Props = {
@@ -52,17 +50,21 @@ type Props = {
 const ManualMeal = (props: Props) => {
   const { recipeContext, setRecipeContext } = useContext(RecipeContext);
   const { userData, setUserData } = useContext(UserDataContext);
-  const resetOption = useRef(true)
-  if (resetOption.current){
-    userData.ingredientCategories.forEach((v)=>v.active=false)
-    resetOption.current = false
+  const resetOption = useRef(true);
+  if (resetOption.current) {
+    userData.ingredientCategories.forEach((v) => (v.active = false));
+    resetOption.current = false;
   }
   const navigation = useNavigation<any>();
   const [mealBuilder, setMealBuilder] = useState(
     recipeContext.recipeBeingEdited || new MealClass.MealBuilder()
   );
   const [categories, setCategories] = useState<CategoryClass.Category[]>(
-    userData.ingredientCategories.map((cat)=>mealBuilder.getCategoryId().includes(cat.id!)? {...cat, active: true}: cat)
+    userData.ingredientCategories.map((cat) =>
+      mealBuilder.getCategoryId().includes(cat.id!)
+        ? { ...cat, active: true }
+        : cat
+    )
   );
   const { user, setUser } = useContext(UserContext);
   const isDarkMode = user.setting.isDark();
@@ -81,13 +83,13 @@ const ManualMeal = (props: Props) => {
     const catId: number[] = [];
     const catDB = await DB.readAllCategory();
     for (const cat of categories) {
-      if (catDB.filter((c)=>c.name == cat.name).length == 0){
-        const catBack = CategoryClass.toCategoryBack(cat)
-        DB.create(catBack)
-        cat.id = catBack._id
+      if (catDB.filter((c) => c.name == cat.name).length == 0) {
+        const catBack = CategoryClass.toCategoryBack(cat);
+        DB.create(catBack);
+        cat.id = catBack._id;
       }
-      if (cat.active){
-        catId.push(cat.id!)
+      if (cat.active) {
+        catId.push(cat.id!);
       }
     }
     mealBuilder.setCategoryId(catId);
@@ -104,22 +106,24 @@ const ManualMeal = (props: Props) => {
     //   });
     // } else
     // userData.storedIngredients.push(mealBuilder.build());
-    const meal : Meal = Meal.fromBuilder(mealBuilder);
+    const meal: Meal = Meal.fromBuilder(mealBuilder);
 
-    if (mealBuilder.getId() == -1){
+    if (mealBuilder.getId() == -1) {
       await DB.create(meal);
       setUserData({
         ...userData,
         customRecipes: [...userData.customRecipes, meal],
       });
-    }else{
-      await DB.updateMeal(meal)
+    } else {
+      await DB.updateMeal(meal);
       setUserData({
         ...userData,
-        customRecipes: userData.customRecipes.map((m)=>m._id == meal._id? meal: m)
-      })
+        customRecipes: userData.customRecipes.map((m) =>
+          m._id == meal._id ? meal : m
+        ),
+      });
     }
-    
+
     //constructor(name: string, categoryId: number[], instruction: string[], _id?:number, url?: string, imgSrc?: string){
     closeManual();
   }
@@ -143,36 +147,39 @@ const ManualMeal = (props: Props) => {
       </TouchableOpacity>
     ),
     headerRight: () => (
-      <View style={{flexDirection: "row"}}>
-        <TouchableOpacity 
-          onPress={()=>{
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          onPress={() => {
             createAlert({
-              title:"Delete this recipe", 
-              desc:"Do you want to delete this recipe?\n\nThis action cannot be undone.", 
-              buttons:[
+              title: "Delete this recipe",
+              desc: "Do you want to delete this recipe?\n\nThis action cannot be undone.",
+              buttons: [
                 {
                   text: "Cancel",
-                  style: "cancel"
+                  style: "cancel",
                 },
                 {
                   text: "Delete",
                   style: "destructive",
-                  onPress: async ()=>{
+                  onPress: async () => {
                     await DB.deleteMeal(mealBuilder.getName());
-                    setUserData({ ...userData, savedRecipes: await getSaved() });
+                    setUserData({
+                      ...userData,
+                      savedRecipes: await getSaved(),
+                    });
                     closeManual();
-                  }
-                }
+                  },
+                },
               ],
-              user: user
-            })
+              user: user,
+            });
           }}
-          style={{marginRight: SPACING.small}}
+          style={{ marginRight: SPACING.medium }}
         >
           <MaterialCommunityIcons
             name={"delete"}
             size={ICON_SIZES.medium}
-            color={"red"}
+            color={COLOURS.red}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={saveRecipe}>
@@ -208,7 +215,9 @@ const ManualMeal = (props: Props) => {
         <ChipsSelectors
           fieldName="Categories"
           categories={categories}
-          setCategories={(categories: CategoryClass.Category[]) => setCategories(categories)}
+          setCategories={(categories: CategoryClass.Category[]) =>
+            setCategories(categories)
+          }
           center
           onAdd={(category: CategoryClass.Category) => {
             category.active = false;
