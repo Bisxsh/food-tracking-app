@@ -55,6 +55,7 @@ const UserSchema: Schema = {
     dietReq: "ntext not null",
     setting: "ntext not null",
     consent: "int not null",
+    screenRecord: "text",
   },
 };
 
@@ -813,6 +814,38 @@ export async function deleteFile(verbose = false) {
 
 const csvDirectory = FileSystem.documentDirectory + "csv/";
 
+var startTimeStamp: [Date, "home"|"recipe"|"profile"|"inactive"] = [new Date(), "inactive"];
+
+export function initTimeStamp(screen?: "home"|"recipe"|"profile"|"inactive"){
+  startTimeStamp = [new Date(), screen == undefined? "inactive": screen];
+  console.log("Time stamp initialised")
+}
+
+export function setTimeStamp(user: User, newScreen: "home"|"recipe"|"profile"|"inactive"){
+  if (newScreen != startTimeStamp[1]){
+    const newTime = new Date();
+    console.log(startTimeStamp[1]+" to "+newScreen+" : "+ ((newTime.getTime() - startTimeStamp[0].getTime())/1000/60))
+    switch(startTimeStamp[1]){
+      case "home":
+        user.screenRecord[0] += ((newTime.getTime() - startTimeStamp[0].getTime())/1000/60);
+        break;
+      case "recipe":
+        user.screenRecord[1] += ((newTime.getTime() - startTimeStamp[0].getTime())/1000/60);
+        break;
+      case "profile":
+        user.screenRecord[2] += ((newTime.getTime() - startTimeStamp[0].getTime())/1000/60);
+        break;
+      case "inactive":
+        break;
+      default:
+        break;
+    }
+    startTimeStamp = [newTime, newScreen]
+    updateUser(user);
+  }
+}
+
+
 async function createCSVFile(verbose = false): Promise<string> {
   const ings = await readAllIngredient();
 
@@ -836,6 +869,12 @@ async function createCSVFile(verbose = false): Promise<string> {
         ? "undefined"
         : ing.useDate?.toLocaleDateString());
   }
+
+  txt = txt + "\n\nNumberOfSavedMeals=" + (await readAllMeal()).length
+
+  const user = await readUser(0)
+  txt += "\n\nTimeInHome,TimeInRecipe,TimeInProfile"
+  txt += "\n" + user?.screenRecord[0] + "," + user?.screenRecord[1] + "," + user?.screenRecord[2]
 
   await FileSystem.getInfoAsync(csvDirectory).then(async (info) => {
     if (!info.exists) {

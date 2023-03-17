@@ -56,8 +56,9 @@ export class User{
     setting: UserSetting
     consent: boolean
     categories: Category[]
+    screenRecord: [number, number, number]
 
-    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean, categories?: Category[]){
+    constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean, categories?: Category[], screenRecord?: [number, number, number]){
         if (_id != undefined){
             User.count = Math.max(_id, User.count)
         }else{
@@ -72,6 +73,7 @@ export class User{
         this.consent = (consent != undefined)? consent: false
         this.categories = (categories != undefined)? categories: []
         this.loadCategories()
+        this.screenRecord = (screenRecord != undefined)? screenRecord: [0,0,0]
     }
 
     async loadCategories(){
@@ -112,6 +114,7 @@ export class User{
         this.dietReq = Object.values(DietReqs).map((value)=>[value, false])
         this.setting = new UserSetting()
         this.consent = false
+        this.screenRecord = [0,0,0]
     }
 
     toList(): any[]{
@@ -123,12 +126,17 @@ export class User{
             this.dietReq.map((value)=>value.join("&")).toString(), 
             JSON.stringify(this.setting),
             this.consent?1:0,
+            this.screenRecord.join("//")
         ];
     }
 
     static count = -1;
 
     static fromList(properties:any[]):User{
+        var records: [number, number, number] = [0,0,0];
+        (properties[7] as string).split("//").forEach((v, index)=>{
+            records[index] = Number.parseFloat(v)
+        })
         return new User(
             properties[1],  // name
             properties[0],  // _id
@@ -137,6 +145,8 @@ export class User{
             (properties[4] as string).split(",").map((value)=>[value.split("&")[0], value.split("&")[1]=="true"]),  // dietReq
             UserSetting.fromList(Object.values(JSON.parse(properties[5]))),  // setting
             properties[6]==1,
+            undefined,
+            records
         );
     }
 

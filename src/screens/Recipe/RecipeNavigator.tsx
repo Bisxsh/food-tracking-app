@@ -1,5 +1,5 @@
-import { LogBox, StyleSheet, Text, View } from "react-native";
-import React, { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import { AppState, LogBox, StyleSheet, Text, View } from "react-native";
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Home } from "../../screens/Home/Home";
 import BarcodeScanner from "../Home/components/Add/BarcodeScanner";
@@ -11,6 +11,7 @@ import { UserContext } from "../../backends/User";
 import ManualMeal from "./ManualMeal";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { useNavigation } from '@react-navigation/native';
+import * as DB from "../../backends/Database"
 
 type Props = {};
 
@@ -27,7 +28,6 @@ const DefaultTabNaviContext: TabNaviContextInterface = {
 export const TabNaviContext = createContext<TabNaviContextInterface>(DefaultTabNaviContext)
 
 
-
 const Stack = createNativeStackNavigator();
 
 const HomeNavigator = (props: Props) => {
@@ -39,6 +39,25 @@ const HomeNavigator = (props: Props) => {
   const [recipeContext, setRecipeContext] = React.useState(DEFAULT_RECIPE_DATA);
   const [ tabNavi, setTabNavi ] = useState<BottomTabNavigationProp<any, any, any>>(useNavigation())
   
+  const [appState, setAppState] = useState(AppState.currentState);
+  const init = useRef(true);
+  
+  const handleAppStateChange = (newState: "active" | "background" | "inactive" | "unknown" | "extension")=>{
+    setAppState(newState);
+    DB.setTimeStamp(user, newState == "active"? "home": "inactive")
+  }
+
+  useEffect(()=>{
+    const subscription = AppState.addEventListener("change", handleAppStateChange)
+    return ()=>{
+      subscription.remove();
+    }
+  }, [])
+
+  if (init.current){
+    DB.setTimeStamp(user, "home")
+  }
+
   return (
     <TabNaviContext.Provider value={{tabNavi, setTabNavi}}>
     <RecipeContext.Provider value={{ recipeContext, setRecipeContext }}>

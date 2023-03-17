@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useContext, useState } from "react";
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useRef, useState } from "react";
 import { createNativeStackNavigator, NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,6 +14,8 @@ import { Account } from "./Screens/Account";
 import IngredientEdit from "./Screens/IngredientEdit";
 import { Ingredient } from "../../backends/Ingredient";
 import { COLOURS } from "../../util/GlobalStyles";
+import { AppState } from "react-native";
+import * as DB from '../../backends/Database';
 
 
 export type StackParams ={
@@ -57,6 +59,24 @@ export function ProfileNavigator(): JSX.Element{
         console.log(error)
     }
     
+    const [appState, setAppState] = useState(AppState.currentState);
+    const init = useRef(true);
+    
+    const handleAppStateChange = (newState: "active" | "background" | "inactive" | "unknown" | "extension")=>{
+        setAppState(newState);
+        DB.setTimeStamp(user, newState == "active"? "profile": "inactive")
+    }
+
+    useEffect(()=>{
+        const subscription = AppState.addEventListener("change", handleAppStateChange)
+        return ()=>{
+        subscription.remove();
+        }
+    }, [])
+
+    if (init.current){
+        DB.setTimeStamp(user, "profile")
+    }
 
     return (
         <TabNaviContext.Provider value={{tabNavi, setTabNavi}}>

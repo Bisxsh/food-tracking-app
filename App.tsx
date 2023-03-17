@@ -8,6 +8,7 @@ import {
   Image,
   useWindowDimensions,
   StatusBar,
+  AppState,
 } from "react-native";
 
 import {
@@ -37,6 +38,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 const Tab = createBottomTabNavigator();
 
 var firstTime = true;
+
+DB.initTimeStamp();
 
 function App(): JSX.Element {
   registerNNPushToken(6535, "xdrqfHr09cuuEeUjH1MATl");
