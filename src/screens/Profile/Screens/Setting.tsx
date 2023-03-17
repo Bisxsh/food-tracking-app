@@ -9,6 +9,7 @@ import {
   View,
   Alert, 
   AlertButton,
+  useWindowDimensions,
 } from "react-native";
 import * as Updates from 'expo-updates';
 import * as Notifications from "expo-notifications";
@@ -99,7 +100,7 @@ const NavigateRow = (
   );
 };
 
-const SwitchRow = (text: string, key: keyof UserSetting, onValueChange?: (value: boolean)=>void) => {
+const SwitchRow = (text: string, key: keyof UserSetting, onValueChange?: (value: boolean)=>void, disabled=false) => {
   const { user, setUser } = useContext(UserContext);
   const [value, setValue] = useState<boolean>(user.setting[key] as boolean);
 
@@ -136,12 +137,13 @@ const SwitchRow = (text: string, key: keyof UserSetting, onValueChange?: (value:
           setValue(value);
           DB.updateUser(user);
         }}
+        disabled={disabled}
       />
     </View>
   );
 };
 
-const TouchableRow = (text: string, func: Function) => {
+const TouchableRow = (text: string, func: Function, disabled=false) => {
   return (
     <TouchableOpacity
       style={{
@@ -152,6 +154,7 @@ const TouchableRow = (text: string, func: Function) => {
         paddingBottom: SPACING.tiny,
       }}
       onPress={()=>{func()}}
+      disabled={disabled}
     >
       <Text
         style={{
@@ -159,7 +162,7 @@ const TouchableRow = (text: string, func: Function) => {
           fontSize: FONT_SIZES.medium,
           alignSelf: "center",
           marginVertical: SPACING.small,
-          color: COLOURS.textTouchable,
+          color: disabled? COLOURS.darkGrey: COLOURS.textTouchable,
         }}
       >
         {text}
@@ -174,6 +177,9 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
   const { userData, setUserData } = useContext(UserDataContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
+  const [disabled, setDisabled] = useState(!user.setting.debug);
+  const {height, width} = useWindowDimensions();
+  var count = 0;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
@@ -233,8 +239,12 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
           {NavigateRow("Theme", "Theme", navigation)}
         </View>
         <View style={styles.container}>
-          {SwitchRow("Debug Mode", "debug")}
+          {SwitchRow("Debug Mode", "debug", undefined, disabled)}
           {user.setting.debug && NavigateRow("Debug Window", "Debug", navigation)}
+          {HorizontalLine}
+          {TouchableRow("Export data", ()=>{
+            DB.exportCSVFile()
+          })}
           {HorizontalLine}
           {TouchableRow("Reset", ()=>{
             createAlert({
@@ -270,12 +280,27 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
               ],
               user: user
             })
-          })}
+          }, disabled)}
           {HorizontalLine}
           {NavigateRow("Help", "Help", navigation)}
           {HorizontalLine}
           {NavigateRow("About", "About", navigation)}
         </View>
+        <TouchableOpacity
+          onPress={()=>{
+            count++;
+            if (count == 10){
+              createAlert({
+                title: "Developer's options",
+                desc: "You enabled developer's options",
+                buttons: [{text: "OK"}],
+                user: user
+              })
+              setDisabled(false)
+            }
+          }}
+          style={{width: width, height: 100, flexGrow:1, flex: 1, alignSelf: "stretch"}}
+        />
       </ScrollView>
     </SafeAreaView>
   );
