@@ -232,6 +232,29 @@ const RecipeInfo = (props: Props) => {
             {(meal.source || meal.url) && getSeperator()}
           </View>
           
+          {meal.categoryId.length > 0 && (
+            <View style={styles.categories}>
+              {meal.categoryId.map((id) => {
+                const category = user.findCategory(id);
+                if (category != undefined) {
+                  return (
+                    <View
+                      style={[
+                        styles.category,
+                        {
+                          backgroundColor: category.colour,
+                        },
+                      ]}
+                      key={category.name}
+                    >
+                      <Text>{category.name}</Text>
+                    </View>
+                  );
+                }
+              })}
+            </View>
+          )}
+
           <View style={[styles.sourceContainer, { marginTop: SPACING.medium }]}>
             <Text
               style={{
@@ -261,12 +284,13 @@ const RecipeInfo = (props: Props) => {
               Serving Size:
             </Text>
             <TouchableOpacity
-              onPress={() => setServings((i) => i - 1)}
+              onPress={() => setServings((i) => i > 1 ? i - 1: i)}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
               }}
+              disabled={servings <= 1}
             >
               <MaterialCommunityIcons
                 name="minus-box"
@@ -506,5 +530,19 @@ const styles = StyleSheet.create({
   bottomRow: {
     borderBottomLeftRadius: RADIUS.standard,
     borderBottomRightRadius: RADIUS.standard,
+  },
+
+  categories: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: SPACING.medium,
+  },
+
+  category: {
+    padding: SPACING.small,
+    paddingLeft: SPACING.medium + 4,
+    paddingRight: SPACING.medium + 4,
+    borderRadius: RADIUS.circle,
+    marginRight: SPACING.small,
   },
 });
