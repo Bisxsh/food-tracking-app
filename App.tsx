@@ -2,7 +2,13 @@ import { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { View, Text, Image, useWindowDimensions, StatusBar } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  useWindowDimensions,
+  StatusBar,
+} from "react-native";
 
 import {
   COLOURS,
@@ -44,7 +50,7 @@ function App(): JSX.Element {
   //TODO need to merge with above
   const [user, setUser] = useState(DEFAULT_USER);
   const init = async () => {
-    const start = Date.now()
+    const start = Date.now();
     await DB.init();
     const stored = await DB.readUser(0);
     if (stored == undefined) {
@@ -54,6 +60,10 @@ function App(): JSX.Element {
     } else {
       await stored.loadCategories();
       setUser(stored);
+      setUserData({
+        ...userData,
+        ingredientCategories: stored.categories,
+      });
       setConsent(stored.consent);
     }
     const ing: IngredientClass.Ingredient[] = [];
@@ -103,7 +113,7 @@ function App(): JSX.Element {
     firstTime = false;
     init();
   }
-  const [isDarkMode, setIsDarkMode]  = useState(user.setting.isDark());
+  const [isDarkMode, setIsDarkMode] = useState(user.setting.isDark());
 
   useEffect(() => {
     Notifications.getAllScheduledNotificationsAsync().then((list) => {
@@ -131,7 +141,10 @@ function App(): JSX.Element {
     });
   }, []);
 
-  useEffect(()=>setIsDarkMode(user.setting.isDark()), [user.setting.appearance])
+  useEffect(
+    () => setIsDarkMode(user.setting.isDark()),
+    [user.setting.appearance]
+  );
 
   return (
     <SafeAreaProvider>
@@ -167,83 +180,85 @@ function App(): JSX.Element {
               </Text>
             </View>
           )}
-          {!loading && <UserContext.Provider value={{ user, setUser }}>
-            <UserDataContext.Provider value={{ userData, setUserData }}>
-              <StatusBar
-                backgroundColor={isDarkMode ? COLOURS.darker : COLOURS.white}
-                barStyle={isDarkMode? "light-content" : "dark-content"}
-              />
-              {!consent && (
-                <InitialEntry
-                  user={user}
-                  setUser={setUser}
-                  setConsent={setConsent}
+          {!loading && (
+            <UserContext.Provider value={{ user, setUser }}>
+              <UserDataContext.Provider value={{ userData, setUserData }}>
+                <StatusBar
+                  backgroundColor={isDarkMode ? COLOURS.darker : COLOURS.white}
+                  barStyle={isDarkMode ? "light-content" : "dark-content"}
                 />
-              )}
-              {consent && (
-                <NavigationContainer>
-                  <Tab.Navigator
-                    initialRouteName="HomeNavigator"
-                    screenOptions={{
-                      tabBarActiveTintColor: COLOURS.primary,
-                      headerShown: false,
-                      tabBarStyle: {
-                        backgroundColor: isDarkMode
-                          ? COLOURS.darker
-                          : COLOURS.white,
-                      },
-                    }}
-                  >
-                    <Tab.Screen
-                      name="HomeNavigator"
-                      component={HomeNavigator}
-                      options={{
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ color, size }) => (
-                          <MaterialCommunityIcons
-                            name="home"
-                            color={color}
-                            size={size}
-                          />
-                        ),
-                        unmountOnBlur: true,
+                {!consent && (
+                  <InitialEntry
+                    user={user}
+                    setUser={setUser}
+                    setConsent={setConsent}
+                  />
+                )}
+                {consent && (
+                  <NavigationContainer>
+                    <Tab.Navigator
+                      initialRouteName="HomeNavigator"
+                      screenOptions={{
+                        tabBarActiveTintColor: COLOURS.primary,
+                        headerShown: false,
+                        tabBarStyle: {
+                          backgroundColor: isDarkMode
+                            ? COLOURS.darker
+                            : COLOURS.white,
+                        },
                       }}
-                    />
-                    <Tab.Screen
-                      name="Recipe"
-                      component={RecipeNavigator}
-                      options={{
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ color, size }) => (
-                          <MaterialCommunityIcons
-                            name="food"
-                            color={color}
-                            size={size}
-                          />
-                        ),
-                        unmountOnBlur: true,
-                      }}
-                    />
-                    <Tab.Screen
-                      name="ProfileNavigator"
-                      component={ProfileNavigator}
-                      options={{
-                        tabBarShowLabel: false,
-                        tabBarIcon: ({ color, size }) => (
-                          <MaterialCommunityIcons
-                            name="account"
-                            color={color}
-                            size={size}
-                          />
-                        ),
-                        unmountOnBlur: true,
-                      }}
-                    />
-                  </Tab.Navigator>
-                </NavigationContainer>
-              )}
-            </UserDataContext.Provider>
-          </UserContext.Provider>}
+                    >
+                      <Tab.Screen
+                        name="HomeNavigator"
+                        component={HomeNavigator}
+                        options={{
+                          tabBarShowLabel: false,
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                              name="home"
+                              color={color}
+                              size={size}
+                            />
+                          ),
+                          unmountOnBlur: true,
+                        }}
+                      />
+                      <Tab.Screen
+                        name="Recipe"
+                        component={RecipeNavigator}
+                        options={{
+                          tabBarShowLabel: false,
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                              name="food"
+                              color={color}
+                              size={size}
+                            />
+                          ),
+                          unmountOnBlur: true,
+                        }}
+                      />
+                      <Tab.Screen
+                        name="ProfileNavigator"
+                        component={ProfileNavigator}
+                        options={{
+                          tabBarShowLabel: false,
+                          tabBarIcon: ({ color, size }) => (
+                            <MaterialCommunityIcons
+                              name="account"
+                              color={color}
+                              size={size}
+                            />
+                          ),
+                          unmountOnBlur: true,
+                        }}
+                      />
+                    </Tab.Navigator>
+                  </NavigationContainer>
+                )}
+              </UserDataContext.Provider>
+            </UserContext.Provider>
+          )}
         </MenuProvider>
       </ActionSheetProvider>
     </SafeAreaProvider>
