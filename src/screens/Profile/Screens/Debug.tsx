@@ -143,6 +143,7 @@ export function Debug(): JSX.Element {
             <Pressable
               style={styles.pressable}
               onPress={async () => {
+                setLog("Loading...")
                 let categories: { [name: string]: number } = {};
                 for (
                   let index = 0;

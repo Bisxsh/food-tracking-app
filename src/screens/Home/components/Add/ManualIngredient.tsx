@@ -13,7 +13,7 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { COLOURS, ICON_SIZES, SPACING } from "../../../../util/GlobalStyles";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { getRecipes, getSaved, getCustom } from "../../../../util/GetRecipe";
 import { Dimensions } from "react-native";
 
@@ -35,25 +35,20 @@ import { HomeContext } from "../HomeContextProvider";
 import { useNavigation } from "@react-navigation/native";
 import { User, UserContext } from "../../../../backends/User";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as DB from "../../../../backends/Database"
+import * as DB from "../../../../backends/Database";
 
 type alertProp = {
-  title: string
-  desc: string
-  buttons: AlertButton[],
-  user: User
+  title: string;
+  desc: string;
+  buttons: AlertButton[];
+  user: User;
+};
+
+function createAlert(prop: alertProp) {
+  Alert.alert(prop.title, prop.desc, prop.buttons, {
+    userInterfaceStyle: prop.user.setting.isDark() ? "dark" : "light",
+  });
 }
-
-function createAlert(prop: alertProp){
-  Alert.alert(
-      prop.title,
-      prop.desc,
-      prop.buttons,
-      {userInterfaceStyle:(prop.user.setting.isDark())?"dark":"light"}
-  )
-}
-
-
 
 type Props = {};
 
@@ -63,7 +58,6 @@ const ManualIngredient = (props: Props) => {
   const [showNutrition, setShowNutrition] = useState(false);
   const { user, setUser } = useContext(UserContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
-  
 
   const navigation = useNavigation<any>();
   const ingredientBuilder =
@@ -99,17 +93,17 @@ const ManualIngredient = (props: Props) => {
         (ing) => ing.id === ingredientBuilder.getId()
       )
     ) {
-      const newStoredIngredients: Ingredient[] = []
+      const newStoredIngredients: Ingredient[] = [];
       for (const ing of userData.storedIngredients) {
-        if (ing.getId == ingredientBuilder.getId()){
-          newStoredIngredients.push(await ingredientBuilder.build())
-        }else{
-          newStoredIngredients.push(ing)
+        if (ing.getId == ingredientBuilder.getId()) {
+          newStoredIngredients.push(await ingredientBuilder.build());
+        } else {
+          newStoredIngredients.push(ing);
         }
       }
       setUserData({
         ...userData,
-        storedIngredients: newStoredIngredients, 
+        storedIngredients: newStoredIngredients,
       });
     } else userData.storedIngredients.push(await ingredientBuilder.build());
     setUserData({ ...userData, refreshExplore: true });
@@ -118,39 +112,37 @@ const ManualIngredient = (props: Props) => {
 
   function closeManual() {
     setHomeContext({ ...homeContext, ingredientBeingEdited: null });
-    navigation.popToTop()
+    navigation.popToTop();
   }
 
   navigation.setOptions({
     title: "Add an ingredient",
     headerTitleAlign: "center",
-    headerLeft: ()=>(
-      <TouchableOpacity
-          onPress={closeManual}
-      >
-          <MaterialCommunityIcons
-              name="arrow-left"
-              size={ICON_SIZES.medium}
-              color={isDarkMode ? COLOURS.white : COLOURS.black}
-          />
+    headerLeft: () => (
+      <TouchableOpacity onPress={closeManual}>
+        <MaterialCommunityIcons
+          name="arrow-left"
+          size={ICON_SIZES.medium}
+          color={isDarkMode ? COLOURS.white : COLOURS.black}
+        />
       </TouchableOpacity>
     ),
-    headerRight: ()=>(
-      <View style={{flexDirection: "row"}}>
-        <TouchableOpacity 
-          onPress={()=>{
+    headerRight: () => (
+      <View style={{ flexDirection: "row" }}>
+        <TouchableOpacity
+          onPress={() => {
             createAlert({
-              title:"Delete this ingredient", 
-              desc:"Do you want to delete this ingredient?\n\nThis action cannot be undone.", 
-              buttons:[
+              title: "Delete this ingredient",
+              desc: "Do you want to delete this ingredient?\n\nThis action cannot be undone.",
+              buttons: [
                 {
                   text: "Cancel",
-                  style: "cancel"
+                  style: "cancel",
                 },
                 {
                   text: "Delete",
                   style: "destructive",
-                  onPress: async ()=>{
+                  onPress: async () => {
                     if (
                       userData.storedIngredients.find(
                         (ing) => ing.id === ingredientBuilder.getId()
@@ -158,40 +150,38 @@ const ManualIngredient = (props: Props) => {
                     ) {
                       setUserData({
                         ...userData,
-                        storedIngredients: userData.storedIngredients.filter((ing) =>
-                          ing.id == ingredientBuilder.getId()
-                        ), 
+                        storedIngredients: userData.storedIngredients.filter(
+                          (ing) => ing.id == ingredientBuilder.getId()
+                        ),
                       });
-                      DB.deleteIngredient(ingredientBuilder.getId())
+                      DB.deleteIngredient(ingredientBuilder.getId());
                     }
                     setUserData({ ...userData, refreshExplore: true });
                     closeManual();
-                  }
-                }
+                  },
+                },
               ],
-              user: user
-              })
-            }}
-          style={{marginRight: SPACING.small}}
+              user: user,
+            });
+          }}
+          style={{ marginRight: SPACING.medium }}
         >
           <MaterialCommunityIcons
             name={"delete"}
             size={ICON_SIZES.medium}
-            color={"red"}
+            color={COLOURS.red}
           />
         </TouchableOpacity>
-        <TouchableOpacity
-            onPress={saveIngredient}
-        >
-            <MaterialCommunityIcons
-                name="check"
-                size={ICON_SIZES.medium}
-                color={isDarkMode ? COLOURS.white : COLOURS.black}
-            />
+        <TouchableOpacity onPress={saveIngredient}>
+          <MaterialCommunityIcons
+            name="check"
+            size={ICON_SIZES.medium}
+            color={isDarkMode ? COLOURS.white : COLOURS.black}
+          />
         </TouchableOpacity>
       </View>
-    )
-  })
+    ),
+  });
 
   return (
     <SafeAreaView
@@ -201,7 +191,7 @@ const ManualIngredient = (props: Props) => {
           backgroundColor: isDarkMode ? COLOURS.darker : COLOURS.white,
         },
       ]}
-      edges={['left', 'right']}
+      edges={["left", "right"]}
     >
       <KeyboardAwareScrollView>
         <NameAndImage
