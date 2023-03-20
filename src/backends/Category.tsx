@@ -7,12 +7,12 @@ export class Category{
     active: boolean
 
     constructor(name: string, colour: string, _id?:number, active?: boolean){
-        if (_id != undefined){
+        if (_id != undefined && _id != -1){
             Category.count = Math.max(_id, Category.count)
-        }else{
+        }else if (_id == undefined || _id == -1){
             Category.count += 1
         }
-        this._id = (_id != undefined)? _id: Category.count
+        this._id = (_id != undefined&&_id!=-1)? _id: Category.count
         this.name = name
         this.colour = colour
         this.active = (active != undefined)? active: true

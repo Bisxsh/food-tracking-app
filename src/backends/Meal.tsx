@@ -36,7 +36,7 @@ export class Meal {
     favourite?: boolean,
     mealIngredients?: string[]
   ) {
-    if (_id != undefined) {
+    if (_id != undefined && _id != -1) {
       Meal.count = Math.max(_id, Meal.count);
     } else if (_id == undefined || _id == -1){
       Meal.count += 1;

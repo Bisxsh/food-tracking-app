@@ -14,12 +14,12 @@ export class History{
     cost: number
 
     constructor(userId: number, date: Date, mass: number, cost:number, _id?: number){
-        if (_id != undefined){
+        if (_id != undefined && _id != -1){
             History.count = Math.max(_id, History.count)
-        }else{
+        }else if (_id == undefined || _id == -1){
             History.count += 1
         }
-        this._id = (_id != undefined)? _id: History.count ++
+        this._id = (_id != undefined&&_id!=-1)? _id: History.count ++
         this.userId = userId
         this.date = date
         this.mass = mass
