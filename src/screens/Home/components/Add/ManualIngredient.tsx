@@ -107,7 +107,7 @@ const ManualIngredient = (props: Props) => {
       });
     } else ingredientBuilder.setId(userData.storedIngredients.length + 1), userData.storedIngredients.push(await ingredientBuilder.build());
     console.log("this should set the userData to true")
-    setUserData({ ...userData, refreshExplore: true });
+    setUserData({ ...userData, refreshExplore: true});
     console.log(userData.refreshExplore)
     
     closeManual();
