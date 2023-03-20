@@ -131,6 +131,7 @@ export class User{
     }
 
     static count = -1;
+    static refresh = false;
 
     static fromList(properties:any[]):User{
         var records: [number, number, number] = [0,0,0];

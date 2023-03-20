@@ -105,8 +105,12 @@ const ManualIngredient = (props: Props) => {
         ...userData,
         storedIngredients: newStoredIngredients,
       });
-    } else userData.storedIngredients.push(await ingredientBuilder.build());
-    setUserData({ ...userData, refreshExplore: true });
+      User.refresh = true;
+    } else {
+      userData.storedIngredients.push(await ingredientBuilder.build());
+      setUserData({ ...userData});
+      User.refresh = true;
+    }
     closeManual();
   }
 
@@ -156,7 +160,8 @@ const ManualIngredient = (props: Props) => {
                       });
                       DB.deleteIngredient(ingredientBuilder.getId());
                     }
-                    setUserData({ ...userData, refreshExplore: true });
+                    setUserData({ ...userData});
+                    User.refresh = true;
                     closeManual();
                   },
                 },

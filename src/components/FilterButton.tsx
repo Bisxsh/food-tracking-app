@@ -218,7 +218,6 @@ const FilterButton = (props: Props) => {
                   id: props.options.length,
                 },
               ];
-              console.log(newOptions);
               DB.create(
                 new CategoryBack.Category(
                   categoryName,

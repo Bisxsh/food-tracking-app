@@ -71,7 +71,7 @@ export async function getRecipes() {
 
 export async function getSaved() {
   let meals = await readAllMeal();
-  console.log(meals.map((meal) => meal.favourite));
+  //console.log(meals.map((meal) => meal.favourite));
 
   return meals?.filter((meal) => meal.favourite);
 }

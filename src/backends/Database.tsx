@@ -137,7 +137,7 @@ async function transaction(
   sql: string,
   arg: any[],
   description?: string,
-  verbose = true
+  verbose = false
 ): Promise<sq.SQLResultSet | undefined> {
   var db = openDB();
   var result: sq.SQLResultSet | undefined;
@@ -150,18 +150,18 @@ async function transaction(
           arg,
           (_, out) => {
             if (verbose) {
-              // console.log('SUCCESS: ' + description);
+              console.log('SUCCESS: ' + description);
             }
             resolve(out);
           },
           () => {
-            // console.log('FAIL: ' + description);
+            console.log('FAIL: ' + description);
             return true;
           }
         );
-      }
-      // (reason?:any) => {console.log('FAIL: SQL Execution\n' + reason)},
-      // () => {if (verbose) {console.log('SUCCESS: SQL Execution')}}
+      },
+      (reason?:any) => {console.log('FAIL: SQL Execution\n' + reason)},
+      () => {if (verbose) {console.log('SUCCESS: SQL Execution')}}
     );
   });
 
@@ -797,14 +797,14 @@ export async function deleteFile(verbose = false) {
           )
         ).length == 0
       ) {
-        // console.log("SUCCESS: Delete file");
+        console.log("SUCCESS: Delete file");
       } else {
-        // console.log("FAIL: Delete file");
+        console.log("FAIL: Delete file");
       }
     }
   } else {
     if (verbose) {
-      //   console.log("FAIL: Delete file (No such file)");
+      console.log("FAIL: Delete file (No such file)");
     }
   }
   await deleteCSVFile(verbose);
@@ -912,14 +912,14 @@ async function deleteCSVFile(verbose = false) {
     }
     if (verbose) {
       if ((await FileSystem.readDirectoryAsync(csvDirectory)).length == 0) {
-        // console.log("SUCCESS: Delete file");
+        console.log("SUCCESS: Delete file");
       } else {
-        // console.log("FAIL: Delete file");
+        console.log("FAIL: Delete file");
       }
     }
   } else {
     if (verbose) {
-      //   console.log("FAIL: Delete file (No such file)");
+      console.log("FAIL: Delete file (No such file)");
     }
   }
 }
