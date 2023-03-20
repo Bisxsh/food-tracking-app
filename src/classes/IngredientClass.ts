@@ -287,6 +287,7 @@ export class IngredientBuilder {
   }
 
   public async build(): Promise<Ingredient> {
+    console.log("building")
     const ing = new Ingredient(
       this.name,
       this.weight,
@@ -305,8 +306,10 @@ export class IngredientBuilder {
 
     const value = await DB.readIngredient(this.id)
     if (value == undefined) {
+      console.log("Creating new ingredient");
       await DB.create(ing.toIngredientBack());
     } else {
+      console.log("Updating ingredient");
       await DB.updateIngredient(ing.toIngredientBack());
     }
     return ing;

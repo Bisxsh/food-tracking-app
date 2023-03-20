@@ -177,7 +177,7 @@ export function Setting({ navigation }: ScreenProp): JSX.Element {
   const { user, setUser } = useContext(UserContext);
   const { userData, setUserData } = useContext(UserDataContext);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
-  const [disabled, setDisabled] = useState(!user.setting.debug);
+  const [disabled, setDisabled] = useState(user.setting.debug);
   const {height, width} = useWindowDimensions();
   var count = 0;
 

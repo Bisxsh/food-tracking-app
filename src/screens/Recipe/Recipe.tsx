@@ -48,6 +48,7 @@ export function Recipe(): JSX.Element {
   const [searchIngBut, setSearchIngBut] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
   const [loading, setLoading] = useState(true);
+  const [refresh , setRefresh] = useState(userData.exploreRecipes || false);
   const [recipes, setRecipes] = useState<Meal[]>(userData.exploreRecipes || []);
   const [explore, setExplore] = useState<Meal[]>(userData.exploreRecipes || []);
   const [saved, setSaved] = useState<Meal[]>(userData.savedRecipes || []);
@@ -125,7 +126,10 @@ export function Recipe(): JSX.Element {
 
 
   async function genRecipe() {
+    console.log("we are here")
+    console.log(userData.refreshExplore)
     if (userData.refreshExplore) {
+      console.log("we know to refresh")
       await getRecipes().then((recipeList) => {
         setRecipes(recipeList);
         setExplore(recipeList);

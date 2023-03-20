@@ -105,8 +105,11 @@ const ManualIngredient = (props: Props) => {
         ...userData,
         storedIngredients: newStoredIngredients,
       });
-    } else userData.storedIngredients.push(await ingredientBuilder.build());
+    } else ingredientBuilder.setId(userData.storedIngredients.length + 1), userData.storedIngredients.push(await ingredientBuilder.build());
+    console.log("this should set the userData to true")
     setUserData({ ...userData, refreshExplore: true });
+    console.log(userData.refreshExplore)
+    
     closeManual();
   }
 
@@ -184,6 +187,7 @@ const ManualIngredient = (props: Props) => {
   });
 
   return (
+
     <SafeAreaView
       style={[
         styles.container,
@@ -412,6 +416,7 @@ const ManualIngredient = (props: Props) => {
         )}
       </KeyboardAwareScrollView>
     </SafeAreaView>
+
   );
 };
 
