@@ -48,6 +48,7 @@ export function Recipe(): JSX.Element {
   const [searchIngBut, setSearchIngBut] = useState(false);
   const { userData, setUserData } = useContext(UserDataContext);
   const [loading, setLoading] = useState(true);
+  const [refresh , setRefresh] = useState(userData.exploreRecipes || false);
   const [recipes, setRecipes] = useState<Meal[]>(userData.exploreRecipes || []);
   const [explore, setExplore] = useState<Meal[]>(userData.exploreRecipes || []);
   const [saved, setSaved] = useState<Meal[]>(userData.savedRecipes || []);

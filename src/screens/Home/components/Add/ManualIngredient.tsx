@@ -189,6 +189,7 @@ const ManualIngredient = (props: Props) => {
   });
 
   return (
+
     <SafeAreaView
       style={[
         styles.container,
@@ -417,6 +418,7 @@ const ManualIngredient = (props: Props) => {
         )}
       </KeyboardAwareScrollView>
     </SafeAreaView>
+
   );
 };
 
