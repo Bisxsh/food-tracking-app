@@ -24,7 +24,7 @@ import {
 } from "../../../../classes/IngredientClass";
 import IngredientPopup from "../IngredientPopup";
 import NoDataSvg from "../../../../assets/no_data.svg";
-import * as DB from "../../../../backends/Database"
+import * as DB from "../../../../backends/Database";
 import { HomeSortingFilter } from "../Menu/HomeSortingFilters";
 
 type Props = {
@@ -41,101 +41,102 @@ const IndgredientView = (props: Props) => {
   );
   const [loading, setLoading] = useState(true);
 
-  const [expiredIngredients, setExpiredIngredients] = useState<Ingredient[]>([]);
+  const [expiredIngredients, setExpiredIngredients] = useState<Ingredient[]>(
+    []
+  );
 
   const activeFilters = userData.ingredientCategories.filter((i) => i.active);
   const [activeIngredients, setActiveIngredients] = useState<Ingredient[]>([]);
 
-  async function loadFromDB(): Promise<Ingredient[]>{
-    const ing: Ingredient[] = []
+  async function loadFromDB(): Promise<Ingredient[]> {
+    const ing: Ingredient[] = [];
     for (const v of await DB.readAllIngredient()) {
       ing.push(await v.toIngredientClass());
     }
-    return ing
+    return ing;
   }
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
-      setLoading(true)
-      loadFromDB().then((ing)=>{
-        sortActiveIng(ing)
+      setLoading(true);
+      loadFromDB().then((ing) => {
+        sortActiveIng(ing);
         setExpiredIngredients(
-          ing.filter(
-            (i) => i.expiryDate < new Date() && i.quantity > 0
-          )
+          ing.filter((i) => i.expiryDate < new Date() && i.quantity > 0)
         );
         setActiveIngredients(
           ing
             .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
             .filter((i) => {
               for (let filter of activeFilters) {
-                if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                if (
+                  i.categories.filter((v) => v.name == filter.name).length == 0
+                )
                   return false;
               }
               return true;
             })
             .filter((i) => {
               if (props.ingredientsSearch === "") return true;
-  
+
               return i.getName
                 .toLowerCase()
                 .includes(props.ingredientsSearch.toLowerCase());
             })
-        )
+        );
         setUserData({
           ...userData,
-          storedIngredients: ing
-        })
-        sortActiveIng()
-        console.log("navigation")
-        setLoading(false)
-      })
+          storedIngredients: ing,
+        });
+        sortActiveIng();
+        console.log("navigation");
+        setLoading(false);
+      });
     });
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(()=>{
-    if (ingredientShown == null){
-      setLoading(true)
-      console.log("ingredientShown")
-      loadFromDB().then((ing)=>{
+  useEffect(() => {
+    if (ingredientShown == null) {
+      setLoading(true);
+      console.log("ingredientShown");
+      loadFromDB().then((ing) => {
         setExpiredIngredients(
-          ing.filter(
-            (i) => i.expiryDate < new Date() && i.quantity > 0
-          )
+          ing.filter((i) => i.expiryDate < new Date() && i.quantity > 0)
         );
         setActiveIngredients(
           ing
             .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
             .filter((i) => {
               for (let filter of activeFilters) {
-                if (i.categories.filter((v) => v.name == filter.name).length == 0)
+                if (
+                  i.categories.filter((v) => v.name == filter.name).length == 0
+                )
                   return false;
               }
               return true;
             })
             .filter((i) => {
               if (props.ingredientsSearch === "") return true;
-  
+
               return i.getName
                 .toLowerCase()
                 .includes(props.ingredientsSearch.toLowerCase());
             })
-        )
+        );
         setUserData({
           ...userData,
-          storedIngredients: ing
-        })
-        sortActiveIng()
-        console.log("navigation")
-        setLoading(false)
-      })
+          storedIngredients: ing,
+        });
+        sortActiveIng();
+        console.log("navigation");
+        setLoading(false);
+      });
     }
-    
-  }, [ingredientShown])
+  }, [ingredientShown]);
 
-  useEffect(()=>{
-    setLoading(true)
+  useEffect(() => {
+    setLoading(true);
     setActiveIngredients(
       userData.storedIngredients
         .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
@@ -153,14 +154,14 @@ const IndgredientView = (props: Props) => {
             .toLowerCase()
             .includes(props.ingredientsSearch.toLowerCase());
         })
-    )
-    sortActiveIng()
-    console.log("search")
-    setLoading(false)
-  }, [props.ingredientsSearch])
+    );
+    sortActiveIng();
+    console.log("search");
+    setLoading(false);
+  }, [props.ingredientsSearch]);
 
-  useEffect(()=>{
-    setLoading(true)
+  useEffect(() => {
+    setLoading(true);
     setActiveIngredients(
       userData.storedIngredients
         .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
@@ -178,46 +179,57 @@ const IndgredientView = (props: Props) => {
             .toLowerCase()
             .includes(props.ingredientsSearch.toLowerCase());
         })
-    )
-    sortActiveIng()
-    console.log("category")
-    setLoading(false)
-  }, [userData.ingredientCategories])
+    );
+    sortActiveIng();
+    console.log("category");
+    setLoading(false);
+  }, [userData.ingredientCategories]);
 
-  useEffect(()=>{
-    setLoading(true)
-    sortActiveIng()
-    console.log("sort")
-    setLoading(false)
-  }, [props.sort])
+  useEffect(() => {
+    setLoading(true);
+    sortActiveIng();
+    console.log("sort");
+    setLoading(false);
+  }, [props.sort]);
 
-  function sortActiveIng(list?: Ingredient[]){
-    var newActiveIngredient: Ingredient[] = []
+  function sortActiveIng(list?: Ingredient[]) {
+    console.log(props.sort);
+
+    var newActiveIngredient: Ingredient[] = [];
     switch (props.sort) {
       default:
-        newActiveIngredient = activeIngredients
+        newActiveIngredient = activeIngredients;
         break;
       case HomeSortingFilter.ExpiryDateFirstToLast:
-        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
+        newActiveIngredient = (
+          list == undefined ? activeIngredients : list
+        ).sort((a, b) => {
           return a.expiryDate.getTime() - b.expiryDate.getTime();
-        })
+        });
         break;
       case HomeSortingFilter.ExpiryDateLastToFirst:
-        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
+        newActiveIngredient = (
+          list == undefined ? activeIngredients : list
+        ).sort((a, b) => {
           return b.expiryDate.getTime() - a.expiryDate.getTime();
-        })
+        });
         break;
       case HomeSortingFilter.QuantityLowToHigh:
-        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
+        newActiveIngredient = (
+          list == undefined ? activeIngredients : list
+        ).sort((a, b) => {
           return a.quantity - b.quantity;
-        })
+        });
         break;
       case HomeSortingFilter.QuantityHighToLow:
-        newActiveIngredient = (list == undefined ? activeIngredients : list).sort((a, b) => {
+        newActiveIngredient = (
+          list == undefined ? activeIngredients : list
+        ).sort((a, b) => {
           return b.quantity - a.quantity;
-        })
+        });
         break;
     }
+    setActiveIngredients(newActiveIngredient);
   }
 
   function getIngredientCards(ingredients: Ingredient[]) {
@@ -288,15 +300,17 @@ const IndgredientView = (props: Props) => {
           flex: 1,
         }}
       >
-        {loading && <ActivityIndicator
-          size={"large"}
-          color={COLOURS.primary}
-          style={{
-            transform: [{ scale: 2 }],
-            flex:1,
-            alignSelf: "center",
-          }}
-        />}
+        {loading && (
+          <ActivityIndicator
+            size={"large"}
+            color={COLOURS.primary}
+            style={{
+              transform: [{ scale: 2 }],
+              flex: 1,
+              alignSelf: "center",
+            }}
+          />
+        )}
         {!loading && expiredIngredients.length > 0 && (
           <>
             <View
