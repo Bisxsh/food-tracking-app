@@ -137,50 +137,14 @@ const IndgredientView = (props: Props) => {
 
   useEffect(() => {
     setLoading(true);
-    setActiveIngredients(
-      userData.storedIngredients
-        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-        .filter((i) => {
-          for (let filter of activeFilters) {
-            if (i.categories.filter((v) => v.name == filter.name).length == 0)
-              return false;
-          }
-          return true;
-        })
-        .filter((i) => {
-          if (props.ingredientsSearch === "") return true;
-
-          return i.getName
-            .toLowerCase()
-            .includes(props.ingredientsSearch.toLowerCase());
-        })
-    );
-    sortActiveIng();
+    setActiveIng();
     console.log("search");
     setLoading(false);
   }, [props.ingredientsSearch]);
 
   useEffect(() => {
     setLoading(true);
-    setActiveIngredients(
-      userData.storedIngredients
-        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-        .filter((i) => {
-          for (let filter of activeFilters) {
-            if (i.categories.filter((v) => v.name == filter.name).length == 0)
-              return false;
-          }
-          return true;
-        })
-        .filter((i) => {
-          if (props.ingredientsSearch === "") return true;
-
-          return i.getName
-            .toLowerCase()
-            .includes(props.ingredientsSearch.toLowerCase());
-        })
-    );
-    sortActiveIng();
+    setActiveIng();
     console.log("category");
     setLoading(false);
   }, [userData.ingredientCategories]);
@@ -230,6 +194,27 @@ const IndgredientView = (props: Props) => {
         break;
     }
     setActiveIngredients(newActiveIngredient);
+  }
+
+  function setActiveIng() {
+    sortActiveIng(
+      userData.storedIngredients
+        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+        .filter((i) => {
+          let cats = i.categories.map((i) => i.name);
+          for (let filter of activeFilters) {
+            if (!cats.includes(filter.name)) return false;
+          }
+          return true;
+        })
+        .filter((i) => {
+          if (props.ingredientsSearch === "") return true;
+
+          return i.getName
+            .toLowerCase()
+            .includes(props.ingredientsSearch.toLowerCase());
+        })
+    );
   }
 
   function getIngredientCards(ingredients: Ingredient[]) {
