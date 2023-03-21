@@ -59,12 +59,12 @@ export class User{
     screenRecord: [number, number, number]
 
     constructor(name: string, _id?:number, imgSrc?: string, dateOfReq?: Date, dietReq?: [string, boolean][], setting?: UserSetting, consent?: boolean, categories?: Category[], screenRecord?: [number, number, number]){
-        if (_id != undefined){
+        if (_id != undefined && _id != -1){
             User.count = Math.max(_id, User.count)
-        }else{
+        }else if (_id == undefined || _id == -1){
             User.count += 1
         }
-        this._id = (_id != undefined)? _id: User.count
+        this._id = (_id != undefined&&_id!=-1)? _id: User.count
         this.name = name
         this.imgSrc = imgSrc
         this.dateOfReg = (dateOfReq != undefined)? dateOfReq: new Date()
@@ -131,6 +131,7 @@ export class User{
     }
 
     static count = -1;
+    static refresh = false;
 
     static fromList(properties:any[]):User{
         var records: [number, number, number] = [0,0,0];

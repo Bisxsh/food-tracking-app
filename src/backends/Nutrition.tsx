@@ -38,7 +38,7 @@ export class Nutrition {
     sugar?: number,
     sugarUnit?: string
   ) {
-    if (_id != undefined) {
+    if (_id != undefined && _id != -1) {
       Nutrition.count = Math.max(_id, Nutrition.count);
     } else if (_id == undefined || _id == -1) {
       Nutrition.count += 1;

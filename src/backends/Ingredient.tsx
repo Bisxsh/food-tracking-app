@@ -37,7 +37,7 @@ export class Ingredient {
     barcode?: number,
     memo?: string
   ) {
-    if (_id != undefined) {
+    if (_id != undefined && _id != -1) {
       Ingredient.count = Math.max(_id, Ingredient.count);
     } else if (_id == undefined || _id == -1) {
       Ingredient.count += 1;
