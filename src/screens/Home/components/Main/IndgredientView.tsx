@@ -157,8 +157,7 @@ const IndgredientView = (props: Props) => {
   }, [props.sort]);
 
   function sortActiveIng(list?: Ingredient[]) {
-    console.log(props.sort);
-
+    
     var newActiveIngredient: Ingredient[] = [];
     switch (props.sort) {
       default:
@@ -193,28 +192,28 @@ const IndgredientView = (props: Props) => {
         });
         break;
     }
-    setActiveIngredients(newActiveIngredient);
+    //setActiveIngredients(newActiveIngredient);
   }
 
   function setActiveIng() {
-    sortActiveIng(
-      userData.storedIngredients
-        .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
-        .filter((i) => {
-          let cats = i.categories.map((i) => i.name);
-          for (let filter of activeFilters) {
-            if (!cats.includes(filter.name)) return false;
-          }
-          return true;
-        })
-        .filter((i) => {
-          if (props.ingredientsSearch === "") return true;
+    const newActive: Ingredient[] = userData.storedIngredients
+      .filter((i) => i.expiryDate > new Date() && i.quantity > 0)
+      .filter((i) => {
+        let cats = i.categories.map((i) => i.name);
+        for (let filter of activeFilters) {
+          if (!cats.includes(filter.name)) return false;
+        }
+        return true;
+      })
+      .filter((i) => {
+        if (props.ingredientsSearch === "") return true;
 
-          return i.getName
-            .toLowerCase()
-            .includes(props.ingredientsSearch.toLowerCase());
-        })
-    );
+        return i.getName
+          .toLowerCase()
+          .includes(props.ingredientsSearch.toLowerCase());
+      })
+    sortActiveIng(newActive);
+    setActiveIngredients(newActive);
   }
 
   function getIngredientCards(ingredients: Ingredient[]) {
