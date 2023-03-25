@@ -67,42 +67,69 @@ export const DUMMY_STORED_INGREDIENTS: Ingredient[] = [
     "TUC", //name
     100, //weight
     weightUnit.grams, //weightUnit
-    15, //servingSize
+    25, //servingSize
     weightUnit.grams, //servingSizeType
     0, //quantity
     [DUMMY_CATEGORIES[3], DUMMY_CATEGORIES[4]], //categories
     "https://images.openfoodfacts.org/images/products/541/004/100/1204/front_en.299.400.jpg", //imageSrc
     new Date(today.getTime() - 23 * 24 * 60 * 60 * 1000), //expiryDate
     new Date(today.getTime() - 23 * 24 * 60 * 60 * 1000), //useByDate
-    new Nutrition(0, 0, 0, 0, 0, 0, 0, 0), //nutrition
+    new Nutrition(
+      16.8, // Carbs
+      120, // Energy
+      2.1, //Protein
+      4.75, //Fat
+      0.475, //SatFat
+      0.6, //Fiber
+      0.425, //Salt
+      1.77 //Sugar
+    ), //nutrition
     1 //id
   ),
   new Ingredient(
     "Kinder Bueno", //name
     43, //weight
     weightUnit.grams, //weightUnit
-    20, //servingSize
+    21.5, //servingSize
     weightUnit.grams, //servingSizeType
     69, //quantity
     [DUMMY_CATEGORIES[2], DUMMY_CATEGORIES[4]], //categories
     "https://images.openfoodfacts.org/images/products/800/050/003/7560/front_en.192.400.jpg", //imageSrc
     new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000), //expiryDate
     new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000), //useByDate
-    new Nutrition(0, 0, 0, 0, 0, 0, 0, 0), //nutrition
+    new Nutrition(
+      10.6, // Carbs
+      122, // Energy
+      1.8, //Protein
+      8, //Fat
+      3.7, //SatFat
+      0, //Fiber
+      0.058, //Salt
+      8.9 //Sugar
+    ), //nutrition
     2 //id
   ),
   new Ingredient(
     "Oreo", //name
     154, //weight
     weightUnit.grams, //weightUnit
-    30, //servingSize
+    100, //servingSize
     weightUnit.grams, //servingSizeType
     2, //quantity
     [DUMMY_CATEGORIES[2], DUMMY_CATEGORIES[4]], //categories
     "https://images.openfoodfacts.org/images/products/762/230/033/6738/front_en.145.400.jpg", //imageSrc
     new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000), //expiryDate
     new Date(today.getTime() - 3 * 24 * 60 * 60 * 1000), //useByDate
-    new Nutrition(0, 0, 0, 0, 0, 0, 0, 0), //nutrition
+    new Nutrition(
+      68, // Carbs
+      476, // Energy
+      5.3, //Protein
+      20, //Fat
+      5.4, //SatFat
+      2.7, //Fiber
+      0.73, //Salt
+      38 //Sugar
+    ), //nutrition
     3 //id
   ),
   new Ingredient(
