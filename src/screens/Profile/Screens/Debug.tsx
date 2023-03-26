@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import * as Notifications from "expo-notifications";
 
 import * as DB from "../../../backends/Database";
 import { Ingredient } from "../../../backends/Ingredient";
@@ -15,6 +16,7 @@ import * as Dummy from "../../../classes/DummyData";
 import { UserDataContext } from "../../../classes/UserData";
 import { getCustom, getRecipes, getSaved } from "../../../util/GetRecipe";
 import * as IngredientClass from "../../../classes/IngredientClass";
+import { getTimeLeft } from "../../../util/ExpiryCalc";
 
 export function Debug(): JSX.Element {
   const [ing, setIng] = useState<Ingredient>();
@@ -268,6 +270,45 @@ export function Debug(): JSX.Element {
               }}
             >
               <Text>Export data</Text>
+            </Pressable>
+            <Pressable
+              style={styles.pressable}
+              onPress={() => {
+                const trigger: Notifications.TimeIntervalTriggerInput = {
+                  seconds: 1
+                };
+        
+                Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: "Check your food",
+                    body: "You need to check your food that are expiring soon!",
+                  },
+                  trigger,
+                });
+              }}
+            >
+              <Text>{"Trigger General\nNotification"}</Text>
+            </Pressable>
+            <Pressable
+              style={styles.pressable}
+              onPress={async () => {
+                const trigger: Notifications.TimeIntervalTriggerInput = {
+                  seconds: 1
+                };
+                const ing: Ingredient|undefined = (await DB.searchIngredient(undefined, [1, 100])).find((i)=>i.expiryDate!.getTime()-(new Date()).getTime()>0)
+                if (ing != undefined){
+                  Notifications.scheduleNotificationAsync({
+                    content: {
+                      title: "Check your food",
+                      body: "Quick! Your "+ing.name+" is going to expire in "+getTimeLeft(await ing.toIngredientClass()),
+                    },
+                    trigger,
+                  });
+                }
+                
+              }}
+            >
+              <Text>{"Trigger Specific\nNotification"}</Text>
             </Pressable>
             <Pressable
               style={styles.pressable}
