@@ -26,6 +26,7 @@ import IngredientPopup from "../IngredientPopup";
 import NoDataSvg from "../../../../assets/no_data.svg";
 import * as DB from "../../../../backends/Database";
 import { HomeSortingFilter } from "../Menu/HomeSortingFilters";
+import { UserContext } from "../../../../backends/User";
 
 type Props = {
   ingredientsSearch: string;
@@ -40,6 +41,8 @@ const IndgredientView = (props: Props) => {
     null
   );
   const [loading, setLoading] = useState(true);
+  const { user, setUser } = useContext(UserContext);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(user.setting.isDark());
 
   const [expiredIngredients, setExpiredIngredients] = useState<Ingredient[]>(
     []
@@ -157,7 +160,6 @@ const IndgredientView = (props: Props) => {
   }, [props.sort]);
 
   function sortActiveIng(list?: Ingredient[]) {
-    
     var newActiveIngredient: Ingredient[] = [];
     switch (props.sort) {
       default:
@@ -211,7 +213,7 @@ const IndgredientView = (props: Props) => {
         return i.getName
           .toLowerCase()
           .includes(props.ingredientsSearch.toLowerCase());
-      })
+      });
     sortActiveIng(newActive);
     setActiveIngredients(newActive);
   }
@@ -267,6 +269,7 @@ const IndgredientView = (props: Props) => {
           style={{
             textAlign: "center",
             fontSize: FONT_SIZES.small,
+            color: isDarkMode ? COLOURS.white : COLOURS.black,
           }}
         >
           {message}

@@ -157,7 +157,7 @@ const RecipeBox = (props: Props) => {
             <CardDetail
               icon={RecipeCardIcon.ALLERGENS}
               text={
-                recipe.cautions
+                recipe.cautions && recipe.cautions.length > 0
                   ? `Contains ${recipe.cautions?.join(", ")}`
                   : "No Allergens"
               }
