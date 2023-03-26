@@ -300,7 +300,7 @@ export function Debug(): JSX.Element {
                   Notifications.scheduleNotificationAsync({
                     content: {
                       title: "Check your food",
-                      body: "Quick! Your "+ing.name+" is going to expire in "+getTimeLeft(await ing.toIngredientClass()),
+                      body: "Quick! Your "+ing.name+" is going to expire in "+getTimeLeft(await ing.toIngredientClass())+"!",
                     },
                     trigger,
                   });
