@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
@@ -50,6 +51,7 @@ const IndgredientView = (props: Props) => {
 
   const activeFilters = userData.ingredientCategories.filter((i) => i.active);
   const [activeIngredients, setActiveIngredients] = useState<Ingredient[]>([]);
+  const {height, width} = useWindowDimensions();
 
   async function loadFromDB(): Promise<Ingredient[]> {
     const ing: Ingredient[] = [];
@@ -237,7 +239,8 @@ const IndgredientView = (props: Props) => {
     return cards;
   }
 
-  function getMainIngredients() {
+  function getMainIngredients(height: number, width: number) {
+    
     if (activeIngredients.length > 0)
       return (
         <View style={[styles.container]}>
@@ -253,7 +256,6 @@ const IndgredientView = (props: Props) => {
     return (
       <View
         style={{
-          flex: 1,
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
@@ -261,8 +263,8 @@ const IndgredientView = (props: Props) => {
         }}
       >
         <NoDataSvg
-          width={200}
-          height={200}
+          width={Math.min(height, width)/2}
+          height={Math.min(height, width)/2}
           style={{ marginBottom: SPACING.medium }}
         />
         <Text
@@ -279,12 +281,16 @@ const IndgredientView = (props: Props) => {
   }
 
   return (
-    <>
+    <View style={{flex: 1}}>
       <ScrollView
+        style={{
+          flex: 1
+        }}
         contentContainerStyle={{
           flexDirection: "column",
-          alignItems: "flex-start",
-          flex: 1,
+          alignItems: loading? "center": "flex-start",
+          justifyContent: loading? "center": "flex-start",
+          flexGrow: 1,
         }}
       >
         {loading && (
@@ -295,33 +301,32 @@ const IndgredientView = (props: Props) => {
               transform: [{ scale: 2 }],
               flex: 1,
               alignSelf: "center",
+              height: 36 * 2
             }}
           />
         )}
         {!loading && expiredIngredients.length > 0 && (
-          <>
+          <View
+            style={{
+              marginTop: SPACING.small,
+              width: "100%",
+            }}
+          >
+            <View style={[styles.container]}>
+              {getIngredientCards(expiredIngredients)}
+            </View>
             <View
               style={{
-                marginTop: SPACING.small,
-                width: "100%",
+                borderBottomColor: COLOURS.darkGrey,
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                alignSelf: "stretch",
+                marginVertical: SPACING.medium,
               }}
-            >
-              <View style={[styles.container]}>
-                {getIngredientCards(expiredIngredients)}
-              </View>
-              <View
-                style={{
-                  borderBottomColor: COLOURS.darkGrey,
-                  borderBottomWidth: StyleSheet.hairlineWidth,
-                  alignSelf: "stretch",
-                  marginVertical: SPACING.medium,
-                }}
-              />
-            </View>
-          </>
+            />
+          </View>
         )}
 
-        {!loading && getMainIngredients()}
+        {!loading && getMainIngredients(height, width)}
       </ScrollView>
       {ingredientShown && (
         <IngredientPopup
@@ -330,7 +335,7 @@ const IndgredientView = (props: Props) => {
           ingredient={ingredientShown}
         />
       )}
-    </>
+    </View>
   );
 };
 
@@ -345,8 +350,8 @@ const styles = StyleSheet.create({
   },
 
   dummyCard: {
-    width: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
-    height: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
+    width: Math.min(Dimensions.get("screen").width, Dimensions.get("screen").height) / 3 - SPACING.medium * 2,
+    height: Math.min(Dimensions.get("screen").width, Dimensions.get("screen").height) / 3 - SPACING.medium * 2,
     position: "relative",
     aspectRatio: 1,
     margin: SPACING.small,

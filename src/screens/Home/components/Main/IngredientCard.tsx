@@ -60,8 +60,8 @@ const styles = StyleSheet.create({
   container: {
     position: "relative",
     aspectRatio: 1,
-    width: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
-    height: Dimensions.get("screen").width / 3 - SPACING.medium * 2,
+    width: Math.min(Dimensions.get("screen").width, Dimensions.get("screen").height) / 3 - SPACING.medium * 2,
+    height: Math.min(Dimensions.get("screen").width, Dimensions.get("screen").height) / 3 - SPACING.medium * 2,
     backgroundColor: COLOURS.darkGrey,
     margin: SPACING.small,
     justifyContent: "center",
