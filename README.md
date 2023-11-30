@@ -1,12 +1,13 @@
-# food-tracking-app
- Our system is developed using React Native to maximise the range of supporting target users.
- The core functionalities which make up our aim for the application are: 
-- Tracking food expiry dates.
-- Viewing information on food (nutrients, allergy information etc.)
-- Reminders for food expiration dates.
-- Recipe suggestions.
-- Categorizing food stored in the user’s inventory.
- Through this we hope to minimise the amount of food that is needlessly thrown away by users, which 
-among a large enough user base will help to reduce food waste.
+# WasteX 🍏📅
 
- There are seven major systems  (Interface, Food Logging, Notification, Profile, Filtering, Food, Meal) with four having sub systems. The one-way or  two-way arrows show the flow of information or commands from one system or subsystem to another. 
+![](https://cdn.dribbble.com/users/10986860/screenshots/20034348/media/3b304111d4e06b1ec81972ede055acb0.png)
+
+## Overview:
+WasteX is a React Native mobile application developed as part of a university group project to reduce food waste.
+
+## Key Features:
+- Expiry Tracking: Easily input information by scanning the barcode!
+- Recipe Exploration: Browse a vast collection of recipes and receive suggestions based on your current inventory of food.
+- Trend Analysis: Visualize trends in your food consumption and waste reduction efforts through intuitive charts and graphs.
+
+
